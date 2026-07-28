@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Us - Send us a message and we'll get back to you within 24-48 hours.">
+    <title>Contact Us - HelloInsights</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="config-loader.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="logo.svg" alt="HelloInsights" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="logo-text" style="display:none;">HelloInsights</span>
+            </a>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="nav-container" id="navContainer">
+                <nav>
+                    <ul class="nav">
+                        <li><a href="index.html">All</a></li>
+                        <li><a href="category.html?cat=technology">Technology</a></li>
+                        <li><a href="category.html?cat=finance">Finance</a></li>
+                        <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
+                        <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
+                    </ul>
+                </nav>
+                <div class="search-box">
+                    <input type="text" placeholder="Search articles..." id="searchInput">
+                    <button type="button" id="searchBtn">🔍</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <div class="static-content">
+            <h1>Contact Us</h1>
+            <p class="lead">Have a question or feedback? Fill out the form below and our team will respond within 24-48 hours.</p>
+            <form id="contactForm" style="max-width: 600px; margin-top: 2rem;">
+                <div style="margin-bottom: 1rem;">
+                    <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Name *</label>
+                    <input type="text" id="name" name="name" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
+                    <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label for="subject" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Subject *</label>
+                    <input type="text" id="subject" name="subject" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="message" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Message *</label>
+                    <textarea id="message" name="message" rows="6" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" style="background: var(--accent-color); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">Send Message</button>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="logo" style="margin-bottom: 1rem;">
+                    <img src="logo.svg" alt="HelloInsights" class="logo-img">
+                </div>
+                <p>Your trusted source for curated insights at the intersection of technology, finance, and modern wellness.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=finance">Finance</a></li>
+                    <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
+                    <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> HelloInsights. All rights reserved.</p>
+        </div>
+    </footer>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        function toggleMenu() {
+            var navContainer = document.getElementById('navContainer');
+            navContainer.classList.toggle('active');
+        }
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.addEventListener('scroll', function() {
+            var btn = document.getElementById('backToTop');
+            if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
+        });
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var subject = document.getElementById('subject').value;
+            var message = document.getElementById('message').value;
+            window.location.href = 'mailto:support@helloinsights.online?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+        });
+    </script>
+</body>
+</html>

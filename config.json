@@ -1,0 +1,54 @@
+{
+  "siteName": "HelloInsights",
+  "tagline": "Your Trusted Source for Insights",
+  "logoImage": "logo.svg",
+  "accentColor": "#ff6b35",
+  "categories": [
+    { "id": "technology", "name": "Technology", "desc": "The latest in tech innovation, digital trends, and cutting-edge research" },
+    { "id": "finance", "name": "Finance", "desc": "Investment strategies, market insights, and personal finance tips" },
+    { "id": "ai-tools", "name": "AI Tools", "desc": "Discover the latest artificial intelligence tools and how to use them" },
+    { "id": "health-lifestyle", "name": "Health & Lifestyle", "desc": "Wellness tips, healthy recipes, and lifestyle improvements" }
+  ],
+  "footer": {
+    "about": "Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.",
+    "email": "contact@helloinsights.online"
+  },
+  "seo": {
+    "description": "HelloInsights - Your trusted source for Technology, Finance, AI Tools, and Health & Lifestyle news and insights.",
+    "keywords": "technology, finance, ai tools, health, lifestyle, news, insights, helloinsights"
+  },
+  "mgid": {
+    "enabled": true,
+    "siteId": "1104797",
+    "widgets": {
+      "index.html": [
+        { "slot": "zone-top", "widgetId": "2057384", "height": "250px", "marginTop": "1.5rem", "marginBottom": "1.5rem" },
+        { "slot": "zone-mid", "widgetId": "2057384", "height": "250px", "marginTop": "2rem", "marginBottom": "2rem" },
+        { "slot": "zone-bottom", "widgetId": "2057384", "height": "250px", "marginTop": "2rem", "marginBottom": "1rem" }
+      ],
+      "article.html": [
+        { "slot": "article-mgid", "widgetId": "2057384", "height": "250px", "marginTop": "2rem", "marginBottom": "2rem" }
+      ]
+    }
+  },
+  "adsense": {
+    "enabled": true,
+    "clientId": "ca-pub-XXXXXXXXXXXXXXXX",
+    "slots": {
+      "index-banner-top":    { "id": "1111111111", "format": "horizontal", "height": "90px" },
+      "index-banner-bottom": { "id": "2222222222", "format": "horizontal", "height": "90px" },
+      "index-anchor":        { "id": "3333333333", "format": "auto", "layoutKey": "-fb+5w+4e-db+86" },
+      "article-banner":      { "id": "4444444444", "format": "horizontal", "height": "90px" },
+      "article-interstitial":{ "id": "5555555555", "format": "interstitial" }
+    },
+    "pageAds": {
+      "index.html":   ["index-banner-top", "index-banner-bottom", "index-anchor"],
+      "article.html": ["article-banner", "article-interstitial"],
+      "category.html":["index-banner-top", "index-banner-bottom"],
+      "about.html":   [],
+      "contact.html": [],
+      "privacy.html": [],
+      "terms.html":   []
+    }
+  }
+}

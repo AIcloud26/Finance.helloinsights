@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read the latest insights and articles on HelloInsights.">
+    <title>Article - HelloInsights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="stylesheet" href="style.css">
+    <script src="ads-config.js" defer></script>
+    <script src="config-loader.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:3rem;width:auto;display:block;">
+  <defs>
+    <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#FFB13B"/>
+      <stop offset="100%" stop-color="#FF4B12"/>
+    </linearGradient>
+    <linearGradient id="hello" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B252B"/>
+      <stop offset="100%" stop-color="#111A20"/>
+    </linearGradient>
+  </defs>
+  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
+  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFFFFF"/>
+  <g fill="#FF9B27">
+    <rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/>
+    <rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/>
+    <rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/>
+    <rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/>
+    <rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/>
+    <rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/>
+    <rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/>
+    <rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/>
+  </g>
+  <text x="53.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
+  <text x="100.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
+</svg>
+            </a>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="nav-container" id="navContainer">
+                <nav>
+                    <ul class="nav">
+                        <li><a href="index.html">All</a></li>
+                        <li><a href="category.html?cat=technology">Technology</a></li>
+                        <li><a href="category.html?cat=finance">Finance</a></li>
+                        <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
+                        <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
+                    </ul>
+                </nav>
+                <div class="search-box">
+                    <input type="text" placeholder="Search articles..." id="searchInput">
+                    <button type="button" id="searchBtn">🔍</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <div data-ad-slot="article-banner"></div>
+        <article class="article-detail" id="articleDetail">
+            <div class="loading" id="loading"></div>
+        </article>
+        <div data-ad-slot="article-mgid"></div>
+        <div data-ad-slot="article-interstitial"></div>
+        <section class="mb-4" style="margin-top: 3rem;" id="relatedSection">
+            <h2 class="mb-2">Related Articles</h2>
+            <div class="article-grid" id="relatedGrid"></div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About HelloInsights</h4>
+                <p>Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=finance">Finance</a></li>
+                    <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
+                    <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights. All rights reserved.</p>
+        </div>
+    </footer>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <script>
+        var categoryNames = {};
+        var maxArticleId = 0;
+        var defaultFallback = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop';
+        var fallbackImages = {
+            'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
+            'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
+            'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
+            'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop'
+        };
+        function buildCategoryNames(config) {
+            var names = {};
+            if (config && config.categories) {
+                for (var i = 0; i < config.categories.length; i++) {
+                    names[config.categories[i].id] = config.categories[i].name;
+                }
+            } else {
+                names = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
+            }
+            return names;
+        }
+        function getFallbackImage(category) {
+            return fallbackImages[category] || defaultFallback;
+        }
+        function formatDate(dateStr) {
+            if (dateStr) {
+                var d = new Date(dateStr);
+                return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            }
+            return '';
+        }
+        function generateDate(articleId, maxId) {
+            var today = new Date();
+            var date = new Date(today);
+            date.setDate(date.getDate() - Math.floor((maxId - articleId) / 3));
+            return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+        function renderArticle(article, maxId) {
+            var container = document.getElementById('articleDetail');
+            var loading = document.getElementById('loading');
+            if (loading) loading.remove();
+            var date = article.date ? formatDate(article.date) : generateDate(article.id, maxId);
+            var catName = categoryNames[article.category] || article.category;
+            var fallbackImg = getFallbackImage(article.category);
+            var heroImg = article.image.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp';
+            var articleContent = article.content
+                ? article.content
+                : '<p>' + article.excerpt + '</p><p><em>This article is being updated. Check back soon for the full content.</em></p>';
+            container.innerHTML =
+                '<div class="article-hero">' +
+                '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp' + '\'">' +
+                '</div>' +
+                '<div class="article-body">' +
+                '<header class="article-header">' +
+                '<span class="card-category">' + catName + '</span>' +
+                '<h1>' + article.title + '</h1>' +
+                '<div class="article-meta">' +
+                '<span>' + date + '</span>' +
+                '</div>' +
+                '</header>' +
+                '<div class="article-content">' +
+                articleContent +
+                '</div>' +
+                '</div>';
+            var siteName = (siteConfig && siteConfig.siteName) ? siteConfig.siteName : 'HelloInsights';
+            document.title = article.title + ' - ' + siteName;
+        }
+        function renderRelated(currentArticle, allArticles) {
+            var related = allArticles.filter(function(a) {
+                return a.category === currentArticle.category && a.id !== currentArticle.id;
+            }).slice(0, 3);
+            if (related.length === 0) {
+                document.getElementById('relatedSection').style.display = 'none';
+                return;
+            }
+            var grid = document.getElementById('relatedGrid');
+            var html = '';
+            for (var i = 0; i < related.length; i++) {
+                var article = related[i];
+                var articleFallback = getFallbackImage(article.category);
+                var catName = categoryNames[article.category] || article.category;
+                var date = article.date ? formatDate(article.date) : generateDate(article.id, maxArticleId);
+                html += '<article class="article-card">' +
+                    '<div class="card-image">' +
+                    '<img src="' + article.image + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + articleFallback + '\'">' +
+                    '</div>' +
+                    '<div class="card-content">' +
+                    '<span class="card-category">' + catName + '</span>' +
+                    '<h3 class="card-title">' +
+                    '<a href="article.html?id=' + article.id + '">' + article.title + '</a>' +
+                    '</h3>' +
+                    '<p class="card-excerpt">' + article.excerpt + '</p>' +
+                    '<div class="card-meta">' +
+                    '<span>' + date + '</span>' +
+                    '</div>' +
+                    '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
+                    '</div>' +
+                    '</article>';
+            }
+            grid.innerHTML = html;
+        }
+        async function loadArticle() {
+            // Step 1: Load config for category names
+            await new Promise(function(resolve) {
+                loadSiteConfig(function(config) {
+                    if (config) {
+                        categoryNames = buildCategoryNames(config);
+                    } else {
+                        categoryNames = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
+                    }
+                    resolve();
+                });
+            });
+            // Step 2: Get article ID from URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var articleId = parseInt(urlParams.get('id')) || 1;
+            try {
+                // Step 3: Fetch index (lightweight, fresh each time, contains version)
+                var index = await fetch('articles-index.json?v=' + Date.now()).then(function(r) {
+                    if (!r.ok) throw new Error('index HTTP ' + r.status);
+                    return r.json();
+                });
+                var category = index.articles[articleId];
+                if (!category) throw new Error('Article ' + articleId + ' not in index');
+                // Step 4: Fetch category file using version from index (long-term cache)
+                var catData = await fetch('articles-' + category + '.json?v=' + index.v).then(function(r) {
+                    if (!r.ok) throw new Error('category file HTTP ' + r.status);
+                    return r.json();
+                });
+                var catArticles = catData.articles || [];
+                var article = catArticles.find(function(a) { return a.id === articleId; });
+                if (!article) throw new Error('Article ' + articleId + ' not found in ' + category + ' (' + catArticles.length + ' articles)');
+                // Step 5: Render article + related
+                maxArticleId = Math.max.apply(null, catArticles.map(function(a) { return a.id; }));
+                renderArticle(article, maxArticleId);
+                renderRelated(article, catArticles);
+            } catch (error) {
+                console.error('Article load error:', error.message);
+                var container = document.getElementById('articleDetail');
+                if (container) {
+                    container.innerHTML = '<p style="text-align:center;padding:3rem;">Unable to load article: ' + error.message + '. <a href="index.html">Return to homepage</a></p>';
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadArticle);
+    </script>
+</body>
+</html>
