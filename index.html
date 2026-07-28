@@ -55,10 +55,6 @@
                 <nav>
                     <ul class="nav">
                         <li><a href="index.html" class="active">All</a></li>
-                        <li><a href="category.html?cat=technology">Technology</a></li>
-                        <li><a href="category.html?cat=finance">Finance</a></li>
-                        <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
-                        <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
                     </ul>
                 </nav>
                 <div class="search-box">
@@ -101,11 +97,6 @@
                     <li><a href="category.html?cat=finance">Finance</a></li>
                     <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
                     <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
                     <li><a href="about.html">About Us</a></li>
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="privacy.html">Privacy Policy</a></li>
@@ -137,9 +128,10 @@
         'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
         'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop'
     };
-    var defaultFallback = fallbackImages['technology'];
-    var articleIds = [];
-    var allArticlesCache = [];
+   var categoryNames = {
+    'finance': 'Finance'
+    // 只保留当前分类
+};
 
     function generateArticleDate(id) {
         var start = new Date('2026-01-01').getTime();
@@ -286,23 +278,21 @@
         .then(function(index) {
             articleIds = index.ids || [];
             var v = index.v || Date.now();
-            return Promise.all([
-                fetch('articles-technology.json?v=' + v).then(function(r) { return r.json(); }),
-                fetch('articles-finance.json?v=' + v).then(function(r) { return r.json(); }),
-                fetch('articles-ai-tools.json?v=' + v).then(function(r) { return r.json(); }),
-                fetch('articles-health-lifestyle.json?v=' + v).then(function(r) { return r.json(); })
-            ]);
-        })
-        .then(function(results) {
-            for (var i = 0; i < results.length; i++) {
-                var arts = results[i].articles || [];
-                for (var j = 0; j < arts.length; j++) allArticlesCache.push(arts[j]);
-            }
-            // Sort by ID descending (newest first)
-            allArticlesCache.sort(function(a, b) { return b.id - a.id; });
-            fetchArticlesForPage(1);
-            initSearch();
-        })
+           // 第280-295行，改为：
+var currentCategory = 'finance'; // 每个子站点不同
+fetch('articles-index.json?v=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(index) {
+        var v = index.meta ? index.meta.version : '1';
+        // 只加载当前分类
+        return Promise.all([
+            fetch('articles-' + currentCategory + '.json?v=' + v).then(function(r) { return r.json(); })
+        ]);
+    })
+    .then(function(results) {
+        articles = results[0]; // 只有一个分类
+        fetchArticlesForPage(1);
+    });
         .catch(function(err) {
             console.error('Load error:', err.message);
             var grid = document.getElementById('articleGrid');
