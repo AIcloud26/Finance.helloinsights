@@ -7,7 +7,8 @@ const CONFIG = {
   articlesPerDay: 5,
   useAI: false,
   openaiApiKey: process.env.OPENAI_API_KEY,
-  openaiModel: 'gpt-3.5-turbo'
+  openaiModel: 'gpt-3.5-turbo',
+  maxArticles: 500
 };
 // ============================================
 // 分类和主题
@@ -34,7 +35,7 @@ const CATEGORIES = [
 // 图片
 // ============================================
 const IMAGE_IDS = {
-  'technology': [
+    'technology': [
     'photo-1518770660439-4636190af475', 'photo-1526374965328-7f61d4dc18c5',
     'photo-1531297484001-80022131f5a1', 'photo-1550751827-4bd374c3f58b',
     'photo-1485827404703-89b55fcc595e', 'photo-1517694712202-14dd9538aa97',
@@ -42,20 +43,19 @@ const IMAGE_IDS = {
     'photo-1498050108023-c5249f4df085', 'photo-1519389950473-47ba0277781c',
     'photo-1558618666-fcd25c85f82e', 'photo-1535378917042-10a22c95931a',
     'photo-1605810230434-7631ac76ec81', 'photo-1515879218367-8466d910aaa4',
-    'photo-1531297484001-80022131f5a1', 'photo-1581091226825-a6a2a5aee158',
-    'photo-1562408590-e32931084e23', 'photo-1486312336033-3b2be87e275e'
+    'photo-1581091226825-a6a2a5aee158', 'photo-1562408590-e32931084e23',
+    'photo-1486312336033-3b2be87e275e'
   ],
-  'finance': [
+    'finance': [
     'photo-1611974789855-9c2a0a7236a3', 'photo-1554224155-6726b3ff858f',
     'photo-1579621970563-ebec7560ff3e', 'photo-1553729459-efe14ef6055d',
     'photo-1639762681485-074b7f938ba0', 'photo-1460925895917-afdab827c52f',
-    'photo-1611974789855-9c2a0a7236a3', 'photo-1590283603385-17ffb3a7f29f',
-    'photo-1579532537598-459ecdaf39cc', 'photo-1642797102903-74f2fa8468c9a',
-    'photo-1591696205602-2f950c41789b', 'photo-1633158829585-23ba8f7c8caf',
-    'photo-1639322537228-f710d8468c9a', 'photo-1526304640581-d334cdbbf45e',
-    'photo-1554224155-6726b3ff858f', 'photo-1635348729498-da31a45174d5'
+    'photo-1590283603385-17ffb3a7f29f', 'photo-1579532537598-459ecdaf39cc',
+    'photo-1642797102903-74f2fa8468c9a', 'photo-1591696205602-2f950c41789b',
+    'photo-1633158829585-23ba8f7c8caf', 'photo-1639322537228-f710d8468c9a',
+    'photo-1526304640581-d334cdbbf45e', 'photo-1635348729498-da31a45174d5'
   ],
-  'ai-tools': [
+    'ai-tools': [
     'photo-1677442136019-21780ecf9952', 'photo-1676299081847-824916de030a',
     'photo-1488229297570-58520851e843', 'photo-1555949963-aa79dcee981c',
     'photo-1547891654-e66ed7ebb968', 'photo-1620712943543-bcc4688e7485',
@@ -65,22 +65,21 @@ const IMAGE_IDS = {
     'photo-1516110833967-0b5716ca1387', 'photo-1560421683-6856ea585f8c',
     'photo-1551288049-bebda4e38f71'
   ],
-  'health-lifestyle': [
+    'health-lifestyle': [
     'photo-1490645935967-10de6ba17061', 'photo-1571019613454-1cb2f99b2d8b',
     'photo-1506126613408-eca07ce68773', 'photo-1512438248247-f0f2a5a8b7f0',
     'photo-1498837167922-ddd27525d352', 'photo-1505576399279-565b52d4ac71',
     'photo-1544367567-0f2fcb009e0b', 'photo-1571019614242-c5c6dee1f0b9',
-    'photo-1498837167922-ddd27525d352', 'photo-1511688878353-3a2f5be94cd7',
-    'photo-1434030216411-0b793f4b4173', 'photo-1540189549336-e6e99c3679fe',
-    'photo-1556909114-f6e7ad7d3136', 'photo-1515894274780-0de5a3aade51',
-    'photo-1476224203421-9ac39bcb3327', 'photo-1490645935967-10de6ba17061'
+    'photo-1511688878353-3a2f5be94cd7', 'photo-1434030216411-0b793f4b4173',
+    'photo-1540189549336-e6e99c3679fe', 'photo-1556909114-f6e7ad7d3136',
+    'photo-1515894274780-0de5a3aade51', 'photo-1476224203421-9ac39bcb3327'
   ]
 };
 function randomChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function getImageUrl(cat) {
   var ids = IMAGE_IDS[cat] || IMAGE_IDS['technology'];
-  return 'https://images.unsplash.com/' + randomChoice(ids) + '?w=600&h=400&fit=crop&fm=webp';
+  return 'https://images.unsplash.com/' + randomChoice(ids) + '?w=600&h=400&fit=crop&fm=webp&q=80';
 }
 // ============================================
 // 标题和摘要模板
