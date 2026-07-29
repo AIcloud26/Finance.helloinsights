@@ -34,6 +34,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add articles.json
-          git add articles-*.json && git diff --staged --quiet || git commit -m "Auto-generate articles [skip ci]"
+          git add articles-index.json articles-*.json
+          git diff --staged --quiet || git commit -m "Auto-generate articles [skip ci]"
           git push
