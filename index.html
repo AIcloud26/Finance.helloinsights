@@ -155,6 +155,7 @@
     var sub = host.split('.')[0];
     var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
     var CAT_ID = sub;
+    window.IS_SUBDOMAIN = true;  // 标记为子域名模式，防止 config-loader.js 覆盖导航栏
 
     // ===== APPLY CONFIG TO PAGE =====
     document.title = CFG.titleSuffix + ' | News & Insights';
