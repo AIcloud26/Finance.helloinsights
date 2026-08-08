@@ -1,8 +1,24 @@
 // HelloInsights — Unified Config & Ad Manager v3
-// Supports: MGID content widgets + Google AdSense banners
+// Supports: MGID content widgets + Google AdSense banners + GA4 tracking
 // All ad positions/sizes controlled by config.json — no HTML code changes needed
-
 var siteConfig = null;
+
+// ==========================================
+// 0. Google Analytics 4 — Global Tracking
+// ==========================================
+(function() {
+    var GA_ID = 'G-Q4QHZKZT46';
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+})();
 
 // ==========================================
 // 1. Site Config (logo / nav / footer / seo)
@@ -70,7 +86,6 @@ function applyConfig(config) {
     if (meta && config.seo && config.seo.description)
         meta.setAttribute('content', config.seo.description);
 }
-
 function loadSiteConfig(callback) {
     fetch('config.json?v=' + Date.now())
         .then(function(r) { return r.json(); })
@@ -88,7 +103,6 @@ function loadSiteConfig(callback) {
 // 2. MGID Manager — Content Widgets
 // ==========================================
 var _mgidLoaded = false;
-
 function loadMGID(config) {
     var mgid = config.mgid;
     if (!mgid || !mgid.enabled) return;
@@ -190,7 +204,7 @@ function loadAdSense(config) {
         
         for (var k = 0; k < pendingSlots.length; k++) {
             pendingSlots[k].anchor._adData = pendingSlots[k];
-            observer.observe(pendingSlots[k].anchor);
+            observer.observe(pendingSlots[k]);
         }
     } else {
         for (var k = 0; k < pendingSlots.length; k++)
@@ -198,7 +212,6 @@ function loadAdSense(config) {
         scheduleUnfilledCheck();
     }
 }
-
 function createAdIns(anchor, def, clientId) {
     if (anchor._adCreated) return;
     anchor._adCreated = true;
@@ -218,9 +231,7 @@ function createAdIns(anchor, def, clientId) {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch(e) {}
 }
-
 var _unfilledTimer = null;
-
 function scheduleUnfilledCheck() {
     if (_unfilledTimer) return;
     _unfilledTimer = setTimeout(function() {
@@ -228,7 +239,6 @@ function scheduleUnfilledCheck() {
         setTimeout(hideUnfilledAds, 5000);
     }, 4000);
 }
-
 function hideUnfilledAds() {
     var allIns = document.querySelectorAll('ins.adsbygoogle');
     for (var i = 0; i < allIns.length; i++) {
@@ -246,11 +256,9 @@ function toggleMenu() {
     var nav = document.getElementById('navContainer');
     if (nav) nav.classList.toggle('active');
 }
-
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 window.addEventListener('scroll', function() {
     var btn = document.getElementById('backToTop');
     if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
