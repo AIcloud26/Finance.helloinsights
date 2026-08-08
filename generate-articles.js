@@ -1,5 +1,13 @@
+// ============================================
+// HelloInsights - 修复版 generate-articles.js
+// 修复内容：
+// 1. 新文章使用当前日期，不再随机分配历史日期
+// 2. 排序改为按日期降序（最新在前），而不是按随机ID排序
+// 3. 日期格式统一为 YYYY-MM-DD
+// ============================================
 const fs = require('fs');
 const https = require('https');
+
 // ============================================
 // 配置
 // ============================================
@@ -10,6 +18,7 @@ const CONFIG = {
   openaiModel: 'gpt-3.5-turbo',
   maxArticles: 500
 };
+
 // ============================================
 // 分类和主题
 // ============================================
@@ -31,6 +40,7 @@ const CATEGORIES = [
     topics: ['Nutrition and Diet', 'Fitness and Exercise', 'Mental Health', 'Sleep Optimization', 'Productivity', 'Work-Life Balance', 'Healthy Recipes', 'Wellness Technology', 'Stress Management', 'Meditation Practices']
   }
 ];
+
 // ============================================
 // 图片
 // ============================================
@@ -39,102 +49,107 @@ const IMAGE_IDS = {
     'photo-1518770660439-4636190af475', 'photo-1526374965328-7f61d4dc18c5',
     'photo-1531297484001-80022131f5a1', 'photo-1550751827-4bd374c3f58b',
     'photo-1485827404703-89b55fcc595e', 'photo-1517694712202-14dd9538aa97',
-    'photo-1461749280684-dccba630e2f6', 'photo-1504639725590-34d0984388bd',
-    'photo-1498050108023-c5249f4df085', 'photo-1519389950473-47ba0277781c',
-    'photo-1558618666-fcd25c85f82e', 'photo-1535378917042-10a22c95931a',
-    'photo-1605810230434-7631ac76ec81', 'photo-1515879218367-8466d910aaa4',
-    'photo-1581091226825-a6a2a5aee158', 'photo-1562408590-e32931084e23',
-    'photo-1486312336033-3b2be87e275e'
+    'photo-1555066931-4365d14bab8c', 'photo-1519389950473-47ba0277781c',
+    'photo-1535378917042-10a22c95931a', 'photo-1506399309854-ec109042956d'
   ],
-    'finance': [
+  'finance': [
     'photo-1611974789855-9c2a0a7236a3', 'photo-1554224155-6726b3ff858f',
-    'photo-1579621970563-ebec7560ff3e', 'photo-1553729459-efe14ef6055d',
-    'photo-1639762681485-074b7f938ba0', 'photo-1460925895917-afdab827c52f',
-    'photo-1590283603385-17ffb3a7f29f', 'photo-1579532537598-459ecdaf39cc',
-    'photo-1642797102903-74f2fa8468c9a', 'photo-1591696205602-2f950c41789b',
-    'photo-1633158829585-23ba8f7c8caf', 'photo-1639322537228-f710d8468c9a',
-    'photo-1526304640581-d334cdbbf45e', 'photo-1635348729498-da31a45174d5'
+    'photo-1579532537598-459ecdaf39cc', 'photo-1460925895917-afdab827c52f',
+    'photo-1504608524841-42fe6f032b4b', 'photo-1633158829585-23ba8f7c8caf',
+    'photo-1559526324-4b87b5e36e44', 'photo-1604594849809-dfedbc827105',
+    'photo-1589995716227-efb8e5b5f5f3', 'photo-1591696205602-2f950c41789b'
   ],
-    'ai-tools': [
-    'photo-1677442136019-21780ecf9952', 'photo-1676299081847-824916de030a',
-    'photo-1488229297570-58520851e843', 'photo-1555949963-aa79dcee981c',
-    'photo-1547891654-e66ed7ebb968', 'photo-1620712943543-bcc4688e7485',
-    'photo-1535378917042-10a22c95931a', 'photo-1655393000402-6b8b8a16f7d0',
-    'photo-1677698793853-2f721ed17092', 'photo-1507003211169-0a1dd7228f2d',
-    'photo-1587620962725-abab7fe55159', 'photo-1633493784811-2f2e79ac7f30',
-    'photo-1516110833967-0b5716ca1387', 'photo-1560421683-6856ea585f8c',
-    'photo-1551288049-bebda4e38f71'
+  'ai-tools': [
+    'photo-1677442136019-21780ecf995', 'photo-1655355669935-2224b015028b',
+    'photo-1681173688248-29e59f4a792c', 'photo-1684163758644-81b4b0e2356b',
+    'photo-1680725779155-456faa0c4b02', 'photo-1686191556466-c22c12e4b231',
+    'photo-1684766561537-78ce9e8f24c4', 'photo-1692179205324-63f8e3169908',
+    'photo-1694981226023-5e2f34b8e8a8', 'photo-1697209147078-45e30e7513f3'
   ],
-    'health-lifestyle': [
-    'photo-1490645935967-10de6ba17061', 'photo-1571019613454-1cb2f99b2d8b',
-    'photo-1506126613408-eca07ce68773', 'photo-1512438248247-f0f2a5a8b7f0',
-    'photo-1498837167922-ddd27525d352', 'photo-1505576399279-565b52d4ac71',
-    'photo-1544367567-0f2fcb009e0b', 'photo-1571019614242-c5c6dee1f0b9',
-    'photo-1511688878353-3a2f5be94cd7', 'photo-1434030216411-0b793f4b4173',
-    'photo-1540189549336-e6e99c3679fe', 'photo-1556909114-f6e7ad7d3136',
-    'photo-1515894274780-0de5a3aade51', 'photo-1476224203421-9ac39bcb3327'
+  'health-lifestyle': [
+    'photo-1498837167922-ddd27525d352', 'photo-1505576399279-565b52d45c77',
+    'photo-1490645935967-10de6ba17061', 'photo-1473090826765-d54ac2fdc1eb',
+    'photo-1464454709131-ebb5e107f953', 'photo-1512621776951-a57141f2eefd',
+    'photo-1494390248081-4e521a5940db', 'photo-1540189549336-e6e99c3679fe',
+    'photo-1565299624946-b28f40a0ae38', 'photo-1546069901-ba9599a7e63c'
   ]
 };
-function randomChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function getImageUrl(cat) {
-  var ids = IMAGE_IDS[cat] || IMAGE_IDS['technology'];
-  return 'https://images.unsplash.com/' + randomChoice(ids) + '?w=600&h=400&fit=crop&fm=webp&q=80';
-}
+
 // ============================================
-// 标题和摘要模板
+// 标题模板
 // ============================================
 const TITLE_TEMPLATES = {
   'technology': [
-    'Breaking: {topic} Is Reshaping the Tech Industry',
-    'The Future of {topic}: What to Expect in 2025',
-    'How {topic} Is Transforming Our Digital World',
-    '{topic}: A Complete Guide for Tech Enthusiasts',
-    'Why {topic} Matters More Than Ever in 2025',
-    'Expert Insights: The Rise of {topic}'
+    'The Future of {topic}: Trends to Watch',
+    '{topic}: What Experts Are Saying',
+    'How {topic} Is Reshaping Industries',
+    'Breaking Down {topic}: A Comprehensive Guide',
+    '{topic}: The Next Big Thing in Tech',
+    'Understanding {topic}: Key Insights',
+    '{topic} Innovation: What You Need to Know',
+    'The Rise of {topic}: Analysis and Predictions',
+    'Why {topic} Matters More Than Ever',
+    '{topic}: Challenges and Opportunities Ahead'
   ],
   'finance': [
-    'Market Watch: {topic} Trends to Watch',
-    'Smart Money: Understanding {topic} in 2025',
-    'How {topic} Is Changing the Financial Landscape',
     '{topic}: What Investors Need to Know',
+    'Market Watch: {topic} Trends to Watch',
+    'The Role of {topic} in Modern Finance',
+    'How {topic} Is Changing the Financial Landscape',
+    '{topic}: A Strategic Guide for 2026',
+    'Smart Money: Understanding {topic}',
     'Wealth Building: The Role of {topic}',
-    'Navigating {topic}: A Beginner\'s Guide'
+    '{topic}: Risks and Rewards Explained',
+    'The Impact of {topic} on Global Markets',
+    '{topic}: Expert Analysis and Forecast'
   ],
   'ai-tools': [
-    'Tool Review: Best {topic} Solutions in 2025',
-    'How {topic} Can Boost Your Productivity',
-    '{topic} Explained: A Complete Beginner\'s Guide',
-    'The Rise of {topic}: What It Means for You',
-    'Top {topic} Tools Worth Your Attention',
-    'Mastering {topic}: Tips and Best Practices'
+    'Top {topic} Tools You Should Try',
+    '{topic}: Revolutionizing the Way We Work',
+    'The Best {topic} Platforms Reviewed',
+    'How {topic} Is Transforming Productivity',
+    '{topic}: A Complete Buyer\'s Guide',
+    'Comparing the Leading {topic} Solutions',
+    '{topic}: From Hype to Practical Application',
+    'Why {topic} Is a Game-Changer for Business',
+    '{topic}: Features, Pricing, and Alternatives',
+    'The Rise of {topic}: What You Need to Know'
   ],
   'health-lifestyle': [
-    'Science-Backed: How {topic} Improves Wellbeing',
-    'The Ultimate Guide to {topic} for Beginners',
-    '{topic}: The Trend Taking 2025 by Storm',
+    '{topic}: Science-Backed Benefits',
+    'How {topic} Can Improve Your Life',
+    'The Ultimate Guide to {topic}',
+    '{topic}: Tips from Health Experts',
     'Why {topic} Should Be Part of Your Routine',
-    'Expert Tips on {topic} for Better Living',
-    'The Complete {topic} Handbook'
+    '{topic}: Myths vs. Reality',
+    'The Connection Between {topic} and Wellness',
+    '{topic}: What the Research Shows',
+    'Simple Ways to Incorporate {topic} Daily',
+    '{topic}: A Modern Approach to Health'
   ]
 };
-const EXCERPT_TEMPLATES = [
-  'Discover how {topic} is revolutionizing the industry and what it means for you.',
-  'Expert analysis on the latest {topic} trends and their impact on everyday life.',
-  'A comprehensive look at {topic} and why it matters in today\'s world.',
-  'Everything you need to know about {topic} to stay ahead of the curve.',
-  'Breaking down {topic}: insights, trends, and practical applications.'
-];
+
 // ============================================
-// 段落模板库
+// 摘要模板
+// ============================================
+const EXCERPT_TEMPLATES = [
+  'Everything you need to know about {topic} to stay ahead of the curve.',
+  'Expert analysis on the latest {topic} trends and their impact on everyday life.',
+  'Breaking down {topic}: insights, trends, and practical applications.',
+  'Discover how {topic} is revolutionizing the industry and what it means for you.',
+  'A deep dive into {topic}: what the data shows and why it matters.'
+];
+
+// ============================================
+// 正文段落模板
 // ============================================
 const PARAGRAPH_TEMPLATES = {
   'technology': [
-    'The rapid advancement of {topic} has captured the attention of industry leaders, researchers, and technology enthusiasts worldwide. Over the past year, we have witnessed unprecedented developments that are fundamentally changing how businesses operate and how individuals interact with digital systems. From startup incubators in Silicon Valley to enterprise boardrooms across the globe, {topic} has emerged as a central topic of discussion. Companies are investing heavily in research and development, pouring billions of dollars into infrastructure and talent acquisition to stay competitive in this fast-evolving landscape.',
-    'At the core of {topic} lies a sophisticated interplay of algorithms, data processing capabilities, and computational power that continues to push the boundaries of what is technically feasible. Experts note that recent breakthroughs have addressed several long-standing challenges that previously limited adoption and scalability. New frameworks and protocols are being developed at an accelerated pace, enabling more efficient implementation and integration with existing systems. This technological maturation is making {topic} increasingly accessible to organizations of all sizes, not just tech giants with unlimited resources.',
-    'The practical applications of {topic} are already transforming multiple industries in meaningful ways. In healthcare, it is enabling faster diagnosis and more personalized treatment plans. In the financial sector, it is streamlining operations and improving risk assessment capabilities. Educational institutions are leveraging these advances to create more engaging and adaptive learning experiences. Meanwhile, the manufacturing and logistics sectors are seeing significant improvements in efficiency and cost reduction. These real-world deployments demonstrate that {topic} has moved far beyond the realm of theoretical research into tangible, value-creating applications.',
-    'Market analysts project that the global market related to {topic} will experience substantial growth over the next five years, with compound annual growth rates exceeding expectations set just two years ago. Venture capital funding in this space has reached record levels, with several startups achieving unicorn status in remarkably short timeframes. Major technology corporations have announced strategic acquisitions and partnerships aimed at strengthening their positions in this domain. Government initiatives and regulatory frameworks are also evolving to keep pace with the rapid development, creating both opportunities and compliance considerations for businesses operating in this space.',
-    'Looking ahead, the trajectory of {topic} suggests even more transformative changes on the horizon. Researchers are exploring next-generation approaches that could multiply current capabilities by orders of magnitude. Industry consortia are working on standardization efforts that will facilitate interoperability and broader adoption. As the technology continues to mature, experts anticipate that it will become an integral part of our digital infrastructure, as fundamental as the internet itself. Organizations that begin building their capabilities now will be best positioned to capitalize on the opportunities that emerge as {topic} continues to evolve and mature.'
+    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, regulatory changes, and evolving consumer expectations. Technology professionals and researchers are closely monitoring these developments as they reshape traditional approaches to software development and digital infrastructure. The convergence of cloud computing, artificial intelligence, and distributed systems has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep technical expertise and the ability to navigate an ever-changing competitive and regulatory environment.',
+    'Current market data reveals compelling trends in {topic} that warrant careful attention from both enterprise and startup organizations. Performance metrics across key indicators suggest a fundamental shift in how companies are evaluating technology investments and measuring return on innovation. Analyst reports from major research institutions highlight the growing importance of data-driven decision-making and quantitative analysis in navigating these markets. The integration of advanced analytics and machine learning is enabling more precise forecasting and resource optimization, giving early adopters a significant competitive advantage in identifying and capitalizing on emerging opportunities within {topic}.',
+    'For organizations and technology leaders, understanding {topic} is becoming increasingly essential for building resilient and scalable systems. The traditional boundaries between technology domains are blurring, creating both opportunities for enhanced capabilities and new sources of complexity that must be carefully managed. Technology advisors are recommending that organizations allocate strategic resources to {topic} initiatives, while maintaining appropriate risk controls and architectural flexibility. Educational resources and professional development in this area are expanding rapidly, making it more accessible for informed technology leaders to participate meaningfully in these evolving markets.',
+    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with consumer protection and systemic stability. Recent regulatory developments in major technology centers have established clearer frameworks for participation, reducing uncertainty and encouraging institutional involvement. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border technology deployment and collaboration. Industry associations and standards organizations are playing an increasingly active role in establishing best practices and ethical guidelines, contributing to the overall maturation and credibility of markets related to {topic}.',
+    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these markets more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the technology ecosystem, offering both challenges and opportunities for those prepared to navigate its complexities.'
   ],
   'finance': [
     'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, regulatory changes, and evolving investor expectations. Financial professionals and analysts are closely monitoring these developments as they reshape traditional approaches to wealth management and investment strategy. The convergence of technology and finance has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Market participants are increasingly recognizing that success in {topic} demands both deep domain expertise and the ability to navigate an ever-changing regulatory and economic environment.',
@@ -144,20 +159,21 @@ const PARAGRAPH_TEMPLATES = {
     'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these markets more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the financial system, offering both challenges and opportunities for those prepared to navigate its complexities.'
   ],
   'ai-tools': [
-    'The explosion of {topic} has fundamentally changed how professionals and consumers interact with artificial intelligence technology. What was once the domain of specialized researchers and large technology companies is now accessible to anyone with an internet connection and a willingness to explore. The democratization of AI tools is creating a new wave of innovation, as diverse perspectives and use cases emerge from communities that previously had no access to these capabilities. This accessibility revolution is not just about technology—it is about empowering individuals and small teams to accomplish tasks that previously required significant resources and specialized expertise.',
-    'The technical capabilities of modern {topic} have advanced dramatically, with improvements in accuracy, speed, and versatility that were difficult to predict even a year ago. Natural language processing, computer vision, and generative models have reached levels of sophistication that enable practical applications across virtually every industry. The integration of these capabilities into user-friendly interfaces has removed much of the technical complexity that previously limited adoption. Developers and platform providers are competing intensely to offer the best combination of features, pricing, and ease of use, driving rapid innovation and improvement across the entire {topic} ecosystem.',
-    'Businesses across all sectors are discovering practical applications for {topic} that deliver measurable improvements in productivity, quality, and customer experience. Marketing teams are using these tools to generate content at unprecedented scale while maintaining brand consistency. Customer service operations are being transformed by intelligent automation that can handle complex inquiries with human-like understanding. Creative professionals are finding that AI tools augment rather than replace their skills, enabling them to explore ideas and iterate on designs more rapidly than ever before. The key to successful implementation lies in understanding the strengths and limitations of these tools and integrating them thoughtfully into existing workflows.',
-    'The market for {topic} is experiencing explosive growth, with new entrants launching regularly and established players expanding their offerings. Pricing models are evolving to make these tools more accessible, with free tiers and pay-as-you-go options enabling experimentation without significant upfront investment. The competitive landscape is driving rapid feature development and improvement, benefiting users who can choose from an increasingly diverse range of options. Enterprise adoption is accelerating as organizations recognize the strategic importance of AI capabilities and invest in building internal expertise and infrastructure to support widespread deployment of {topic} across their operations.',
-    'Looking forward, the evolution of {topic} is expected to continue at an accelerated pace, with several key trends shaping the next phase of development. Multimodal capabilities that combine text, image, audio, and video processing are becoming standard features rather than specialized offerings. The focus is shifting from raw capability to reliability, safety, and responsible deployment, as organizations and regulators demand higher standards for AI systems. Integration with existing enterprise software and workflows will be critical for mainstream adoption, and we are seeing significant progress in this area. The organizations and individuals who invest in understanding and effectively utilizing {topic} today will be best positioned to thrive in an increasingly AI-augmented future.'
+    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, technological advances, and evolving user expectations. AI researchers and product developers are closely monitoring these developments as they reshape traditional approaches to software tools and digital productivity. The convergence of large language models, computer vision, and automation technologies has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep technical expertise and the ability to navigate an ever-changing competitive and user experience landscape.',
+    'Current market data reveals compelling trends in {topic} that warrant careful attention from both enterprise and individual users. Performance metrics across key indicators suggest a fundamental shift in how organizations are evaluating AI tool investments and measuring productivity gains. Analyst reports from major technology research institutions highlight the growing importance of data-driven decision-making and quantitative analysis in navigating these markets. The integration of advanced benchmarks and user experience research is enabling more precise tool selection and workflow optimization, giving early adopters a significant competitive advantage in identifying and capitalizing on emerging opportunities within {topic}.',
+    'For organizations and technology leaders, understanding {topic} is becoming increasingly essential for building efficient and innovative workflows. The traditional boundaries between software categories are blurring, creating both opportunities for enhanced capabilities and new sources of complexity that must be carefully managed. Technology advisors are recommending that organizations allocate strategic resources to {topic} adoption, while maintaining appropriate risk controls and change management processes. Educational resources and professional development in this area are expanding rapidly, making it more accessible for informed technology leaders to participate meaningfully in these evolving markets.',
+    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with data protection and ethical considerations. Recent regulatory developments in major technology centers have established clearer frameworks for AI tool deployment, reducing uncertainty and encouraging institutional involvement. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border technology deployment and collaboration. Industry associations and standards organizations are playing an increasingly active role in establishing best practices and ethical guidelines, contributing to the overall maturation and credibility of markets related to {topic}.',
+    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these tools more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the technology ecosystem, offering both challenges and opportunities for those prepared to navigate its complexities.'
   ],
   'health-lifestyle': [
-    'Growing scientific research into {topic} has revealed significant connections between daily habits, environmental factors, and long-term health outcomes that are reshaping our understanding of wellbeing. Health professionals and researchers are increasingly emphasizing the importance of evidence-based approaches to {topic}, moving beyond trends and fads to focus on sustainable practices supported by rigorous scientific study. This shift toward evidence-based wellness is empowering individuals to make more informed decisions about their health and lifestyle choices, leading to better outcomes and greater satisfaction with their personal wellness journeys.',
-    'The latest research findings on {topic} offer practical insights that can be integrated into daily routines with minimal disruption. Studies published in peer-reviewed journals demonstrate measurable benefits across multiple health indicators, including improved energy levels, better sleep quality, enhanced cognitive function, and reduced stress markers. What makes these findings particularly valuable is their applicability across diverse populations and lifestyles, suggesting that the benefits of {topic} are not limited to specific demographics or circumstances. Health practitioners are increasingly incorporating these evidence-based recommendations into their guidance for patients seeking to improve their overall wellbeing.',
-    'Implementing changes related to {topic} does not require dramatic lifestyle overhauls or expensive interventions. Research consistently shows that small, consistent adjustments often produce more sustainable results than radical changes that are difficult to maintain over time. Experts recommend starting with one or two specific practices and building gradually, allowing new habits to become natural parts of daily life. The key is finding approaches that align with individual preferences, schedules, and circumstances, creating a personalized wellness strategy that feels achievable and rewarding rather than burdensome or restrictive.',
-    'The wellness industry surrounding {topic} has expanded significantly, offering a wide range of products, services, and digital tools designed to support health goals. While this abundance of options can be overwhelming, it also means that individuals have unprecedented access to resources that can help them achieve their wellness objectives. Digital health platforms, wearable devices, and mobile applications are making it easier than ever to track progress, receive personalized recommendations, and stay motivated. The challenge lies in navigating this landscape critically, distinguishing between evidence-based solutions and marketing claims, and choosing approaches that genuinely support long-term health and wellbeing.',
-    'The future of {topic} looks promising, with ongoing research continuing to uncover new insights and more effective approaches to health and wellness. Advances in personalized medicine and nutritional science are enabling increasingly tailored recommendations that account for individual genetic profiles, microbiome composition, and lifestyle factors. The integration of technology with traditional wellness practices is creating new possibilities for monitoring, optimization, and prevention. As our understanding of the complex interactions between lifestyle, environment, and health continues to deepen, {topic} will undoubtedly remain at the forefront of efforts to help people live longer, healthier, and more fulfilling lives.'
+    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting research findings, public health priorities, and evolving consumer expectations. Health professionals and researchers are closely monitoring these developments as they reshape traditional approaches to wellness and lifestyle management. The convergence of nutritional science, behavioral psychology, and digital health technologies has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep domain expertise and the ability to navigate an ever-changing research and regulatory environment.',
+    'Current research data reveals compelling trends in {topic} that warrant careful attention from both healthcare providers and consumers. Performance metrics across key health indicators suggest a fundamental shift in how medical professionals are evaluating lifestyle interventions and preventive strategies. Research reports from major health institutions highlight the growing importance of evidence-based decision-making and quantitative analysis in navigating these areas. The integration of advanced biometrics and personalized health analytics is enabling more precise recommendations and outcome tracking, giving informed individuals a significant advantage in identifying and capitalizing on emerging opportunities within {topic}.',
+    'For individuals and health practitioners, understanding {topic} is becoming increasingly essential for achieving optimal wellness outcomes. The traditional boundaries between medical disciplines are blurring, creating both opportunities for enhanced health outcomes and new sources of complexity that must be carefully managed. Health advisors are recommending that individuals incorporate evidence-based {topic} practices into their daily routines, while maintaining appropriate medical oversight and personalized approaches. Educational resources and professional guidance in this area are expanding rapidly, making it more accessible for informed individuals to participate meaningfully in these evolving wellness practices.',
+    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with consumer protection and public health safety. Recent regulatory developments in major health markets have established clearer frameworks for health product and service evaluation, reducing uncertainty and encouraging evidence-based innovation. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border health product distribution and collaboration. Industry associations and professional organizations are playing an increasingly active role in establishing best practices and quality standards, contributing to the overall maturation and credibility of markets related to {topic}.',
+    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth in research investment and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new perspectives and traditional wellness practices to what was previously dominated by Western medical approaches. Scientific innovation continues to lower barriers to entry and improve understanding, making evidence-based wellness more efficient and accessible. As global health challenges continue to evolve, {topic} is likely to become an increasingly important component of comprehensive health strategies, offering both challenges and opportunities for those prepared to navigate its complexities.'
   ]
 };
+
 // ============================================
 // 原创观点库
 // ============================================
@@ -191,17 +207,31 @@ const ORIGINAL_INSIGHTS = {
     '<p><strong>Technology Integration:</strong> The convergence of wearable technology and {topic} is creating unprecedented opportunities for personalized health optimization. Data from 50,000 users of leading health platforms shows that those combining biometric tracking with evidence-based wellness practices achieved their goals 2.8x faster than those using either approach alone. "The feedback loop is powerful," explained digital health pioneer Dr. Lisa Wang. "When people can see immediate data on how their practices affect their physiology, adherence increases dramatically." This personalized approach is democratizing access to what was previously available only to elite athletes and executives.</p>'
   ]
 };
+
 // ============================================
-// Date Generation
+// Date Generation - 修复：新文章使用当前日期
+// 不再随机生成历史日期，而是使用当前日期
 // ============================================
 function generateArticleDate() {
-  var start = new Date('2025-09-01');
-  var end = new Date();
-  var diff = end.getTime() - start.getTime();
-  var randomDays = Math.floor(Math.random() * (diff / (1000 * 60 * 60 * 24)));
-  var date = new Date(start.getTime() + randomDays * (1000 * 60 * 60 * 24));
-  return date.toISOString().split('T')[0];
+  var now = new Date();
+  return now.toISOString().split('T')[0]; // YYYY-MM-DD 格式，当天日期
 }
+
+// ============================================
+// 辅助函数
+// ============================================
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomChoice(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function getImageUrl(category) {
+  var ids = IMAGE_IDS[category] || IMAGE_IDS['technology'];
+  var id = randomChoice(ids);
+  return 'https://images.unsplash.com/' + id + '?w=800&h=450&fit=crop&fm=webp&q=80';
+}
+
 // ============================================
 // 内容生成
 // ============================================
@@ -233,6 +263,7 @@ function generateArticleContent(category, topic) {
   }
   return paragraphs.join('\n');
 }
+
 function generateFromTemplate(category) {
   var catInfo = CATEGORIES.find(function(c) { return c.id === category; });
   var topic = randomChoice(catInfo.topics);
@@ -242,6 +273,7 @@ function generateFromTemplate(category) {
   var content = generateArticleContent(category, topic);
   return { title: title, excerpt: excerpt, topic: topic, content: content };
 }
+
 // ============================================
 // AI 生成
 // ============================================
@@ -272,7 +304,7 @@ async function generateWithAI(category) {
       res.on('end', function() {
         try {
           var resp = JSON.parse(body);
-          var content = resp.choices[0].message.content.trim().replace(/^```json\s*/i, '').replace(/\s*```$/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+          var content = resp.choices[0].message.content.trim().replace(/^```json\s*/i, '').replace(/\s*```$/i, '').replace(/^```/i, '').replace(/\s*```$/i, '');
           var parsed = JSON.parse(content);
           resolve({ title: parsed.title.substring(0, 100), excerpt: parsed.excerpt.substring(0, 200), topic: topic, content: parsed.content });
         } catch(e) { resolve(generateFromTemplate(category)); }
@@ -284,6 +316,7 @@ async function generateWithAI(category) {
     req.end();
   });
 }
+
 // ============================================
 // 生成文章
 // ============================================
@@ -304,9 +337,10 @@ async function generateArticle(existingIds) {
     excerpt: generated.excerpt,
     content: generated.content,
     image: getImageUrl(category.id),
-    date: generateArticleDate()
+    date: generateArticleDate()  // 修复：使用当天日期
   };
 }
+
 // ============================================
 // 主程序
 // ============================================
@@ -340,7 +374,7 @@ async function main() {
     var article = await generateArticle(existingIds);
     newArticles.push(article);
     existingIds.push(article.id);
-    console.log('   ' + (i + 1) + '. [' + article.category + '] ' + article.title);
+    console.log('   ' + (i + 1) + '. [' + article.category + '] ' + article.title + ' (' + article.date + ')');
   }
   var allArticles = newArticles.concat(existingArticles);
   var finalArticles = allArticles.slice(0, CONFIG.maxArticles);
@@ -350,16 +384,15 @@ async function main() {
     newToday: newArticles.length,
     generator: CONFIG.useAI ? 'AI (OpenAI)' : 'Template'
   };
-
-  // 按 ID 降序排序（最新的在前）
-  finalArticles.sort(function(a, b) { return b.id - a.id; });
-
+  // 修复：按日期降序排序（最新日期在前），而不是按随机ID排序
+  finalArticles.sort(function(a, b) {
+    return b.date.localeCompare(a.date);
+  });
   // 版本号（时间戳），用作类别文件的 cache key
   var version = Date.now();
-
   // ============================================
   // 1. 写入 articles-index.json
-  //    结构: { v, articles: {id: category}, ids: [降序排列] }
+  //    结构: { v, articles: {id: category}, ids: [按日期降序排列] }
   // ============================================
   var articlesMap = {};
   finalArticles.forEach(function(a) { articlesMap[String(a.id)] = a.category; });
@@ -370,13 +403,15 @@ async function main() {
   };
   fs.writeFileSync('articles-index.json', JSON.stringify(indexOutput, null, 2));
   console.log('\n✅ articles-index.json written (v=' + version + ', ' + finalArticles.length + ' articles)');
-
   // ============================================
   // 2. 写入 4 个类别文件
   //    每个: { articles: [完整文章对象], metadata }
+  //    文章已按日期降序排列
   // ============================================
   CATEGORIES.forEach(function(cat) {
     var catArticles = finalArticles.filter(function(a) { return a.category === cat.id; });
+    // 每个分类内部也按日期降序排序
+    catArticles.sort(function(a, b) { return b.date.localeCompare(a.date); });
     var catOutput = {
       articles: catArticles.map(function(a) {
         return {
@@ -395,10 +430,10 @@ async function main() {
     fs.writeFileSync(filename, JSON.stringify(catOutput, null, 2));
     console.log('✅ ' + filename + ' written (' + catArticles.length + ' articles)');
   });
-
   console.log('\n✅ Done!');
   console.log('   New: ' + newArticles.length + ' articles');
   console.log('   Total: ' + finalArticles.length + ' articles');
+  console.log('   Sort: by date descending (newest first)');
   console.log('   Output: articles-index.json + 4 category files\n');
 }
 main().catch(function(error) {
