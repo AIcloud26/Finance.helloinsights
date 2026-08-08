@@ -150,6 +150,14 @@
         }
     };
 
+        // 只显示最近90天的文章
+var ninetyDaysAgo = new Date();
+ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+var cutoff = ninetyDaysAgo.toISOString().split('T')[0];
+allArticlesCache = allArticlesCache.filter(function(a) {
+    return a.date >= cutoff;
+});
+
     // Auto-detect subdomain
     var host = window.location.hostname;
     var sub = host.split('.')[0];
