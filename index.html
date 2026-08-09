@@ -2,101 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Favicon -->
-<link rel="icon" type="image/png" href="favicon-16x16.png">
-<link rel="icon" type="image/x-icon" href="favicon-16.ico">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HelloInsights - Your trusted source for Technology, Finance, AI Tools, and Health & Lifestyle news and insights.">
-    <title>HelloInsights | Newest Global News & Insights</title>
-    <meta name="description"
-content="Stay informed with newest global news and insights across technology, AI, finance, health, and lifestyle.">
-<meta name="keywords"
-content="global news, technology news, AI news, finance news, real-time insights"> 
-    <!-- ============ Subdomain Config (must run early) ============ -->
-    <script>
-    (function() {
-        var hostname = window.location.hostname;
-        var subdomain = '';
-        var parts = hostname.split('.');
-        // Extract subdomain: if hostname is "finance.helloinsights.online", subdomain = "finance"
-        if (parts.length > 2 && parts[0] !== 'www') {
-            subdomain = parts[0];
-        }
-        // Map subdomain to category
-        var subCategoryMap = {
-            'technology': 'technology',
-            'finance': 'finance',
-            'ai-tools': 'ai-tools',
-            'health-lifestyle': 'health-lifestyle'
-        };
-        window.SUBDOMAIN_CATEGORY = subCategoryMap[subdomain] || null;
-        window.IS_SUBDOMAIN = !!window.SUBDOMAIN_CATEGORY;
-
-        // Update page title for subdomain
-        if (window.IS_SUBDOMAIN) {
-            var catNames = {
-                'technology': 'Technology',
-                'finance': 'Finance',
-                'ai-tools': 'AI Tools',
-                'health-lifestyle': 'Health & Lifestyle'
-            };
-            document.title = catNames[window.SUBDOMAIN_CATEGORY] + ' - HelloInsights';
-            // Update meta description
-            var metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) {
-                metaDesc.setAttribute('content', 'HelloInsights - Your trusted source for ' + catNames[window.SUBDOMAIN_CATEGORY] + ' news and insights.');
-            }
-        }
-
-        // Dynamic preload: only preload relevant category for subdomain
-        var head = document.head;
-        if (window.IS_SUBDOMAIN) {
-            var link = document.createElement('link');
-            link.rel = 'preload';
-            link.href = 'articles-' + window.SUBDOMAIN_CATEGORY + '.json';
-            link.as = 'fetch';
-            link.crossOrigin = 'anonymous';
-            head.appendChild(link);
-        } else {
-            var cats = ['technology', 'finance', 'ai-tools', 'health-lifestyle'];
-            cats.forEach(function(cat) {
-                var link = document.createElement('link');
-                link.rel = 'preload';
-                link.href = 'articles-' + cat + '.json';
-                link.as = 'fetch';
-                link.crossOrigin = 'anonymous';
-                head.appendChild(link);
-            });
-        }
-    })();
-    </script>
-    <!-- ============ Resource Hints ============ -->
+    <title>HelloInsights</title>
+    <meta name="description" content="HelloInsights - News & Insights">
+    <meta name="keywords" content="news, insights">
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
-    <!-- ============ Non-critical CSS (async, non-blocking) ============ -->
     <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="style.css"></noscript>
-    <!-- ============ Config loader (async) ============ -->
+    <script src="ads-config.js" defer></script>
     <script src="config-loader.js" async></script>
+    <style>
+    .hero-intro{max-width:820px;margin:0 auto 2.5rem;padding:0 1rem;text-align:center;color:#444;line-height:1.75;font-size:0.97rem;}
+    .hero-intro p{margin-bottom:1rem;}
+    .hero-intro p:last-child{margin-bottom:0;}
+    @media(max-width:768px){.hero-intro{font-size:0.91rem;margin-bottom:1.8rem;}}
+    /* ===== Latest Insights Section ===== */
+    .latest-section{max-width:820px;margin:0 auto 3rem;padding:0 1rem;}
+    .latest-section h2{font-size:1.5rem;font-weight:700;color:#1a1a1a;margin-bottom:1.25rem;}
+    .latest-card{display:block;padding:1.1rem 1.4rem;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:0.85rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .latest-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.10);}
+    .latest-card-title{font-size:1.15rem;font-weight:700;color:#1a1a1a;margin:0 0 .35rem;line-height:1.35;}
+    .latest-card-meta{font-size:.85rem;color:#888;margin-bottom:.45rem;}
+    .latest-card-meta .cat{color:#ff6b35;font-weight:600;}
+    .latest-card-excerpt{font-size:.91rem;color:#555;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
+    @media(max-width:768px){.latest-section h2{font-size:1.3rem;}.latest-card-title{font-size:1.05rem;}.latest-card{padding:.9rem 1rem;}}
+    /* ===== Mobile Header Optimization ===== */
+    @media(max-width:768px){
+        .header-content{padding:0 16px!important;min-height:0!important;}
+        .header{padding:0!important;}
+        .logo svg{max-height:36px!important;width:auto!important;}
+        .nav{font-size:14px!important;}
+        .nav a{font-size:14px!important;padding:6px 8px!important;}
+        .search-box input{font-size:13px!important;height:32px!important;}
+        .search-box button{font-size:14px!important;height:32px!important;width:32px!important;}
+        .page-header{margin-top:0.5rem!important;margin-bottom:0.8rem!important;}
+        .page-header h2{font-size:1.1rem!important;margin-bottom:0.3rem!important;}
+        .page-header p{font-size:0.85rem!important;line-height:1.4!important;}
+        .hero-intro{margin-bottom:1.2rem!important;}
+        .hero-intro p{font-size:0.85rem!important;line-height:1.5!important;margin-bottom:0.6rem!important;}
+        .latest-section{margin-bottom:1.5rem!important;}
+        .latest-card{padding:0.75rem 0.9rem!important;margin-bottom:0.6rem!important;}
+        .latest-card-title{font-size:0.98rem!important;}
+        .latest-card-meta{font-size:0.78rem!important;margin-bottom:0.3rem!important;}
+        .latest-card-excerpt{font-size:0.84rem!important;line-height:1.45!important;}
+    }
+    /* ===== Ad Slot Placeholders — min-height 250px to prevent CLS ===== */
+    .ad-slot{margin:1.2rem auto;text-align:center;min-height:250px;display:flex;align-items:center;justify-content:center;}
+    @media(max-width:768px){.ad-slot{min-height:200px;margin:0.8rem auto;}}
+    </style>
 </head>
-    
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4QHZKZT46"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Q4QHZKZT46');
-</script>
-    
 <body>
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:3rem;width:auto;display:block;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
   <defs>
     <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
       <stop offset="0%" stop-color="#FFB13B"/>
@@ -128,26 +91,31 @@ content="global news, technology news, AI news, finance news, real-time insights
             </div>
             <div class="nav-container" id="navContainer">
                 <nav>
-                    <ul class="nav" id="navList">
-                        <!-- Dynamic nav rendered by JavaScript based on subdomain -->
-                    </ul>
+                    <ul class="nav" id="navList"></ul>
                 </nav>
                 <div class="search-box">
                     <input type="text" placeholder="Search articles..." id="searchInput">
-                    <button type="button" id="searchBtn"></button>
+                    <button type="button" id="searchBtn">🔍</button>
                 </div>
             </div>
         </div>
     </header>
     <main class="container">
-        <!-- MGID: zone-top -->
-        <div data-ad-slot="zone-top"></div>
-        <div class="page-header" id="pageHeader">
-            <h2 class="site-tagline">YOUR TRUSTED SOURCE FOR INSIGHTS</h2>
-            <p class="site-description">Expert analysis and curated intelligence at the intersection of technology, finance, AI innovation, and modern wellness.</p>
+        <!-- 1. Header Banner Native Ad (728×90 / responsive) -->
+        <div class="ad-slot" data-ad-slot="header-banner"></div>
+        <div class="page-header">
+            <h2 class="site-tagline" id="siteTagline"></h2>
+            <p class="site-description" id="siteDescription"></p>
         </div>
-        <!-- AdSense: index-banner-top -->
-        <div data-ad-slot="index-banner-top"></div>
+        <div class="hero-intro" id="heroIntro"></div>
+        <div class="latest-section" id="latestSection">
+            <h2>Latest Insights</h2>
+            <div id="latestCards"></div>
+        </div>
+        <!-- 2. Latest Articles Display Ad (300×250) -->
+        <div class="ad-slot" data-ad-slot="latest-articles"></div>
+        <!-- 3. Category Sections Ad -->
+        <div class="ad-slot" data-ad-slot="category-sections"></div>
         <div id="searchInfo" style="display:none;margin-bottom:1rem;padding:.5rem 1rem;background:#fff3cd;border-radius:8px;">
             <span id="searchText"></span>
             <button onclick="clearSearch()" style="margin-left:10px;background:#ff6b35;color:white;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;">Clear</button>
@@ -155,27 +123,20 @@ content="global news, technology news, AI news, finance news, real-time insights
         <div class="article-grid" id="articleGrid">
             <div class="loading" id="loading"></div>
         </div>
-        <!-- MGID: zone-mid -->
-        <div data-ad-slot="zone-mid"></div>
         <div class="pagination" id="pagination"></div>
-        <!-- MGID: zone-bottom -->
-        <div data-ad-slot="zone-bottom"></div>
-        <!-- AdSense: index-banner-bottom -->
-        <div data-ad-slot="index-banner-bottom"></div>
-        <!-- AdSense: index-anchor (fixed) -->
-        <div data-ad-slot="index-anchor"></div>
+        <!-- 4. Footer + Anchor Ad -->
+        <div class="ad-slot" data-ad-slot="index-banner-bottom"></div>
+        <div class="ad-slot" data-ad-slot="index-anchor"></div>
     </main>
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>About HelloInsights</h4>
-                <p id="footerAbout">Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
+                <h4 id="footerAboutTitle">About HelloInsights</h4>
+                <p id="footerAboutText"></p>
             </div>
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <ul id="footerNav">
-                    <!-- Dynamic footer nav rendered by JavaScript based on subdomain -->
-                </ul>
+                <ul id="footerLinks"></ul>
             </div>
             <div class="footer-section">
                 <h4>Legal</h4>
@@ -193,124 +154,114 @@ content="global news, technology news, AI news, finance news, real-time insights
     </footer>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <script>
-    // ==========================================
-    // Service Worker Registration
-    // ==========================================
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(function() {});
-    }
-    // ==========================================
-    // Subdomain-based Navigation & Content
-    // ==========================================
-    var categoryNames = {
-        'technology': 'Technology', 'finance': 'Finance',
-        'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle'
-    };
-    var categoryDescs = {
-        'technology': 'Latest innovations in software, hardware, cloud, and emerging tech.',
-        'finance': 'Market trends, investment insights, and financial intelligence.',
-        'ai-tools': 'AI-powered tools, productivity apps, and automation solutions.',
-        'health-lifestyle': 'Wellness tips, health research, and lifestyle optimization.'
-    };
-    var subdomainTitle = {
-        'technology': 'TECHNOLOGY', 'finance': 'FINANCE',
-        'ai-tools': 'AI TOOLS', 'health-lifestyle': 'HEALTH & LIFESTYLE'
-    };
-
-    // Render navigation based on subdomain
-    function renderNavigation() {
-        var navList = document.getElementById('navList');
-        if (!navList) return;
-        var html = '';
-        if (window.IS_SUBDOMAIN) {
-            // Subdomain: only show this category
-            var cat = window.SUBDOMAIN_CATEGORY;
-            html += '<li><a href="index.html" class="active">' + categoryNames[cat] + '</a></li>';
-        } else {
-            // Main domain: show all categories
-            html += '<li><a href="index.html" class="active">All</a></li>';
-            html += '<li><a href="category.html?cat=technology">Technology</a></li>';
-            html += '<li><a href="category.html?cat=finance">Finance</a></li>';
-            html += '<li><a href="category.html?cat=ai-tools">AI Tools</a></li>';
-            html += '<li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>';
+    // ===== SUBDOMAIN CONFIG - ONLY EDIT THIS =====
+    var SITE_CONFIGS = {
+        'finance': {
+            name: 'Finance',
+            tagline: 'FINANCE NEWS & INSIGHTS',
+            description: 'Expert analysis and curated intelligence on market trends, investments, and economic developments.',
+            aboutText: 'Your trusted source for the latest finance news, market analysis, and investment insights.',
+            fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
+            jsonFile: 'articles-finance.json',
+            titleSuffix: 'HelloInsights Finance',
+            metaDesc: 'HelloInsights Finance - Latest finance news, market analysis, investment insights, and economic trends.',
+            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future, while markets and economic conditions shape decisions for individuals and businesses. At HelloInsights Finance, we explore <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, bringing practical financial knowledge together with broader perspectives on money, markets, technology, and economic change.</p><p>Our editorial approach goes beyond short-term headlines to provide useful context and explain why financial developments matter. We cover investment strategies, market trends, banking innovation, digital finance, inflation, interest rates, and changing consumer behavior.</p><p>Whether you are improving your financial habits, exploring investments, following markets, discovering fintech, or understanding economic developments, HelloInsights Finance delivers accessible, practical, and context-driven insights to help you stay informed and make more confident financial decisions.</p>'
+        },
+        'technology': {
+            name: 'Technology',
+            tagline: 'TECHNOLOGY NEWS & INSIGHTS',
+            description: 'Expert analysis and curated intelligence on emerging tech, digital transformation, and innovation.',
+            aboutText: 'Your trusted source for the latest technology news, product reviews, and industry trends.',
+            fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
+            jsonFile: 'articles-technology.json',
+            titleSuffix: 'HelloInsights Technology',
+            metaDesc: 'HelloInsights Technology - Latest technology news, product reviews, and digital innovation insights.',
+            heroIntro: ''
+        },
+        'ai-tools': {
+            name: 'AI Tools',
+            tagline: 'AI TOOLS NEWS & INSIGHTS',
+            description: 'Expert analysis and curated intelligence on artificial intelligence, machine learning, and automation tools.',
+            aboutText: 'Your trusted source for the latest AI tools news, reviews, and industry insights.',
+            fallbackImage: 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
+            jsonFile: 'articles-ai-tools.json',
+            titleSuffix: 'HelloInsights AI Tools',
+            metaDesc: 'HelloInsights AI Tools - Latest AI tools news, reviews, and artificial intelligence insights.',
+            heroIntro: ''
+        },
+        'health-lifestyle': {
+            name: 'Health & Lifestyle',
+            tagline: 'HEALTH & LIFESTYLE INSIGHTS',
+            description: 'Expert analysis and curated intelligence on wellness, nutrition, fitness, and modern living.',
+            aboutText: 'Your trusted source for the latest health news, wellness tips, and lifestyle insights.',
+            fallbackImage: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop',
+            jsonFile: 'articles-health-lifestyle.json',
+            titleSuffix: 'HelloInsights Health & Lifestyle',
+            metaDesc: 'HelloInsights Health & Lifestyle - Latest health news, wellness tips, and lifestyle insights.',
+            heroIntro: ''
         }
-        navList.innerHTML = html;
+    };
+    // Auto-detect subdomain
+    var host = window.location.hostname;
+    var sub = host.split('.')[0];
+    var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
+    var CAT_ID = sub;
+    window.IS_SUBDOMAIN = true;
+    // ===== APPLY CONFIG TO PAGE =====
+    document.title = CFG.titleSuffix + ' | News & Insights';
+    document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
+    document.getElementById('siteTagline').textContent = CFG.tagline;
+    document.getElementById('siteDescription').textContent = CFG.description;
+    document.getElementById('footerAboutTitle').textContent = 'About ' + CFG.titleSuffix;
+    document.getElementById('footerAboutText').textContent = CFG.aboutText;
+    // [新增] 渲染 hero 介绍区域
+    var heroIntroEl = document.getElementById('heroIntro');
+    if (heroIntroEl && CFG.heroIntro) {
+        heroIntroEl.innerHTML = CFG.heroIntro;
+    } else if (heroIntroEl) {
+        heroIntroEl.style.display = 'none';
     }
-
-    // Render footer navigation based on subdomain
-    function renderFooterNav() {
-        var footerNav = document.getElementById('footerNav');
-        var footerAbout = document.getElementById('footerAbout');
-        if (window.IS_SUBDOMAIN) {
-            var cat = window.SUBDOMAIN_CATEGORY;
-            if (footerNav) {
-                footerNav.innerHTML = '<li><a href="index.html">Home</a></li>' +
-                    '<li><a href="category.html?cat=' + cat + '">' + categoryNames[cat] + '</a></li>';
-            }
-            if (footerAbout) {
-                footerAbout.textContent = 'Your trusted source for the latest ' + categoryNames[cat] + ' news and insights.';
-            }
-        } else {
-            if (footerNav) {
-                footerNav.innerHTML = '<li><a href="index.html">Home</a></li>' +
-                    '<li><a href="category.html?cat=technology">Technology</a></li>' +
-                    '<li><a href="category.html?cat=finance">Finance</a></li>' +
-                    '<li><a href="category.html?cat=ai-tools">AI Tools</a></li>' +
-                    '<li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>';
-            }
-        }
-    }
-
-    // Update page header for subdomain
-    function updatePageHeader() {
-        if (window.IS_SUBDOMAIN) {
-            var cat = window.SUBDOMAIN_CATEGORY;
-            var header = document.getElementById('pageHeader');
-            if (header) {
-                header.innerHTML = '<h2 class="site-tagline">' + subdomainTitle[cat] + '</h2>' +
-                    '<p class="site-description">' + categoryDescs[cat] + '</p>';
-            }
-        }
-    }
-
-    // Initialize navigation on page load
-    renderNavigation();
-    renderFooterNav();
-    updatePageHeader();
-
-    // ==========================================
-    // Core Logic
-    // ==========================================
+    // Nav
+    document.getElementById('navList').innerHTML =
+        '<li><a href="index.html">Home</a></li>' +
+        '<li><a href="index.html" class="active">' + CFG.name + '</a></li>';
+    // Footer links
+    document.getElementById('footerLinks').innerHTML =
+        '<li><a href="index.html">Home</a></li>' +
+        '<li><a href="index.html">' + CFG.name + '</a></li>';
+    // ===== ARTICLE LOGIC =====
     var ARTICLES_PER_PAGE = 9;
     var currentPage = 1;
     var filteredArticles = [];
     var isSearching = false;
     var searchQuery = '';
-    var fallbackImages = {
-        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&fm=webp&q=80',
-        'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop&fm=webp&q=80',
-        'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop&fm=webp&q=80',
-        'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&fm=webp&q=80'
-    };
-    var defaultFallback = fallbackImages['technology'];
-    function generateArticleDate(id) {
-        var start = new Date('2026-01-01').getTime();
-        var offset = (id % 180) * 86400000;
-        var d = new Date(start + offset);
-        var m = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    var categoryNames = {};
+    categoryNames[CAT_ID] = CFG.name;
+    var fallbackImages = {};
+    fallbackImages[CAT_ID] = CFG.fallbackImage;
+    var defaultFallback = CFG.fallbackImage;
+    var allArticlesCache = [];
+    // [修复] 格式化日期：将 YYYY-MM-DD 转为 "Month Day, Year" 格式
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        var d = new Date(parts[0] + '-' + parts[1] + '-' + parts[2]);
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
     }
     function getFallbackImage(cat) { return fallbackImages[cat] || defaultFallback; }
     function createArticleCard(article) {
         var catName = categoryNames[article.category] || article.category;
         var fb = getFallbackImage(article.category);
+        var dateDisplay = formatDate(article.date);
         return '<article class="article-card">' +
             '<div class="card-image"><img src="' + article.image + '" alt="' + article.title + '" width="600" height="400" loading="lazy" decoding="async" onerror="this.src=\'' + fb + '\'"></div>' +
             '<div class="card-content">' +
             '<span class="card-category">' + catName + '</span>' +
             '<h3 class="card-title"><a href="article.html?id=' + article.id + '">' + article.title + '</a></h3>' +
             '<p class="card-excerpt">' + article.excerpt + '</p>' +
-            '<div class="card-meta"><span>' + generateArticleDate(article.id) + '</span></div>' +
+            '<div class="card-meta"><span>' + dateDisplay + '</span></div>' +
             '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
             '</div></article>';
     }
@@ -319,50 +270,23 @@ content="global news, technology news, AI news, finance news, real-time insights
         var el = document.getElementById('pagination');
         if (!el || pages <= 1) { if (el) el.innerHTML = ''; return; }
         var h = '';
-        // Prev arrow
-        if (currentPage > 1) {
-            h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage - 1) + ');return false;">‹</a>';
-        } else {
-            h += '<span class="page-btn disabled">‹</span>';
-        }
-        // Smart page number truncation
-        var range = 2; // show ±2 around current
+        if (currentPage > 1) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage - 1) + ');return false;">‹</a>';
+        else h += '<span class="page-btn disabled">‹</span>';
+        var range = 2;
         var start = Math.max(2, currentPage - range);
         var end = Math.min(pages - 1, currentPage + range);
-        // Always show page 1
-        if (currentPage === 1) {
-            h += '<span class="page-btn active">1</span>';
-        } else {
-            h += '<a href="#" class="page-btn" onclick="changePage(1);return false;">1</a>';
-        }
-        // Ellipsis before current range
-        if (start > 2) {
-            h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        }
-        // Pages around current
+        if (currentPage === 1) h += '<span class="page-btn active">1</span>';
+        else h += '<a href="#" class="page-btn" onclick="changePage(1);return false;">1</a>';
+        if (start > 2) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
         for (var i = start; i <= end; i++) {
-            if (i === currentPage) {
-                h += '<span class="page-btn active">' + i + '</span>';
-            } else {
-                h += '<a href="#" class="page-btn" onclick="changePage(' + i + ');return false;">' + i + '</a>';
-            }
+            if (i === currentPage) h += '<span class="page-btn active">' + i + '</span>';
+            else h += '<a href="#" class="page-btn" onclick="changePage(' + i + ');return false;">' + i + '</a>';
         }
-        // Ellipsis after current range
-        if (end < pages - 1) {
-            h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        }
-        // Always show last page
-        if (currentPage === pages) {
-            h += '<span class="page-btn active">' + pages + '</span>';
-        } else {
-            h += '<a href="#" class="page-btn" onclick="changePage(' + pages + ');return false;">' + pages + '</a>';
-        }
-        // Next arrow
-        if (currentPage < pages) {
-            h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage + 1) + ');return false;">›</a>';
-        } else {
-            h += '<span class="page-btn disabled">›</span>';
-        }
+        if (end < pages - 1) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
+        if (currentPage === pages) h += '<span class="page-btn active">' + pages + '</span>';
+        else h += '<a href="#" class="page-btn" onclick="changePage(' + pages + ');return false;">' + pages + '</a>';
+        if (currentPage < pages) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage + 1) + ');return false;">›</a>';
+        else h += '<span class="page-btn disabled">›</span>';
         el.innerHTML = h;
     }
     function changePage(p) {
@@ -372,8 +296,8 @@ content="global news, technology news, AI news, finance news, real-time insights
             currentPage = p;
             renderSearchResults(filteredArticles);
         } else {
-            var t = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
-            if (p < 1 || p > t) return;
+            var t2 = Math.ceil(allArticlesCache.length / ARTICLES_PER_PAGE);
+            if (p < 1 || p > t2) return;
             currentPage = p;
             fetchArticlesForPage(p);
         }
@@ -387,8 +311,7 @@ content="global news, technology news, AI news, finance news, real-time insights
         if (!q) { clearSearch(); return; }
         isSearching = true; currentPage = 1;
         var lq = q.toLowerCase();
-        // Search in already loaded allArticles
-        filteredArticles = allArticles.filter(function(a) {
+        filteredArticles = allArticlesCache.filter(function(a) {
             var cn = categoryNames[a.category] || a.category;
             return a.title.toLowerCase().indexOf(lq) !== -1 || a.excerpt.toLowerCase().indexOf(lq) !== -1 ||
                    a.category.toLowerCase().indexOf(lq) !== -1 || cn.toLowerCase().indexOf(lq) !== -1;
@@ -410,17 +333,10 @@ content="global news, technology news, AI news, finance news, real-time insights
         if (input) input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } });
         if (btn) btn.addEventListener('click', function(e) { e.preventDefault(); handleSearch(); });
     }
-    // ==========================================
-    // Article Loading: Subdomain-aware
-    // ==========================================
-    var allArticles = [];
-
     function fetchArticlesForPage(page) {
         var start = (page - 1) * ARTICLES_PER_PAGE;
-        var pageArticles = allArticles.slice(start, start + ARTICLES_PER_PAGE);
-        renderPageArticles(pageArticles);
+        renderPageArticles(allArticlesCache.slice(start, start + ARTICLES_PER_PAGE));
     }
-
     function renderPageArticles(articles) {
         var grid = document.getElementById('articleGrid');
         var loading = document.getElementById('loading');
@@ -434,9 +350,8 @@ content="global news, technology news, AI news, finance news, real-time insights
         var html = '';
         for (var i = 0; i < articles.length; i++) html += createArticleCard(articles[i]);
         grid.innerHTML = html;
-        renderPagination(allArticles.length);
+        renderPagination(allArticlesCache.length);
     }
-
     function renderSearchResults(articles) {
         var grid = document.getElementById('articleGrid');
         var loading = document.getElementById('loading');
@@ -454,68 +369,48 @@ content="global news, technology news, AI news, finance news, real-time insights
         grid.innerHTML = html;
         renderPagination(articles.length);
     }
-
-    // Load articles based on subdomain
-    function loadArticles() {
-        if (window.IS_SUBDOMAIN) {
-            // Subdomain: only load the relevant category
-            var cat = window.SUBDOMAIN_CATEGORY;
-            fetch('articles-' + cat + '.json', { cache: 'force-cache' })
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    allArticles = data.articles || [];
-                    // Filter to only this category (safety check)
-                    allArticles = allArticles.filter(function(a) { return a.category === cat; });
-                    // Sort by date descending
-                    allArticles.sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
-                    });
-                    fetchArticlesForPage(1);
-                    initSearch();
-                })
-                .catch(function(err) {
-                    console.error('Failed to load articles:', err);
-                    var grid = document.getElementById('articleGrid');
-                    if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles.</p>';
-                });
-        } else {
-            // Main domain: load all categories
-            var categories = ['technology', 'finance', 'ai-tools', 'health-lifestyle'];
-            var promises = categories.map(function(cat) {
-                return fetch('articles-' + cat + '.json', { cache: 'force-cache' })
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) { return data.articles || []; });
+    fetch(CFG.jsonFile)
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(data) {
+            allArticlesCache = data.articles || [];
+            // [修复] 按日期降序排序（最新日期在前）
+            allArticlesCache.sort(function(a, b) {
+                return (b.date || '').localeCompare(a.date || '');
             });
-            Promise.all(promises)
-                .then(function(results) {
-                    allArticles = [];
-                    for (var i = 0; i < results.length; i++) {
-                        allArticles = allArticles.concat(results[i]);
-                    }
-                    // Sort by date descending
-                    allArticles.sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
-                    });
-                    fetchArticlesForPage(1);
-                    initSearch();
-                })
-                .catch(function(err) {
-                    console.error('Failed to load articles:', err);
-                    var grid = document.getElementById('articleGrid');
-                    if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles.</p>';
-                });
+            // [新增] 渲染 Latest Insights 区块（最新 10 篇）
+            renderLatestInsights(allArticlesCache.slice(0, 10));
+            fetchArticlesForPage(1);
+            initSearch();
+        })
+        .catch(function(err) {
+            console.error('Load error:', err.message);
+            var grid = document.getElementById('articleGrid');
+            if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles: ' + err.message + '</p>';
+        });
+    function renderLatestInsights(articles) {
+        var container = document.getElementById('latestCards');
+        var section = document.getElementById('latestSection');
+        if (!container || !section || articles.length === 0) { if (section) section.style.display = 'none'; return; }
+        var html = '';
+        for (var i = 0; i < articles.length; i++) {
+            var a = articles[i];
+            var catName = categoryNames[a.category] || a.category;
+            html += '<a class="latest-card" href="article.html?id=' + a.id + '">' +
+                '<p class="latest-card-title">' + a.title + '</p>' +
+                '<p class="latest-card-meta"><span class="cat">' + catName + '</span> · ' + formatDate(a.date) + '</p>' +
+                '<p class="latest-card-excerpt">' + a.excerpt + '</p>' +
+                '</a>';
         }
+        container.innerHTML = html;
     }
-
-    // Start loading articles
-    loadArticles();
-
-    // Update category names after config loads (for search matching)
     if (typeof loadSiteConfig === 'function') {
         loadSiteConfig(function(config) {
             if (config && config.categories) {
-                for (var i = 0; i < config.categories.length; i++)
-                    categoryNames[config.categories[i].id] = config.categories[i].name;
+                for (var i = 0; i < config.categories.length; i++) {
+                    if (config.categories[i].id === CAT_ID) {
+                        categoryNames[CAT_ID] = config.categories[i].name;
+                    }
+                }
             }
         });
     }
