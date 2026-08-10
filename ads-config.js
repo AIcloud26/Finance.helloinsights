@@ -1,147 +1,350 @@
 /**
- * HelloInsights - 广告配置中心 (ads-config.js)
+ * HelloInsights — Centralized Ad Manager (ads-config.js)
  * 
- * 所有广告 ID 集中管理，修改此文件即可全局生效
- * 三个页面自动加载，JS 控制渲染和显隐
+ * All ad slots are defined here. Toggle enabled/disabled per slot.
+ * Supports: Google AdSense, Google AdX (via AdSense SDK), MGID
  * 
- * 使用方法：
- *   1. 替换 ADSENSE_CLIENT 为你的发布商 ID
- *   2. 替换各 SLOT 为对应的广告单元 ID
- *   3. MGID 填入 widget URL，留空则不加载
+ * Usage:
+ *   1. Set AD_ENABLED_MASTER = true when ads are approved
+ *   2. Replace placeholder IDs with real ad network IDs
+ *   3. Set individual slot.enabled = true to activate
+ *   4. Pages just need <div class="ad-slot" data-ad-slot="xxx"></div>
+ * 
+ * API:
+ *   window.AdConfig.toggle('slot-id', true/false)  — Enable/disable a slot
+ *   window.AdConfig.getStatus()                     — View all slot statuses
+ *   window.AdConfig.renderAll()                     — Re-render all ad slots
  */
 (function() {
     'use strict';
 
     // ========================================
-    //  📢 广告配置 - 只改这里
+    // 📢 MASTER SWITCH — Set true after ad approval
+    // ========================================
+    var AD_ENABLED_MASTER = false;
+
+    // ========================================
+    // 🔑 Ad Network Credentials
     // ========================================
     var ADSENSE_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
+    var MGID_SITE_ID = 'XXXXXXXX';
 
+    // ========================================
+    // 📍 Ad Slot Definitions
+    // enabled: false by default — set true after approval
+    // ========================================
     var SLOTS = {
-        'zone-top':               'XXXXXXXXXX',
-        'zone-mid':               'XXXXXXXXXX',
-        'zone-bottom':            'XXXXXXXXXX',
-        'index-banner-bottom':    'XXXXXXXXXX',
-        'index-anchor':           'XXXXXXXXXX',
-        'article-banner':         'XXXXXXXXXX',
-        'article-mgid-widget':    'XXXXXXXXXX',
-        'cat-top':                'XXXXXXXXXX',
-        'cat-mid':                'XXXXXXXXXX',
-        'cat-bottom':             'XXXXXXXXXX'
-    };
-
-    // MGID Widget URLs（留空 = 不加载）
-    var MGID = {
-        'zone-mid':           '',
-        'zone-bottom':        '',
-        'article-mgid':       '',
-        'article-interstitial': '',
-        'cat-mid':            ''
+        // --- Index Page ---
+        'native-top': {
+            enabled: false,
+            network: 'adsense',      // adsense | adx | mgid
+            type: 'native',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Header Native Ad (728×90 / responsive)'
+        },
+        'banner-mid-1': {
+            enabled: false,
+            network: 'adsense',
+            type: 'banner',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Grid Banner 1 (after 3rd card)'
+        },
+        'banner-mid-2': {
+            enabled: false,
+            network: 'adsense',
+            type: 'banner',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Grid Banner 2 (after 6th card)'
+        },
+        'banner-bottom': {
+            enabled: false,
+            network: 'adsense',
+            type: 'banner',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Above Footer Banner'
+        },
+        'anchor': {
+            enabled: false,
+            network: 'adsense',
+            type: 'anchor',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Bottom Floating Anchor'
+        },
+        'interstitial': {
+            enabled: false,
+            network: 'adsense',
+            type: 'interstitial',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Page Turn Interstitial'
+        },
+        // --- Article Page ---
+        'article-banner-top': {
+            enabled: false,
+            network: 'adsense',
+            type: 'banner',
+            pages: ['article'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Top Banner'
+        },
+        'article-banner-mid': {
+            enabled: false,
+            network: 'adsense',
+            type: 'banner',
+            pages: ['article'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Mid Banner'
+        }
     };
 
     // ========================================
-    //  自动初始化
+    // MGID Widget Slots (if needed separately)
+    // Leave URL empty = don't load
     // ========================================
+    var MGID_WIDGETS = {
+        // 'article-banner-mid': 'https://jsc.mgid.com/site/' + MGID_SITE_ID + '/widget/XXXXXX',
+    };
 
-    // 加载 AdSense SDK
-    var sdk = document.createElement('script');
-    sdk.async = true;
-    sdk.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
-    sdk.crossOrigin = 'anonymous';
-    document.head.appendChild(sdk);
-
-    // DOM 就绪后开始
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    // ========================================
+    // Detect Current Page
+    // ========================================
+    function getCurrentPage() {
+        var path = location.pathname.split('/').pop() || 'index.html';
+        if (path.indexOf('article') !== -1) return 'article';
+        if (path.indexOf('category') !== -1) return 'category';
+        return 'index';
     }
 
-    function init() {
-        renderAll();
-        // 多轮检测：广告 SDK 加载有延迟
-        setTimeout(checkFill, 1500);
-        setTimeout(checkFill, 4000);
-        setTimeout(checkFill, 8000);
+    // ========================================
+    // Load AdSense SDK
+    // ========================================
+    var _sdkLoaded = false;
+    function loadAdSenseSDK() {
+        if (_sdkLoaded) return;
+        if (ADSENSE_CLIENT.indexOf('XXXX') !== -1) return;
+        _sdkLoaded = true;
+        var sdk = document.createElement('script');
+        sdk.async = true;
+        sdk.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
+        sdk.crossOrigin = 'anonymous';
+        document.head.appendChild(sdk);
     }
 
-    // 渲染所有广告位
+    // ========================================
+    // Render All Ad Slots
+    // ========================================
     function renderAll() {
-        renderAdSense();
-        renderMGID();
-    }
-
-    function renderAdSense() {
+        var page = getCurrentPage();
         var containers = document.querySelectorAll('[data-ad-slot]');
         for (var i = 0; i < containers.length; i++) {
             var el = containers[i];
             var slotKey = el.getAttribute('data-ad-slot');
-            var slotId = SLOTS[slotKey];
-            if (!slotId) {
-                // 没有配置 slot，隐藏
+            var slot = SLOTS[slotKey];
+            if (!slot) {
                 el.style.display = 'none';
                 continue;
             }
-
-            var ins = document.createElement('ins');
-            ins.className = 'adsbygoogle';
-            ins.style.cssText = 'display:block';
-            ins.setAttribute('data-ad-client', ADSENSE_CLIENT);
-            ins.setAttribute('data-ad-slot', slotId);
-            ins.setAttribute('data-ad-format', 'auto');
-            ins.setAttribute('data-full-width-responsive', 'true');
-            el.appendChild(ins);
-
-            try {
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {}
+            // Check if slot should show on this page
+            if (slot.pages.indexOf(page) === -1) {
+                el.style.display = 'none';
+                continue;
+            }
+            // Check master + individual enabled
+            if (!AD_ENABLED_MASTER || !slot.enabled) {
+                el.style.display = 'none';
+                el.setAttribute('data-ad-disabled', 'true');
+                continue;
+            }
+            // Render based on network
+            if (slot.network === 'adsense' || slot.network === 'adx') {
+                renderAdSenseSlot(el, slot);
+            }
         }
+        // MGID widgets
+        renderMGIDWidgets(page);
     }
 
-    function renderMGID() {
-        for (var id in MGID) {
-            if (!MGID.hasOwnProperty(id) || !MGID[id]) continue;
-            var el = document.querySelector('[data-ad-slot="' + id + '"]') || document.getElementById(id);
-            if (!el) continue;
+    function renderAdSenseSlot(el, slot) {
+        if (el.getAttribute('data-ad-rendered') === 'true') return;
+        el.setAttribute('data-ad-rendered', 'true');
+        loadAdSenseSDK();
+        var ins = document.createElement('ins');
+        ins.className = 'adsbygoogle';
+        ins.style.cssText = 'display:block';
+        ins.setAttribute('data-ad-client', slot.adClient);
+        ins.setAttribute('data-ad-slot', slot.adSlot);
+        ins.setAttribute('data-ad-format', slot.format || 'auto');
+        ins.setAttribute('data-full-width-responsive', 'true');
+        el.appendChild(ins);
+        try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {}
+    }
 
-            var s = document.createElement('script');
-            s.src = MGID[id];
-            s.async = true;
-            el.appendChild(s);
+    function renderMGIDWidgets(page) {
+        if (!MGID_SITE_ID || MGID_SITE_ID.indexOf('XXXX') !== -1) return;
+        var hasWidgets = false;
+        for (var id in MGID_WIDGETS) {
+            if (!MGID_WIDGETS.hasOwnProperty(id) || !MGID_WIDGETS[id]) continue;
+            hasWidgets = true;
+            break;
         }
+        if (!hasWidgets) return;
+        // Load MGID SDK once
+        if (!document.querySelector('script[src*="jsc.mgid.com"]')) {
+            var s = document.createElement('script');
+            s.src = 'https://jsc.mgid.com/site/' + MGID_SITE_ID + '.js';
+            s.async = true;
+            document.head.appendChild(s);
+        }
+        for (var slotId in MGID_WIDGETS) {
+            if (!MGID_WIDGETS.hasOwnProperty(slotId) || !MGID_WIDGETS[slotId]) continue;
+            var el = document.querySelector('[data-ad-slot="' + slotId + '"]');
+            if (!el || el.style.display === 'none') continue;
+            var div = document.createElement('div');
+            div.setAttribute('data-type', '_mgwidget');
+            div.setAttribute('data-widget-id', slotId);
+            el.appendChild(div);
+            var sc = document.createElement('script');
+            sc.src = MGID_WIDGETS[slotId];
+            sc.async = true;
+            el.appendChild(sc);
+        }
+        try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
     }
 
     // ========================================
-    //  填充检测：未填充 → 隐藏，已填充 → 显示
+    // Fill Detection: hide unfilled, show filled
     // ========================================
     function checkFill() {
         var containers = document.querySelectorAll('[data-ad-slot]');
         for (var i = 0; i < containers.length; i++) {
             var el = containers[i];
-
-            // 检查是否有 iframe（广告 SDK 渲染成功的标志）
+            if (el.getAttribute('data-ad-disabled') === 'true') continue;
             var iframe = el.querySelector('iframe');
-            // 检查 ins 标签实际尺寸
             var ins = el.querySelector('ins.adsbygoogle');
             var hasSize = false;
             if (ins) {
                 var rect = ins.getBoundingClientRect();
                 hasSize = rect.height > 10;
             }
-            // 检查 MGID script 注入
             var hasMGID = el.querySelector('script[src*="mgid"]');
-
             if (iframe || hasSize || hasMGID) {
-                // 广告已填充 → 显示
                 el.classList.add('ad-visible');
                 el.classList.remove('ad-hidden');
-                el.style.display = '';  // 清除内联，让 CSS class 生效
+                el.style.display = '';
             } else {
-                // 广告未填充 → 隐藏
                 el.style.display = 'none';
                 el.classList.add('ad-hidden');
                 el.classList.remove('ad-visible');
             }
         }
     }
+
+    // ========================================
+    // Public API
+    // ========================================
+    window.AdConfig = {
+        /**
+         * Toggle a specific ad slot on/off
+         * @param {string} slotId - The slot key (e.g. 'native-top')
+         * @param {boolean} enabled - true to enable, false to disable
+         */
+        toggle: function(slotId, enabled) {
+            if (SLOTS[slotId]) {
+                SLOTS[slotId].enabled = !!enabled;
+                console.log('[AdConfig] ' + slotId + ' → ' + (enabled ? 'ON' : 'OFF'));
+                // Re-render if currently on page
+                renderAll();
+                setTimeout(checkFill, 2000);
+            } else {
+                console.warn('[AdConfig] Slot not found: ' + slotId);
+            }
+        },
+        /**
+         * Get status of all ad slots
+         * @returns {Object} Slot status map
+         */
+        getStatus: function() {
+            var status = {};
+            for (var key in SLOTS) {
+                if (!SLOTS.hasOwnProperty(key)) continue;
+                status[key] = {
+                    enabled: SLOTS[key].enabled,
+                    network: SLOTS[key].network,
+                    type: SLOTS[key].type,
+                    pages: SLOTS[key].pages,
+                    label: SLOTS[key].label
+                };
+            }
+            status._master = AD_ENABLED_MASTER;
+            return status;
+        },
+        /**
+         * Enable all slots at once
+         */
+        enableAll: function() {
+            for (var key in SLOTS) {
+                if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = true;
+            }
+            renderAll();
+            setTimeout(checkFill, 2000);
+        },
+        /**
+         * Disable all slots at once
+         */
+        disableAll: function() {
+            for (var key in SLOTS) {
+                if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = false;
+            }
+            renderAll();
+        },
+        /**
+         * Re-render all ad slots (for dynamic content)
+         */
+        renderAll: renderAll
+    };
+
+    // ========================================
+    // Auto Init
+    // ========================================
+    function init() {
+        renderAll();
+        // Multi-round fill detection (SDK loading delay)
+        setTimeout(checkFill, 1500);
+        setTimeout(checkFill, 4000);
+        setTimeout(checkFill, 8000);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // Log status on load
+    console.log('[AdConfig] Loaded. Master: ' + (AD_ENABLED_MASTER ? 'ON' : 'OFF'));
+    console.log('[AdConfig] Use window.AdConfig.getStatus() to view slots');
+    console.log('[AdConfig] Use window.AdConfig.toggle("slot-id", true) to enable');
 })();
