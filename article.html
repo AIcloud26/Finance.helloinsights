@@ -38,6 +38,7 @@
     })();
     </script>
     <link rel="stylesheet" href="style.css">
+    <script src="ads-config.js" defer></script>
     <script src="config-loader.js"></script>
     <style>
     /* ===== Internal Linking Sections ===== */
@@ -290,6 +291,14 @@
         .popular-card-thumb { width: 100%; height: 160px; aspect-ratio: 16/9; }
         .popular-card-body { padding: 1rem; }
     }
+    /* ===== Article Hero Image — Constrained to content width ===== */
+    .article-hero{max-width:720px;margin:1.5rem auto 0;text-align:center;}
+    .article-hero img{width:100%;max-width:720px;height:auto;border-radius:12px;display:block;}
+    @media(max-width:768px){.article-hero{margin:1rem auto 0;}.article-hero img{border-radius:8px;}}
+    /* ===== Ad Slot Placeholders ===== */
+    .ad-slot{margin:1.2rem auto;text-align:center;min-height:250px;display:flex;align-items:center;justify-content:center;}
+    @media(max-width:768px){.ad-slot{min-height:200px;margin:0.8rem auto;}}
+    .article-ad-mid{max-width:720px;margin:1.5rem auto;}
     </style>
 </head>
 <body>
@@ -338,13 +347,13 @@
         </div>
     </header>
     <main class="container">
-        <!-- AdSense: article-banner -->
-        <div data-ad-slot="article-banner"></div>
+        <!-- Ad: Article Banner Top -->
+        <div class="ad-slot" data-ad-slot="article-banner-top"></div>
         <article class="article-detail" id="articleDetail">
             <div class="loading" id="loading"></div>
         </article>
-        <!-- MGID: article-mgid -->
-        <div data-ad-slot="article-mgid"></div>
+        <!-- Ad: Article Banner Mid -->
+        <div class="ad-slot article-ad-mid" data-ad-slot="article-banner-mid"></div>
 
         <!-- ========================================== -->
         <!-- Internal Linking: 3 Sections               -->
@@ -368,8 +377,7 @@
             <div class="popular-grid" id="popularGrid"></div>
         </section>
 
-        <!-- AdSense: article-interstitial -->
-        <div data-ad-slot="article-interstitial"></div>
+        <!-- Ad removed: interstitial moved to index page -->
 
         <!-- 3. Recommended Reading (cross-category, numbered list) -->
         <section class="link-section" id="recommendedSection">
@@ -380,8 +388,7 @@
             <ol class="recommended-list" id="recommendedList"></ol>
         </section>
 
-        <!-- Anchor Ad -->
-        <div data-ad-slot="article-anchor"></div>
+        <!-- Ad removed: anchor moved to index page -->
     </main>
     <footer class="footer">
         <div class="footer-content">
@@ -500,13 +507,13 @@
         var date = article.date ? formatDate(article.date) : '';
         var catName = categoryNames[article.category] || article.category;
         var fallbackImg = getFallbackImage(article.category);
-        var heroImg = article.image.replace(/w=\d+&h=\d+/, 'w=1200&h=600');
+        var heroImg = article.image.replace(/w=\d+&h=\d+/, 'w=720&h=405');
         var articleContent = article.content
             ? article.content
             : '<p>' + article.excerpt + '</p><p><em>This article is being updated. Check back soon for the full content.</em></p>';
         container.innerHTML =
             '<div class="article-hero">' +
-            '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace(/w=\d+&h=\d+/, 'w=1200&h=600') + '\'">' +
+            '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace(/w=\d+&h=\d+/, 'w=720&h=405') + '\'">' +
             '</div>' +
             '<div class="article-body">' +
             '<header class="article-header">' +
