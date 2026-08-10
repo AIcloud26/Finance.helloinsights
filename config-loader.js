@@ -1,25 +1,8 @@
-// HelloInsights — Unified Config & Ad Manager v3
-// Supports: MGID content widgets + Google AdSense banners + GA4 tracking
+// HelloInsights — Unified Config & Ad Manager v4
+// Supports: MGID content widgets + Google AdSense banners
+// GA4 tracking moved to index.html / article.html for per-subdomain management
 // All ad positions/sizes controlled by config.json — no HTML code changes needed
 var siteConfig = null;
-
-// ==========================================
-// 0. Google Analytics 4 — Global Tracking
-// ==========================================
-(function() {
-    var GA_ID = 'G-Q4QHZKZT46';
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(s);
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', GA_ID);
-})();
-
 // ==========================================
 // 1. Site Config (logo / nav / footer / seo)
 // ==========================================
@@ -98,7 +81,6 @@ function loadSiteConfig(callback) {
             if (callback) callback(null);
         });
 }
-
 // ==========================================
 // 2. MGID Manager — Content Widgets
 // ==========================================
@@ -106,6 +88,9 @@ var _mgidLoaded = false;
 function loadMGID(config) {
     var mgid = config.mgid;
     if (!mgid || !mgid.enabled) return;
+    
+    // Skip if ads-config.js is handling ads
+    if (window.AdConfig) return;
     
     var page = location.pathname.split('/').pop() || 'index.html';
     var widgets = (mgid.widgets && mgid.widgets[page]) || [];
@@ -122,7 +107,7 @@ function loadMGID(config) {
     var placed = [];
     for (var i = 0; i < widgets.length; i++) {
         var w = widgets[i];
-        var anchor = document.querySelector('[data-ad-slot="' + w.slot + '"]');
+        var anchor = document.querySelector('[data-ad-slot="' + w.slot + '"]') || document.getElementById(w.slot);
         if (!anchor) continue;
         
         if (w.height) anchor.style.minHeight = w.height;
@@ -145,11 +130,13 @@ function loadMGID(config) {
         }
     }
 }
-
 // ==========================================
-// 3. AdSense Manager — Lazy Load
+// 3. AdSense Manager — Lazy Load (Fallback)
 // ==========================================
 function loadAdSense(config) {
+    // Skip if ads-config.js is handling ads
+    if (window.AdConfig) return;
+    
     if (!config.adsense || !config.adsense.enabled) return;
     
     var clientId = config.adsense.clientId;
@@ -248,7 +235,6 @@ function hideUnfilledAds() {
         }
     }
 }
-
 // ==========================================
 // 4. Utilities
 // ==========================================
@@ -263,7 +249,6 @@ window.addEventListener('scroll', function() {
     var btn = document.getElementById('backToTop');
     if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
 });
-
 // ==========================================
 // 5. Auto Init
 // ==========================================
