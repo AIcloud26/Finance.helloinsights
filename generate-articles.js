@@ -226,10 +226,24 @@ function randomInt(min, max) {
 function randomChoice(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
-function getImageUrl(category) {
+function getImageUrl(category, usedImages) {
   var ids = IMAGE_IDS[category] || IMAGE_IDS['technology'];
-  var id = randomChoice(ids);
-  return 'https://images.unsplash.com/' + id + '?w=800&h=450&fit=crop&fm=webp&q=80';
+  var maxAttempts = ids.length * 2;
+  var attempt = 0;
+  while (attempt < maxAttempts) {
+    var id = randomChoice(ids);
+    var url = 'https://images.unsplash.com/' + id + '?w=800&h=450&fit=crop&fm=webp&q=80';
+    if (!usedImages[url]) {
+      usedImages[url] = true;
+      return url;
+    }
+    attempt++;
+  }
+  // All base images used — generate unique variant with random suffix
+  var fallbackId = ids[attempt % ids.length];
+  var uniqueUrl = 'https://images.unsplash.com/' + fallbackId + '?w=800&h=450&fit=crop&fm=webp&q=80&t=' + Date.now() + '&r=' + Math.random().toString(36).substr(2, 6);
+  usedImages[uniqueUrl] = true;
+  return uniqueUrl;
 }
 
 // ============================================
@@ -320,7 +334,7 @@ async function generateWithAI(category) {
 // ============================================
 // 生成文章
 // ============================================
-async function generateArticle(existingIds) {
+async function generateArticle(existingIds, usedImages) {
   var category = randomChoice(CATEGORIES);
   var id;
   do { id = randomInt(100, 99999); } while (existingIds.indexOf(id) !== -1);
@@ -336,7 +350,7 @@ async function generateArticle(existingIds) {
     title: generated.title,
     excerpt: generated.excerpt,
     content: generated.content,
-    image: getImageUrl(category.id),
+    image: getImageUrl(category.id, usedImages),
     date: generateArticleDate()  // 修复：使用当天日期
   };
 }
@@ -369,9 +383,13 @@ async function main() {
     console.log('📝 No existing articles, starting fresh\n');
   }
   console.log('✨ Generating new articles...\n');
+  // 图片去重：收集已有文章使用过的图片 URL
+  var usedImages = {};
+  existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
+  console.log('🖼️  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
   var newArticles = [];
   for (var i = 0; i < CONFIG.articlesPerDay; i++) {
-    var article = await generateArticle(existingIds);
+    var article = await generateArticle(existingIds, usedImages);
     newArticles.push(article);
     existingIds.push(article.id);
     console.log('   ' + (i + 1) + '. [' + article.category + '] ' + article.title + ' (' + article.date + ')');
