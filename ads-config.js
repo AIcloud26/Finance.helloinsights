@@ -243,7 +243,9 @@
             if (slot.pages.indexOf(page) === -1) continue;
 
             var el = document.querySelector('[data-ad-slot="' + slotId + '"]');
-            if (!el || el.style.display === 'none') continue;
+            if (!el) continue;
+            // Reset display in case checkFill hid it before MGID loaded
+            el.style.display = '';
 
             // Skip if already rendered
             if (el.querySelector('[data-type="_mgwidget"]')) continue;
@@ -279,10 +281,18 @@
             var mgidIframe = hasMGID ? hasMGID.querySelector('iframe') : null;
 
             if (iframe || hasSize || (hasMGID && mgidIframe)) {
+                // Ad is filled — show it
                 el.classList.add('ad-visible');
                 el.classList.remove('ad-hidden');
                 el.style.display = '';
+            } else if (hasMGID && !mgidIframe) {
+                // MGID widget div exists but ad hasn't loaded yet
+                // Keep container visible so MGID can render into it
+                el.style.display = '';
+                // Re-trigger MGID load in case it missed the first push
+                try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
             } else {
+                // No ad content at all
                 el.style.display = 'none';
                 el.classList.add('ad-hidden');
                 el.classList.remove('ad-visible');
@@ -363,6 +373,7 @@
         setTimeout(checkFill, 1500);
         setTimeout(checkFill, 4000);
         setTimeout(checkFill, 8000);
+        setTimeout(checkFill, 15000); // Final check for slow-loading MGID ads
     }
 
     if (document.readyState === 'loading') {
