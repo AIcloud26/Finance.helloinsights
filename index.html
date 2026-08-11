@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="style.css"></noscript>
     <script src="ads-config.js" defer></script>
+    <script>window.IS_SUBDOMAIN = true;</script>
     <script src="config-loader.js" async></script>
     <style>
     /* ===== Page Header ===== */
@@ -123,7 +124,6 @@
         </div>
     </header>
     <main class="container">
-        <!-- Ad: Native Top (728×90 / responsive) -->
         <div class="ad-slot" data-ad-slot="native-top"></div>
         <div class="page-header">
             <h1 class="site-tagline" id="siteTagline"></h1>
@@ -133,7 +133,6 @@
             <span id="searchText"></span>
             <button onclick="clearSearch()" style="margin-left:10px;background:#ff6b35;color:white;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;">Clear</button>
         </div>
-        <!-- Featured Insights -->
         <div class="featured-section" id="featuredSection">
             <h2>Featured Insights</h2>
             <div id="featuredCards"></div>
@@ -145,9 +144,7 @@
             <div class="loading" id="loading"></div>
         </div>
         <div class="pagination" id="pagination"></div>
-        <!-- Ad: Interstitial (page turn) -->
         <div class="ad-slot" data-ad-slot="interstitial"></div>
-        <!-- Latest Insights (moved to bottom, 3 + Read More) -->
         <div class="latest-section" id="latestSection">
             <h2>Latest Insights</h2>
             <div id="latestCards"></div>
@@ -155,9 +152,7 @@
                 <button class="read-more-btn-inline" id="latestReadMoreBtn" onclick="expandLatestInsights()">Read More</button>
             </div>
         </div>
-        <!-- Ad: Banner Bottom (above footer) -->
         <div class="ad-slot" data-ad-slot="banner-bottom"></div>
-        <!-- Ad: Anchor (bottom floating) -->
         <div class="ad-slot" data-ad-slot="anchor" style="position:fixed;bottom:0;left:0;right:0;z-index:999;"></div>
     </main>
     <footer class="footer">
@@ -191,18 +186,18 @@
         'finance': {
             name: 'Finance',
             tagline: 'FINANCE NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest finance news, market analysis, and investment insights.',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
             fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
             jsonFile: 'articles-finance.json',
             titleSuffix: 'Finance News, Investing & Market Insights | HelloInsights',
             metaDesc: 'Explore personal finance, investing, markets, banking, fintech, economic trends and money management insights from HelloInsights Finance.',
-            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future. HelloInsights Finance explores <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, connecting practical financial knowledge with broader trends shaping money and markets.</p><p>Our editorial coverage goes beyond headlines to explain why financial developments matter. We explore investment strategies, market movements, banking innovation, digital finance, inflation, interest rates, and economic trends, helping readers better understand changing financial conditions and make more informed decisions.</p>',
+            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future. HelloInsights Finance explores <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, connecting practical financial knowledge with broader trends shaping money and markets.</p><p>Our editorial coverage goes beyond headlines to explain why financial developments matter — from investment strategies and banking innovation to inflation, interest rates, and economic shifts.</p>',
             gaId: 'G-FINANCE-XXXXXXX'
         },
         'technology': {
             name: 'Technology',
             tagline: 'TECHNOLOGY NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest technology news, product reviews, and industry trends.',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
             fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
             jsonFile: 'articles-technology.json',
             titleSuffix: 'Technology News & Innovation Insights | HelloInsights',
@@ -213,7 +208,7 @@
         'ai-tools': {
             name: 'AI Tools',
             tagline: 'AI TOOLS NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest AI tools news, reviews, and industry insights.',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
             fallbackImage: 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
             jsonFile: 'articles-ai-tools.json',
             titleSuffix: 'AI Tools News & Reviews | HelloInsights',
@@ -224,7 +219,7 @@
         'health-lifestyle': {
             name: 'Health & Lifestyle',
             tagline: 'HEALTH & LIFESTYLE INSIGHTS',
-            aboutText: 'Your trusted source for the latest health news, wellness tips, and lifestyle insights.',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
             fallbackImage: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop',
             jsonFile: 'articles-health-lifestyle.json',
             titleSuffix: 'Health & Lifestyle Insights | HelloInsights',
@@ -256,7 +251,7 @@
     var sub = host.split('.')[0];
     var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
     var CAT_ID = sub;
-    window.IS_SUBDOMAIN = true;
+    // window.IS_SUBDOMAIN already set in <head> before config-loader.js loads
     // ===== APPLY CONFIG TO PAGE =====
     document.title = CFG.titleSuffix;
     document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
@@ -290,11 +285,9 @@
     fallbackImages[CAT_ID] = CFG.fallbackImage;
     var defaultFallback = CFG.fallbackImage;
     var allArticlesCache = [];
-
     var latestExpanded = false;
     var featuredExpanded = false;
     var allFeaturedArticles = [];
-    // Format date
     function formatDate(dateStr) {
         if (!dateStr) return '';
         var parts = dateStr.split('-');
@@ -318,7 +311,6 @@
             '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
             '</div></article>';
     }
-    // Inline ad banner HTML
     function createInlineAdBanner(slotId) {
         return '<div class="inline-ad-banner"><div class="ad-slot" data-ad-slot="' + slotId + '"></div></div>';
     }
@@ -407,13 +399,11 @@
         var html = '';
         for (var i = 0; i < articles.length; i++) {
             html += createArticleCard(articles[i]);
-            // Insert inline ad banners after 3rd and 6th card
             if (i === 2) html += createInlineAdBanner('banner-mid-1');
             if (i === 5) html += createInlineAdBanner('banner-mid-2');
         }
         grid.innerHTML = html;
         renderPagination(allArticlesCache.length);
-        // Re-trigger ad render for dynamically inserted slots
         if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
             window.AdConfig.renderAll();
         }
@@ -442,7 +432,6 @@
             window.AdConfig.renderAll();
         }
     }
-    // ===== Featured Insights =====
     function renderFeaturedInsights(articles) {
         allFeaturedArticles = articles;
         var container = document.getElementById('featuredCards');
@@ -473,7 +462,6 @@
         featuredExpanded = true;
         renderFeaturedInsights(allFeaturedArticles);
     }
-    // ===== Latest Insights (bottom, 3 + Read More) =====
     var allLatestArticles = [];
     function renderLatestInsights(articles) {
         allLatestArticles = articles;
@@ -505,7 +493,6 @@
         latestExpanded = true;
         renderLatestInsights(allLatestArticles);
     }
-    // ===== Load Articles =====
     fetch(CFG.jsonFile)
         .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
@@ -523,7 +510,6 @@
             var grid = document.getElementById('articleGrid');
             if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles: ' + err.message + '</p>';
         });
-    // Config loader integration
     if (typeof loadSiteConfig === 'function') {
         loadSiteConfig(function(config) {
             if (config && config.categories) {
