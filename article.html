@@ -12,13 +12,25 @@
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="stylesheet" href="style.css">
     <script src="ads-config.js" defer></script>
+    <script>window.IS_SUBDOMAIN = true;</script>
     <script src="config-loader.js"></script>
+    <style>
+        .internal-links-section { margin-bottom: 2rem; }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color, #ff6b35);
+            color: #1a1a2e;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:3rem;width:auto;display:block;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
   <defs>
     <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
       <stop offset="0%" stop-color="#FFB13B"/>
@@ -50,16 +62,10 @@
             </div>
             <div class="nav-container" id="navContainer">
                 <nav>
-                    <ul class="nav">
-                        <li><a href="index.html">All</a></li>
-                        <li><a href="category.html?cat=technology">Technology</a></li>
-                        <li><a href="category.html?cat=finance">Finance</a></li>
-                        <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
-                        <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
-                    </ul>
+                    <ul class="nav" id="navList"></ul>
                 </nav>
                 <div class="search-box">
-                    <input type="placeholder" placeholder="Search articles..." id="searchInput">
+                    <input type="text" placeholder="Search articles..." id="searchInput">
                     <button type="button" id="searchBtn">🔍</button>
                 </div>
             </div>
@@ -72,18 +78,14 @@
         </article>
         <div data-ad-slot="article-mgid"></div>
         <div data-ad-slot="article-interstitial"></div>
-
-        <!-- Internal Linking Sections -->
         <section class="internal-links-section" id="relatedSection" style="margin-top:3rem;">
             <h2 class="section-title">Related Articles</h2>
             <div class="article-grid" id="relatedGrid"></div>
         </section>
-
         <section class="internal-links-section" id="popularSection" style="margin-top:2.5rem;display:none;">
             <h2 class="section-title">Popular This Week</h2>
             <div class="article-grid" id="popularGrid"></div>
         </section>
-
         <section class="internal-links-section" id="recommendedSection" style="margin-top:2.5rem;display:none;">
             <h2 class="section-title">Recommended Reading</h2>
             <div class="article-grid" id="recommendedGrid"></div>
@@ -92,17 +94,13 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>About HelloInsights</h4>
-                <p>Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
+                <h4 id="footerAboutTitle">About HelloInsights</h4>
+                <p id="footerAboutText">Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
             </div>
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <ul>
+                <ul id="footerLinks">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="category.html?cat=technology">Technology</a></li>
-                    <li><a href="category.html?cat=finance">Finance</a></li>
-                    <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
-                    <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -120,291 +118,311 @@
         </div>
     </footer>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <style>
-        .internal-links-section { margin-bottom: 2rem; }
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--accent-color, #ff6b35);
-            color: #1a1a2e;
-        }
-    </style>
     <script>
-        var categoryNames = {};
-        var maxArticleId = 0;
-        var allArticlesGlobal = [];
-        var defaultFallback = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop';
-        var fallbackImages = {
-            'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
-            'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
-            'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
-            'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop'
-        };
+    // ===== SUBDOMAIN DETECTION (same as index.html) =====
+    var SITE_CONFIGS = {
+        'finance': {
+            name: 'Finance',
+            tagline: 'FINANCE NEWS & INSIGHTS',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
+            fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
+            jsonFile: 'articles-finance.json',
+            titleSuffix: 'Finance News, Investing & Market Insights | HelloInsights',
+            metaDesc: 'Explore personal finance, investing, markets, banking, fintech, economic trends and money management insights from HelloInsights Finance.',
+            gaId: 'G-FINANCE-XXXXXXX'
+        },
+        'technology': {
+            name: 'Technology',
+            tagline: 'TECHNOLOGY NEWS & INSIGHTS',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
+            fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
+            jsonFile: 'articles-technology.json',
+            titleSuffix: 'Technology News & Innovation Insights | HelloInsights',
+            metaDesc: 'Explore the latest technology news, product reviews, digital innovation and industry insights from HelloInsights Technology.',
+            gaId: 'G-TECH-XXXXXXX'
+        },
+        'ai-tools': {
+            name: 'AI Tools',
+            tagline: 'AI TOOLS NEWS & INSIGHTS',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
+            fallbackImage: 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
+            jsonFile: 'articles-ai-tools.json',
+            titleSuffix: 'AI Tools News & Reviews | HelloInsights',
+            metaDesc: 'Explore the latest AI tools news, reviews, and artificial intelligence insights from HelloInsights AI Tools.',
+            gaId: 'G-AITOOLS-XXXXXXX'
+        },
+        'health-lifestyle': {
+            name: 'Health & Lifestyle',
+            tagline: 'HEALTH & LIFESTYLE INSIGHTS',
+            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
+            fallbackImage: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop',
+            jsonFile: 'articles-health-lifestyle.json',
+            titleSuffix: 'Health & Lifestyle Insights | HelloInsights',
+            metaDesc: 'Explore the latest health news, wellness tips, and lifestyle insights from HelloInsights Health & Lifestyle.',
+            gaId: 'G-HEALTH-XXXXXXX'
+        }
+    };
+    var host = window.location.hostname;
+    var sub = host.split('.')[0];
+    var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
+    var CAT_ID = sub;
+    // Apply subdomain config (window.IS_SUBDOMAIN already set in <head>)
+    document.getElementById('footerAboutTitle').textContent = 'About ' + CFG.name;
+    document.getElementById('footerAboutText').textContent = CFG.aboutText;
+    document.getElementById('navList').innerHTML =
+        '<li><a href="index.html">Home</a></li>' +
+        '<li><a href="index.html" class="active">' + CFG.name + '</a></li>';
+    document.getElementById('footerLinks').innerHTML =
+        '<li><a href="index.html">Home</a></li>' +
+        '<li><a href="index.html">' + CFG.name + '</a></li>';
 
-        function buildCategoryNames(config) {
-            var names = {};
-            if (config && config.categories) {
-                for (var i = 0; i < config.categories.length; i++) {
-                    names[config.categories[i].id] = config.categories[i].name;
-                }
-            } else {
-                names = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
+    // ===== ARTICLE PAGE LOGIC =====
+    var categoryNames = {};
+    categoryNames[CAT_ID] = CFG.name;
+    var maxArticleId = 0;
+    var allArticlesGlobal = [];
+    var defaultFallback = CFG.fallbackImage;
+    var fallbackImages = {
+        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
+        'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
+        'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
+        'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop'
+    };
+    function buildCategoryNames(config) {
+        var names = {};
+        if (config && config.categories) {
+            for (var i = 0; i < config.categories.length; i++) {
+                names[config.categories[i].id] = config.categories[i].name;
             }
-            return names;
+        } else {
+            names = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
         }
-
-        function getFallbackImage(category) {
-            return fallbackImages[category] || defaultFallback;
+        return names;
+    }
+    function getFallbackImage(category) {
+        return fallbackImages[category] || defaultFallback;
+    }
+    function formatDate(dateStr) {
+        if (dateStr) {
+            var d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         }
-
-        function formatDate(dateStr) {
-            if (dateStr) {
-                var d = new Date(dateStr);
-                return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            }
-            return '';
+        return '';
+    }
+    function generateDate(articleId, maxId) {
+        var today = new Date();
+        var date = new Date(today);
+        date.setDate(date.getDate() - Math.floor((maxId - articleId) / 3));
+        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    function renderArticle(article, maxId) {
+        var container = document.getElementById('articleDetail');
+        var loading = document.getElementById('loading');
+        if (loading) loading.remove();
+        var date = article.date ? formatDate(article.date) : generateDate(article.id, maxId);
+        var catName = categoryNames[article.category] || article.category;
+        var fallbackImg = getFallbackImage(article.category);
+        var heroImg = article.image.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp';
+        var articleContent = article.content
+            ? article.content
+            : '<p>' + article.excerpt + '</p><p><em>This article is being updated. Check back soon for the full content.</em></p>';
+        container.innerHTML =
+            '<div class="article-hero">' +
+            '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp\'">' +
+            '</div>' +
+            '<div class="article-body">' +
+            '<header class="article-header">' +
+            '<span class="card-category">' + catName + '</span>' +
+            '<h1>' + article.title + '</h1>' +
+            '<div class="article-meta">' +
+            '<span>' + date + '</span>' +
+            '</div>' +
+            '</header>' +
+            '<div class="article-content">' +
+            articleContent +
+            '</div>' +
+            '</div>';
+        document.title = article.title + ' - ' + CFG.name;
+    }
+    function buildCardHTML(article, fallback) {
+        var catName = categoryNames[article.category] || article.category;
+        var date = article.date ? formatDate(article.date) : generateDate(article.id, maxArticleId);
+        return '<article class="article-card">' +
+            '<div class="card-image">' +
+            '<img src="' + article.image + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + fallback + '\'">' +
+            '</div>' +
+            '<div class="card-content">' +
+            '<span class="card-category">' + catName + '</span>' +
+            '<h3 class="card-title">' +
+            '<a href="article.html?id=' + article.id + '">' + article.title + '</a>' +
+            '</h3>' +
+            '<p class="card-excerpt">' + article.excerpt + '</p>' +
+            '<div class="card-meta">' +
+            '<span> ' + date + '</span>' +
+            '</div>' +
+            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More...</a>' +
+            '</div>' +
+            '</article>';
+    }
+    function renderRelated(currentArticle, allArticles) {
+        var related = allArticles.filter(function(a) {
+            return a.category === currentArticle.category && a.id !== currentArticle.id;
+        }).sort(function(a, b) {
+            return (b.date || '').localeCompare(a.date || '');
+        }).slice(0, 3);
+        if (related.length === 0) {
+            document.getElementById('relatedSection').style.display = 'none';
+            return 0;
         }
-
-        function generateDate(articleId, maxId) {
-            var today = new Date();
-            var date = new Date(today);
-            date.setDate(date.getDate() - Math.floor((maxId - articleId) / 3));
-            return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        var grid = document.getElementById('relatedGrid');
+        var html = '';
+        for (var i = 0; i < related.length; i++) {
+            var fb = getFallbackImage(related[i].category);
+            html += buildCardHTML(related[i], fb);
         }
-
-        function renderArticle(article, maxId) {
-            var container = document.getElementById('articleDetail');
-            var loading = document.getElementById('loading');
-            if (loading) loading.remove();
-            var date = article.date ? formatDate(article.date) : generateDate(article.id, maxId);
-            var catName = categoryNames[article.category] || article.category;
-            var fallbackImg = getFallbackImage(article.category);
-            var heroImg = article.image.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp';
-            var articleContent = article.content
-                ? article.content
-                : '<p>' + article.excerpt + '</p><p><em>This article is being updated. Check back soon for the full content.</em></p>';
-            container.innerHTML =
-                '<div class="article-hero">' +
-                '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp' + '\'">' +
-                '</div>' +
-                '<div class="article-body">' +
-                '<header class="article-header">' +
-                '<span class="card-category">' + catName + '</span>' +
-                '<h1>' + article.title + '</h1>' +
-                '<div class="article-meta">' +
-                '<span>' + date + '</span>' +
-                '</div>' +
-                '</header>' +
-                '<div class="article-content">' +
-                articleContent +
-                '</div>' +
-                '</div>';
-            var siteName = (siteConfig && siteConfig.siteName) ? siteConfig.siteName : 'HelloInsights';
-            document.title = article.title + ' - ' + siteName;
-        }
-
-        function buildCardHTML(article, fallback) {
-            var catName = categoryNames[article.category] || article.category;
-            var date = article.date ? formatDate(article.date) : generateDate(article.id, maxArticleId);
-            return '<article class="article-card">' +
-                '<div class="card-image">' +
-                '<img src="' + article.image + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + fallback + '\'">' +
-                '</div>' +
-                '<div class="card-content">' +
-                '<span class="card-category">' + catName + '</span>' +
-                '<h3 class="card-title">' +
-                '<a href="article.html?id=' + article.id + '">' + article.title + '</a>' +
-                '</h3>' +
-                '<p class="card-excerpt">' + article.excerpt + '</p>' +
-                '<div class="card-meta">' +
-                '<span>📅 ' + date + '</span>' +
-                '</div>' +
-                '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More...</a>' +
-                '</div>' +
-                '</article>';
-        }
-
-        // Section 1: Related Articles — same category, latest first, 3 articles
-        function renderRelated(currentArticle, allArticles) {
-            var related = allArticles.filter(function(a) {
-                return a.category === currentArticle.category && a.id !== currentArticle.id;
+        grid.innerHTML = html;
+        return related.length;
+    }
+    function renderPopular(currentArticle, allArticles) {
+        var now = new Date();
+        var weekAgo = new Date(now);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        var weekStr = weekAgo.toISOString().slice(0, 10);
+        var popular = allArticles.filter(function(a) {
+            return a.id !== currentArticle.id && a.date && a.date >= weekStr;
+        }).sort(function(a, b) {
+            return (b.date || '').localeCompare(a.date || '');
+        }).slice(0, 3);
+        if (popular.length < 3) {
+            var extra = allArticles.filter(function(a) {
+                return a.id !== currentArticle.id;
             }).sort(function(a, b) {
                 return (b.date || '').localeCompare(a.date || '');
-            }).slice(0, 3);
-
-            if (related.length === 0) {
-                document.getElementById('relatedSection').style.display = 'none';
-                return 0;
-            }
-            var grid = document.getElementById('relatedGrid');
-            var html = '';
-            for (var i = 0; i < related.length; i++) {
-                var fb = getFallbackImage(related[i].category);
-                html += buildCardHTML(related[i], fb);
-            }
-            grid.innerHTML = html;
-            return related.length;
-        }
-
-        // Section 2: Popular This Week — articles from last 7 days (cross-category), excluding current
-        function renderPopular(currentArticle, allArticles) {
-            var now = new Date();
-            var weekAgo = new Date(now);
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            var weekStr = weekAgo.toISOString().slice(0, 10);
-
-            var popular = allArticles.filter(function(a) {
-                return a.id !== currentArticle.id && a.date && a.date >= weekStr;
-            }).sort(function(a, b) {
-                return (b.date || '').localeCompare(a.date || '');
-            }).slice(0, 3);
-
-            // Fallback: if fewer than 3 from this week, take most recent articles
-            if (popular.length < 3) {
-                var extra = allArticles.filter(function(a) {
-                    return a.id !== currentArticle.id;
-                }).sort(function(a, b) {
-                    return (b.date || '').localeCompare(a.date || '');
-                });
-                var ids = {};
-                for (var p = 0; p < popular.length; p++) ids[popular[p].id] = true;
-                for (var e = 0; e < extra.length && popular.length < 3; e++) {
-                    if (!ids[extra[e].id]) {
-                        popular.push(extra[e]);
-                        ids[extra[e].id] = true;
-                    }
-                }
-            }
-
-            if (popular.length === 0) return 0;
-
-            var section = document.getElementById('popularSection');
-            section.style.display = 'block';
-            var grid = document.getElementById('popularGrid');
-            var html = '';
-            for (var i = 0; i < popular.length; i++) {
-                var fb = getFallbackImage(popular[i].category);
-                html += buildCardHTML(popular[i], fb);
-            }
-            grid.innerHTML = html;
-            return popular.length;
-        }
-
-        // Section 3: Recommended Reading — 1 article from each OTHER category
-        function renderRecommended(currentArticle, allArticles) {
-            var currentCat = currentArticle.category;
-            var categories = {};
-            for (var i = 0; i < allArticles.length; i++) {
-                var cat = allArticles[i].category;
-                if (cat !== currentCat && allArticles[i].id !== currentArticle.id) {
-                    if (!categories[cat]) categories[cat] = [];
-                    categories[cat].push(allArticles[i]);
-                }
-            }
-
-            var recommended = [];
-            var catKeys = Object.keys(categories);
-            // Sort each category by date, pick latest 1 from each
-            for (var c = 0; c < catKeys.length; c++) {
-                categories[catKeys[c]].sort(function(a, b) {
-                    return (b.date || '').localeCompare(a.date || '');
-                });
-                recommended.push(categories[catKeys[c]][0]);
-            }
-            // Take up to 3
-            recommended = recommended.slice(0, 3);
-
-            if (recommended.length === 0) return 0;
-
-            var section = document.getElementById('recommendedSection');
-            section.style.display = 'block';
-            var grid = document.getElementById('recommendedGrid');
-            var html = '';
-            for (var i = 0; i < recommended.length; i++) {
-                var fb = getFallbackImage(recommended[i].category);
-                html += buildCardHTML(recommended[i], fb);
-            }
-            grid.innerHTML = html;
-            return recommended.length;
-        }
-
-        async function loadArticle() {
-            // Step 1: Load config for category names
-            await new Promise(function(resolve) {
-                loadSiteConfig(function(config) {
-                    if (config) {
-                        categoryNames = buildCategoryNames(config);
-                    } else {
-                        categoryNames = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
-                    }
-                    resolve();
-                });
             });
-
-            // Step 2: Get article ID from URL
-            var urlParams = new URLSearchParams(window.location.search);
-            var articleId = parseInt(urlParams.get('id')) || 1;
-
-            try {
-                // Step 3: Fetch index
-                var index = await fetch('articles-index.json?v=' + Date.now()).then(function(r) {
-                    if (!r.ok) throw new Error('index HTTP ' + r.status);
-                    return r.json();
-                });
-                var category = index[articleId];
-                if (!category) throw new Error('Article ' + articleId + ' not in index');
-
-                // Step 4: Fetch category articles
-                var catData = await fetch('articles-' + category + '.json?v=' + index.v).then(function(r) {
-                    if (!r.ok) throw new Error('category file HTTP ' + r.status);
-                    return r.json();
-                });
-                var catArticles = catData.articles || [];
-                var article = catArticles.find(function(a) { return a.id === articleId; });
-                if (!article) throw new Error('Article ' + articleId + ' not found in ' + category);
-
-                // Step 5: Fetch ALL articles from all categories for cross-linking
-                var allCategories = ['technology', 'finance', 'ai-tools', 'health-lifestyle'];
-                var fetchPromises = [];
-                for (var i = 0; i < allCategories.length; i++) {
-                    if (allCategories[i] === category) {
-                        fetchPromises.push(Promise.resolve(catArticles));
-                    } else {
-                        fetchPromises.push(
-                            fetch('articles-' + allCategories[i] + '.json?v=' + index.v)
-                                .then(function(r) { return r.json(); })
-                                .then(function(d) { return d.articles || []; })
-                                .catch(function() { return []; })
-                        );
-                    }
-                }
-                var allCatResults = await Promise.all(fetchPromises);
-                allArticlesGlobal = [];
-                for (var i = 0; i < allCatResults.length; i++) {
-                    allArticlesGlobal = allArticlesGlobal.concat(allCatResults[i]);
-                }
-
-                // Step 6: Render article + internal linking sections
-                maxArticleId = Math.max.apply(null, catArticles.map(function(a) { return a.id; }));
-                renderArticle(article, maxArticleId);
-
-                var totalLinks = 0;
-                totalLinks += renderRelated(article, allArticlesGlobal);
-                totalLinks += renderPopular(article, allArticlesGlobal);
-                totalLinks += renderRecommended(article, allArticlesGlobal);
-
-            } catch (error) {
-                console.error('Article load error:', error.message);
-                var container = document.getElementById('articleDetail');
-                if (container) {
-                    container.innerHTML = '<p style="text-align:center;padding:3rem;">Unable to load article: ' + error.message + '. <a href="index.html">Return to homepage</a></p>';
+            var ids = {};
+            for (var p = 0; p < popular.length; p++) ids[popular[p].id] = true;
+            for (var e = 0; e < extra.length && popular.length < 3; e++) {
+                if (!ids[extra[e].id]) {
+                    popular.push(extra[e]);
+                    ids[extra[e].id] = true;
                 }
             }
         }
-
-        document.addEventListener('DOMContentLoaded', loadArticle);
+        if (popular.length === 0) return 0;
+        var section = document.getElementById('popularSection');
+        section.style.display = 'block';
+        var grid = document.getElementById('popularGrid');
+        var html = '';
+        for (var i = 0; i < popular.length; i++) {
+            var fb = getFallbackImage(popular[i].category);
+            html += buildCardHTML(popular[i], fb);
+        }
+        grid.innerHTML = html;
+        return popular.length;
+    }
+    function renderRecommended(currentArticle, allArticles) {
+        var currentCat = currentArticle.category;
+        var categories = {};
+        for (var i = 0; i < allArticles.length; i++) {
+            var cat = allArticles[i].category;
+            if (cat !== currentCat && allArticles[i].id !== currentArticle.id) {
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(allArticles[i]);
+            }
+        }
+        var recommended = [];
+        var catKeys = Object.keys(categories);
+        for (var c = 0; c < catKeys.length; c++) {
+            categories[catKeys[c]].sort(function(a, b) {
+                return (b.date || '').localeCompare(a.date || '');
+            });
+            recommended.push(categories[catKeys[c]][0]);
+        }
+        recommended = recommended.slice(0, 3);
+        if (recommended.length === 0) return 0;
+        var section = document.getElementById('recommendedSection');
+        section.style.display = 'block';
+        var grid = document.getElementById('recommendedGrid');
+        var html = '';
+        for (var i = 0; i < recommended.length; i++) {
+            var fb = getFallbackImage(recommended[i].category);
+            html += buildCardHTML(recommended[i], fb);
+        }
+        grid.innerHTML = html;
+        return recommended.length;
+    }
+    async function loadArticle() {
+        // Step 1: Load config for category names
+        await new Promise(function(resolve) {
+            loadSiteConfig(function(config) {
+                if (config) {
+                    categoryNames = buildCategoryNames(config);
+                    // Override current subdomain category name
+                    categoryNames[CAT_ID] = CFG.name;
+                } else {
+                    categoryNames = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
+                    categoryNames[CAT_ID] = CFG.name;
+                }
+                resolve();
+            });
+        });
+        // Step 2: Get article ID from URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var articleId = parseInt(urlParams.get('id')) || 1;
+        try {
+            // Step 3: Fetch articles-index.json (format: { v, articles: {id: category}, ids: [] })
+            var indexData = await fetch('articles-index.json?v=' + Date.now()).then(function(r) {
+                if (!r.ok) throw new Error('index HTTP ' + r.status);
+                return r.json();
+            });
+            var articleMap = indexData.articles || indexData;
+            var indexV = indexData.v || Date.now();
+            var category = articleMap[articleId];
+            if (!category) throw new Error('Article ' + articleId + ' not in index');
+            // Step 4: Fetch category articles
+            var catData = await fetch('articles-' + category + '.json?v=' + indexV).then(function(r) {
+                if (!r.ok) throw new Error('category file HTTP ' + r.status);
+                return r.json();
+            });
+            var catArticles = catData.articles || [];
+            var article = catArticles.find(function(a) { return a.id === articleId; });
+            if (!article) throw new Error('Article ' + articleId + ' not found in ' + category);
+            // Step 5: Fetch ALL articles from all categories for cross-linking
+            var allCategories = ['technology', 'finance', 'ai-tools', 'health-lifestyle'];
+            var fetchPromises = [];
+            for (var i = 0; i < allCategories.length; i++) {
+                if (allCategories[i] === category) {
+                    fetchPromises.push(Promise.resolve(catArticles));
+                } else {
+                    fetchPromises.push(
+                        fetch('articles-' + allCategories[i] + '.json?v=' + indexV)
+                            .then(function(r) { return r.json(); })
+                            .then(function(d) { return d.articles || []; })
+                            .catch(function() { return []; })
+                    );
+                }
+            }
+            var allCatResults = await Promise.all(fetchPromises);
+            allArticlesGlobal = [];
+            for (var i = 0; i < allCatResults.length; i++) {
+                allArticlesGlobal = allArticlesGlobal.concat(allCatResults[i]);
+            }
+            // Step 6: Render article + internal linking sections
+            maxArticleId = Math.max.apply(null, catArticles.map(function(a) { return a.id; }));
+            renderArticle(article, maxArticleId);
+            var totalLinks = 0;
+            totalLinks += renderRelated(article, allArticlesGlobal);
+            totalLinks += renderPopular(article, allArticlesGlobal);
+            totalLinks += renderRecommended(article, allArticlesGlobal);
+        } catch (error) {
+            console.error('Article load error:', error.message);
+            var container = document.getElementById('articleDetail');
+            if (container) {
+                container.innerHTML = '<p style="text-align:center;padding:3rem;">Unable to load article: ' + error.message + '. <a href="index.html">Return to homepage</a></p>';
+            }
+        }
+    }
+    document.addEventListener('DOMContentLoaded', loadArticle);
     </script>
 </body>
 </html>
