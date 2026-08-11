@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HelloInsights | Technology, Finance, AI &amp; Lifestyle Insights</title>
-    <meta name="description" content="Explore the latest insights on technology, finance, AI tools, health, and lifestyle. Discover practical ideas, trends, and expert perspectives with HelloInsights.">
-    <meta name="keywords" content="news, insights, technology, finance, AI, health, lifestyle">
+    <title>HelloInsights</title>
+    <meta name="description" content="HelloInsights - News & Insights">
+    <meta name="keywords" content="news, insights">
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
@@ -17,39 +17,33 @@
     <script src="config-loader.js" async></script>
     <style>
     /* ===== Page Header ===== */
-    .page-header{text-align:left;margin:0 auto 0.6rem;max-width:820px;padding:0 1rem;}
-    .page-header .site-name{font-size:1.8rem;font-weight:800;color:#1a1a1a;margin:0 0 .2rem;letter-spacing:-0.5px;}
-    .page-header .site-tagline{font-size:.85rem;font-weight:600;color:#ff6b35;text-transform:uppercase;letter-spacing:1px;margin:0;}
-    /* ===== Hero Intro — Compact ===== */
-    .hero-intro{max-width:820px;margin:0 auto 0.8rem;padding:0 1rem;text-align:left;color:#444;line-height:1.7;font-size:0.95rem;}
-    .hero-intro p{margin-bottom:0.7rem;}
-    .hero-intro p:last-child{margin-bottom:0;}
-    /* ===== Hero Compact Container ===== */
-    .hero-compact{max-width:820px;margin:0 auto;padding:0 1rem;}
-    .hero-compact .hero-cta{display:inline-block;margin-top:0.5rem;padding:8px 22px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .2s;}
-    .hero-compact .hero-cta:hover{background:#e55a2b;}
-    .hero-compact .featured-tags{margin-top:0.4rem;}
-    .hero-compact .featured-tags a{display:inline-block;margin-right:8px;margin-bottom:4px;padding:4px 14px;background:#fff5f0;color:#ff6b35;border:1px solid #ffd4c0;border-radius:20px;font-size:.82rem;font-weight:600;text-decoration:none;transition:background .2s,color .2s;}
-    .hero-compact .featured-tags a:hover{background:#ff6b35;color:#fff;}
-    /* ===== Featured Insights Section ===== */
-    .featured-section{max-width:820px;margin:0 auto 2rem;padding:0 1rem;}
-    .featured-section h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;}
-    .featured-card{display:block;padding:1.1rem 1.4rem;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:0.85rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
-    .featured-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.10);}
-    .featured-card-title{font-size:1.15rem;font-weight:700;color:#1a1a1a;margin:0 0 .35rem;line-height:1.35;}
-    .featured-card-meta{font-size:.85rem;color:#888;margin-bottom:.45rem;}
+    .page-header{text-align:center;margin-bottom:1.5rem;}
+    .page-header .site-tagline{font-size:1.6rem;font-weight:800;color:#ff6b35;text-transform:uppercase;letter-spacing:1px;margin:0;}
+    /* ===== Featured Insights ===== */
+    .featured-section{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;text-align:left;}
+    .featured-section h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;}
+    .featured-card{display:block;padding:0.9rem 1.15rem;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:0.65rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .featured-card:hover{border-color:#ff6b35;box-shadow:0 2px 10px rgba(255,107,53,.08);}
+    .featured-card-title{font-size:1.02rem;font-weight:600;color:#1a1a1a;margin:0 0 .2rem;line-height:1.35;}
+    .featured-card-meta{font-size:.8rem;color:#888;margin-bottom:.3rem;}
     .featured-card-meta .cat{color:#ff6b35;font-weight:600;}
-    .featured-card-excerpt{font-size:.91rem;color:#555;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
+    .featured-card-excerpt{font-size:.86rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
+    .featured-read-more{display:inline-block;margin-top:.5rem;padding:6px 20px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.86rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .featured-read-more:hover{background:#e55a2b;}
+    /* ===== Hero Intro — Left Aligned ===== */
+    .hero-intro{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;text-align:left;color:#444;line-height:1.75;font-size:0.95rem;}
+    .hero-intro p{margin-bottom:0.9rem;}
+    .hero-intro p:last-child{margin-bottom:0;}
     /* ===== Latest Insights Section (Bottom) ===== */
-    .latest-section{max-width:820px;margin:0 auto 3rem;padding:0 1rem;}
-    .latest-section h2{font-size:1.5rem;font-weight:700;color:#1a1a1a;margin-bottom:1.25rem;}
-    .latest-card{display:block;padding:1.1rem 1.4rem;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:0.85rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .latest-section{max-width:1100px;margin:0 auto 3rem;padding:0 1rem;}
+    .latest-section h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin-bottom:1.1rem;}
+    .latest-card{display:block;padding:0.9rem 1.2rem;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:0.7rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
     .latest-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.10);}
-    .latest-card-title{font-size:1.15rem;font-weight:700;color:#1a1a1a;margin:0 0 .35rem;line-height:1.35;}
-    .latest-card-meta{font-size:.85rem;color:#888;margin-bottom:.45rem;}
+    .latest-card-title{font-size:1.08rem;font-weight:700;color:#1a1a1a;margin:0 0 .25rem;line-height:1.35;}
+    .latest-card-meta{font-size:.82rem;color:#888;margin-bottom:.35rem;}
     .latest-card-meta .cat{color:#ff6b35;font-weight:600;}
-    .latest-card-excerpt{font-size:.91rem;color:#555;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
-    .read-more-btn-inline{display:inline-block;margin-top:.8rem;padding:8px 24px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.91rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .latest-card-excerpt{font-size:.88rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
+    .read-more-btn-inline{display:inline-block;margin-top:.7rem;padding:7px 22px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
     .read-more-btn-inline:hover{background:#e55a2b;}
     /* ===== Mobile Header Optimization ===== */
     @media(max-width:768px){
@@ -60,19 +54,21 @@
         .nav a{font-size:14px!important;padding:6px 8px!important;}
         .search-box input{font-size:13px!important;height:32px!important;}
         .search-box button{font-size:14px!important;height:32px!important;width:32px!important;}
-        .page-header{margin-top:0.5rem!important;margin-bottom:0.5rem!important;}
-        .page-header .site-name{font-size:1.4rem!important;}
-        .page-header .site-tagline{font-size:.78rem!important;}
-        .hero-intro{margin-bottom:0.6rem!important;}
+        .page-header{margin-top:0.5rem!important;margin-bottom:0.7rem!important;}
+        .page-header .site-tagline{font-size:1.25rem!important;}
+        .hero-intro{margin-bottom:1rem!important;}
         .hero-intro p{font-size:0.85rem!important;line-height:1.5!important;margin-bottom:0.5rem!important;}
         .featured-section{margin-bottom:1.2rem!important;}
-        .featured-card{padding:0.75rem 0.9rem!important;margin-bottom:0.6rem!important;}
-        .featured-card-title{font-size:0.98rem!important;}
+        .featured-section h2{font-size:1.15rem!important;}
+        .featured-card{padding:0.7rem 0.85rem!important;margin-bottom:0.5rem!important;}
+        .featured-card-title{font-size:0.92rem!important;}
+        .featured-card-meta{font-size:0.75rem!important;margin-bottom:0.2rem!important;}
+        .featured-card-excerpt{font-size:0.8rem!important;line-height:1.4!important;}
         .latest-section{margin-bottom:1.5rem!important;}
-        .latest-card{padding:0.75rem 0.9rem!important;margin-bottom:0.6rem!important;}
-        .latest-card-title{font-size:0.98rem!important;}
-        .latest-card-meta{font-size:0.78rem!important;margin-bottom:0.3rem!important;}
-        .latest-card-excerpt{font-size:0.84rem!important;line-height:1.45!important;}
+        .latest-card{padding:0.7rem 0.85rem!important;margin-bottom:0.55rem!important;}
+        .latest-card-title{font-size:0.95rem!important;}
+        .latest-card-meta{font-size:0.76rem!important;margin-bottom:0.25rem!important;}
+        .latest-card-excerpt{font-size:0.82rem!important;line-height:1.4!important;}
     }
     /* ===== Ad Slot Placeholders — min-height 250px to prevent CLS ===== */
     .ad-slot{margin:1.2rem auto;text-align:center;min-height:250px;display:flex;align-items:center;justify-content:center;}
@@ -129,36 +125,29 @@
     <main class="container">
         <!-- Ad: Native Top (728×90 / responsive) -->
         <div class="ad-slot" data-ad-slot="native-top"></div>
-        <!-- Hero: compact, not full-screen -->
         <div class="page-header">
-            <h1 class="site-name" id="siteName"></h1>
-            <p class="site-tagline" id="siteTagline"></p>
+            <h1 class="site-tagline" id="siteTagline"></h1>
         </div>
         <div class="hero-intro" id="heroIntro"></div>
-        <div class="hero-compact">
-            <div class="featured-tags" id="featuredTags"></div>
-        </div>
-        <!-- Search -->
         <div id="searchInfo" style="display:none;margin-bottom:1rem;padding:.5rem 1rem;background:#fff3cd;border-radius:8px;">
             <span id="searchText"></span>
             <button onclick="clearSearch()" style="margin-left:10px;background:#ff6b35;color:white;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;">Clear</button>
         </div>
         <!-- Featured Insights -->
-        <div class="featured-section" id="featuredSection" style="display:none;">
+        <div class="featured-section" id="featuredSection">
             <h2>Featured Insights</h2>
             <div id="featuredCards"></div>
-            <div id="featuredReadMoreWrap" style="text-align:center;display:none;">
-                <button class="read-more-btn-inline" id="featuredReadMoreBtn" onclick="expandFeatured()">Read More</button>
+            <div id="featuredReadMoreWrap" style="display:none;">
+                <button class="featured-read-more" id="featuredReadMoreBtn" onclick="expandFeatured()">Read More</button>
             </div>
         </div>
-        <!-- Article Grid -->
         <div class="article-grid" id="articleGrid">
             <div class="loading" id="loading"></div>
         </div>
         <div class="pagination" id="pagination"></div>
         <!-- Ad: Interstitial (page turn) -->
         <div class="ad-slot" data-ad-slot="interstitial"></div>
-        <!-- Latest Insights (bottom, 3 + Read More) -->
+        <!-- Latest Insights (moved to bottom, 3 + Read More) -->
         <div class="latest-section" id="latestSection">
             <h2>Latest Insights</h2>
             <div id="latestCards"></div>
@@ -207,9 +196,8 @@
             jsonFile: 'articles-finance.json',
             titleSuffix: 'Finance News, Investing & Market Insights | HelloInsights',
             metaDesc: 'Explore personal finance, investing, markets, banking, fintech, economic trends and money management insights from HelloInsights Finance.',
-            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future. HelloInsights Finance explores <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, connecting practical financial knowledge with broader trends shaping money and markets.</p><p>Our editorial coverage goes beyond headlines to explain why financial developments matter — from investment strategies and banking innovation to inflation, interest rates, and economic shifts.</p>',
-            gaId: 'G-FINANCE-XXXXXXX',
-            featuredTopics: ['Personal Finance', 'Investing', 'Markets', 'Fintech', 'Banking']
+            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future. HelloInsights Finance explores <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, connecting practical financial knowledge with broader trends shaping money and markets.</p><p>Our editorial coverage goes beyond headlines to explain why financial developments matter. We explore investment strategies, market movements, banking innovation, digital finance, inflation, interest rates, and economic trends, helping readers better understand changing financial conditions and make more informed decisions.</p>',
+            gaId: 'G-FINANCE-XXXXXXX'
         },
         'technology': {
             name: 'Technology',
@@ -220,8 +208,7 @@
             titleSuffix: 'Technology News & Innovation Insights | HelloInsights',
             metaDesc: 'Explore the latest technology news, product reviews, digital innovation and industry insights from HelloInsights Technology.',
             heroIntro: '',
-            gaId: 'G-TECH-XXXXXXX',
-            featuredTopics: ['AI', 'Cybersecurity', 'Cloud', 'Web3', 'IoT']
+            gaId: 'G-TECH-XXXXXXX'
         },
         'ai-tools': {
             name: 'AI Tools',
@@ -232,8 +219,7 @@
             titleSuffix: 'AI Tools News & Reviews | HelloInsights',
             metaDesc: 'Explore the latest AI tools news, reviews, and artificial intelligence insights from HelloInsights AI Tools.',
             heroIntro: '',
-            gaId: 'G-AITOOLS-XXXXXXX',
-            featuredTopics: ['ChatGPT', 'AI Image', 'AI Coding', 'Automation', 'ML Platforms']
+            gaId: 'G-AITOOLS-XXXXXXX'
         },
         'health-lifestyle': {
             name: 'Health & Lifestyle',
@@ -244,13 +230,9 @@
             titleSuffix: 'Health & Lifestyle Insights | HelloInsights',
             metaDesc: 'Explore the latest health news, wellness tips, and lifestyle insights from HelloInsights Health & Lifestyle.',
             heroIntro: '',
-            gaId: 'G-HEALTH-XXXXXXX',
-            featuredTopics: ['Nutrition', 'Fitness', 'Mental Health', 'Sleep', 'Wellness']
+            gaId: 'G-HEALTH-XXXXXXX'
         }
     };
-    // ===== MAIN DOMAIN TITLE/META =====
-    var MAIN_DOMAIN_TITLE = 'HelloInsights | Technology, Finance, AI & Lifestyle Insights';
-    var MAIN_DOMAIN_META = 'Explore the latest insights on technology, finance, AI tools, health, and lifestyle. Discover practical ideas, trends, and expert perspectives with HelloInsights.';
     // ===== GA4 — Independent per subdomain =====
     (function() {
         var host = window.location.hostname;
@@ -273,18 +255,11 @@
     var host = window.location.hostname;
     var sub = host.split('.')[0];
     var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
-    var IS_MAIN_DOMAIN = !SITE_CONFIGS[sub];
     var CAT_ID = sub;
-    window.IS_SUBDOMAIN = !!SITE_CONFIGS[sub];
+    window.IS_SUBDOMAIN = true;
     // ===== APPLY CONFIG TO PAGE =====
-    if (IS_MAIN_DOMAIN) {
-        document.title = MAIN_DOMAIN_TITLE;
-        document.querySelector('meta[name="description"]').setAttribute('content', MAIN_DOMAIN_META);
-    } else {
-        document.title = CFG.titleSuffix;
-        document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
-    }
-    document.getElementById('siteName').textContent = CFG.name;
+    document.title = CFG.titleSuffix;
+    document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
     document.getElementById('siteTagline').textContent = CFG.tagline;
     document.getElementById('footerAboutTitle').textContent = 'About ' + CFG.name;
     document.getElementById('footerAboutText').textContent = CFG.aboutText;
@@ -294,15 +269,6 @@
         heroIntroEl.innerHTML = CFG.heroIntro;
     } else if (heroIntroEl) {
         heroIntroEl.style.display = 'none';
-    }
-    // Featured topic tags
-    var tagsEl = document.getElementById('featuredTags');
-    if (tagsEl && CFG.featuredTopics) {
-        var tagsHtml = '';
-        for (var t = 0; t < CFG.featuredTopics.length; t++) {
-            tagsHtml += '<a href="#" onclick="searchByTopic(\'' + CFG.featuredTopics[t].replace(/'/g, "\\'") + '\');return false;">' + CFG.featuredTopics[t] + '</a>';
-        }
-        tagsEl.innerHTML = tagsHtml;
     }
     // Nav
     document.getElementById('navList').innerHTML =
@@ -324,10 +290,10 @@
     fallbackImages[CAT_ID] = CFG.fallbackImage;
     var defaultFallback = CFG.fallbackImage;
     var allArticlesCache = [];
+
     var latestExpanded = false;
     var featuredExpanded = false;
-    var featuredArticles = [];
-    var latestArticles = [];
+    var allFeaturedArticles = [];
     // Format date
     function formatDate(dateStr) {
         if (!dateStr) return '';
@@ -411,12 +377,6 @@
         if (si && st) { si.style.display = 'block'; st.textContent = 'Found ' + filteredArticles.length + ' results for "' + q + '"'; }
         renderSearchResults(filteredArticles);
     }
-    function searchByTopic(topic) {
-        var input = document.getElementById('searchInput');
-        if (input) input.value = topic;
-        handleSearch();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
     function clearSearch() {
         isSearching = false; searchQuery = ''; currentPage = 1;
         var input = document.getElementById('searchInput');
@@ -447,11 +407,13 @@
         var html = '';
         for (var i = 0; i < articles.length; i++) {
             html += createArticleCard(articles[i]);
+            // Insert inline ad banners after 3rd and 6th card
             if (i === 2) html += createInlineAdBanner('banner-mid-1');
             if (i === 5) html += createInlineAdBanner('banner-mid-2');
         }
         grid.innerHTML = html;
         renderPagination(allArticlesCache.length);
+        // Re-trigger ad render for dynamically inserted slots
         if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
             window.AdConfig.renderAll();
         }
@@ -480,15 +442,14 @@
             window.AdConfig.renderAll();
         }
     }
-    // ===== Featured Insights (3 + Read More) =====
+    // ===== Featured Insights =====
     function renderFeaturedInsights(articles) {
-        featuredArticles = articles;
-        var section = document.getElementById('featuredSection');
+        allFeaturedArticles = articles;
         var container = document.getElementById('featuredCards');
+        var section = document.getElementById('featuredSection');
         var readMoreWrap = document.getElementById('featuredReadMoreWrap');
         if (!container || !section || articles.length === 0) { if (section) section.style.display = 'none'; return; }
-        section.style.display = 'block';
-        var showCount = featuredExpanded ? Math.min(articles.length, 12) : Math.min(3, articles.length);
+        var showCount = featuredExpanded ? Math.min(12, articles.length) : Math.min(3, articles.length);
         var html = '';
         for (var i = 0; i < showCount; i++) {
             var a = articles[i];
@@ -510,16 +471,17 @@
     }
     function expandFeatured() {
         featuredExpanded = true;
-        renderFeaturedInsights(featuredArticles);
+        renderFeaturedInsights(allFeaturedArticles);
     }
     // ===== Latest Insights (bottom, 3 + Read More) =====
+    var allLatestArticles = [];
     function renderLatestInsights(articles) {
-        latestArticles = articles;
+        allLatestArticles = articles;
         var container = document.getElementById('latestCards');
         var section = document.getElementById('latestSection');
         var readMoreWrap = document.getElementById('latestReadMoreWrap');
         if (!container || !section || articles.length === 0) { if (section) section.style.display = 'none'; return; }
-        var showCount = latestExpanded ? Math.min(articles.length, 12) : Math.min(3, articles.length);
+        var showCount = latestExpanded ? articles.length : Math.min(3, articles.length);
         var html = '';
         for (var i = 0; i < showCount; i++) {
             var a = articles[i];
@@ -541,28 +503,18 @@
     }
     function expandLatestInsights() {
         latestExpanded = true;
-        renderLatestInsights(latestArticles);
+        renderLatestInsights(allLatestArticles);
     }
     // ===== Load Articles =====
     fetch(CFG.jsonFile)
         .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
             allArticlesCache = data.articles || [];
-            // Sort by date descending
             allArticlesCache.sort(function(a, b) {
                 return (b.date || '').localeCompare(a.date || '');
             });
-            // Featured: articles with featured=true, or fallback to first 3
-            var featured = allArticlesCache.filter(function(a) { return a.featured === true; });
-            if (featured.length === 0) {
-                featured = allArticlesCache.slice(0, 3);
-            }
-            // Latest: top articles by date, excluding featured ones
-            var featuredIds = {};
-            for (var f = 0; f < featured.length; f++) featuredIds[featured[f].id] = true;
-            var latest = allArticlesCache.filter(function(a) { return !featuredIds[a.id]; }).slice(0, 12);
-            renderFeaturedInsights(featured);
-            renderLatestInsights(latest);
+            renderFeaturedInsights(allArticlesCache.slice(0, 12));
+            renderLatestInsights(allArticlesCache.slice(0, 10));
             fetchArticlesForPage(1);
             initSearch();
         })
