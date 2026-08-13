@@ -167,7 +167,7 @@
     var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
     var CAT_ID = sub;
     // Apply subdomain config (window.IS_SUBDOMAIN already set in <head>)
-    document.getElementById('footerAboutTitle').textContent = 'About ' + CFG.name;
+    document.getElementById('footerAboutTitle').textContent = 'About HelloInsights';
     document.getElementById('footerAboutText').textContent = CFG.aboutText;
     document.getElementById('navList').innerHTML =
         '<li><a href="index.html">Home</a></li>' +
@@ -243,13 +243,30 @@
             '</div>' +
             '</div>';
         document.title = article.title + ' - ' + CFG.name;
+        // Initialize image dedup tracking
+        var usedImageIds = {};
+        var heroPhotoId = extractUnsplashId(article.image);
+        if (heroPhotoId) usedImageIds[heroPhotoId] = true;
     }
-    function buildCardHTML(article, fallback) {
+    function extractUnsplashId(url) {
+        var m = url && url.match(/photo-([a-f0-9]+)/);
+        return m ? m[1] : '';
+    }
+    function getUniqueImage(article, fallback) {
+        var photoId = extractUnsplashId(article.image);
+        if (photoId && usedImageIds[photoId]) {
+            return fallback;
+        }
+        if (photoId) usedImageIds[photoId] = true;
+        return article.image;
+    }
+    function buildCardHTML(article, fallback, imageOverride) {
+        var imgSrc = imageOverride || article.image;
         var catName = categoryNames[article.category] || article.category;
         var date = article.date ? formatDate(article.date) : generateDate(article.id, maxArticleId);
         return '<article class="article-card">' +
             '<div class="card-image">' +
-            '<img src="' + article.image + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + fallback + '\'">' +
+            '<img src="' + imgSrc + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + fallback + '\'">' +
             '</div>' +
             '<div class="card-content">' +
             '<span class="card-category">' + catName + '</span>' +
@@ -260,7 +277,7 @@
             '<div class="card-meta">' +
             '<span> ' + date + '</span>' +
             '</div>' +
-            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More...</a>' +
+            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
             '</div>' +
             '</article>';
     }
@@ -278,7 +295,8 @@
         var html = '';
         for (var i = 0; i < related.length; i++) {
             var fb = getFallbackImage(related[i].category);
-            html += buildCardHTML(related[i], fb);
+            var uniqImg = getUniqueImage(related[i], fb);
+            html += buildCardHTML(related[i], fb, uniqImg);
         }
         grid.innerHTML = html;
         return related.length;
@@ -315,7 +333,8 @@
         var html = '';
         for (var i = 0; i < popular.length; i++) {
             var fb = getFallbackImage(popular[i].category);
-            html += buildCardHTML(popular[i], fb);
+            var uniqImg = getUniqueImage(popular[i], fb);
+            html += buildCardHTML(popular[i], fb, uniqImg);
         }
         grid.innerHTML = html;
         return popular.length;
@@ -346,7 +365,8 @@
         var html = '';
         for (var i = 0; i < recommended.length; i++) {
             var fb = getFallbackImage(recommended[i].category);
-            html += buildCardHTML(recommended[i], fb);
+            var uniqImg = getUniqueImage(recommended[i], fb);
+            html += buildCardHTML(recommended[i], fb, uniqImg);
         }
         grid.innerHTML = html;
         return recommended.length;
