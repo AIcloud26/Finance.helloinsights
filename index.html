@@ -29,7 +29,7 @@
     .featured-card-meta{font-size:.8rem;color:#888;margin-bottom:.3rem;}
     .featured-card-meta .cat{color:#ff6b35;font-weight:600;}
     .featured-card-excerpt{font-size:.86rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
-    .featured-read-more{display:inline-block;margin-top:.5rem;padding:6px 20px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.86rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .featured-read-more{display:inline-block;margin-top:.5rem;padding:5px 16px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .2s;}
     .featured-read-more:hover{background:#e55a2b;}
     /* ===== Hero Intro — Left Aligned ===== */
     .hero-intro{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;text-align:left;color:#444;line-height:1.75;font-size:0.95rem;}
@@ -44,7 +44,7 @@
     .latest-card-meta{font-size:.82rem;color:#888;margin-bottom:.35rem;}
     .latest-card-meta .cat{color:#ff6b35;font-weight:600;}
     .latest-card-excerpt{font-size:.88rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
-    .read-more-btn-inline{display:inline-block;margin-top:.7rem;padding:7px 22px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .read-more-btn-inline{display:inline-block;margin-top:.7rem;padding:5px 16px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .2s;}
     .read-more-btn-inline:hover{background:#e55a2b;}
     /* ===== Mobile Header Optimization ===== */
     @media(max-width:768px){
@@ -71,9 +71,11 @@
         .latest-card-meta{font-size:0.76rem!important;margin-bottom:0.25rem!important;}
         .latest-card-excerpt{font-size:0.82rem!important;line-height:1.4!important;}
     }
-    /* ===== Ad Slot Placeholders — min-height 250px to prevent CLS ===== */
-    .ad-slot{margin:1.2rem auto;text-align:center;min-height:250px;display:flex;align-items:center;justify-content:center;}
-    @media(max-width:768px){.ad-slot{min-height:200px;margin:0.8rem auto;}}
+    /* ===== Ad Slot Placeholders ===== */
+    .ad-slot{margin:1.2rem auto;text-align:center;min-height:0;overflow:hidden;transition:all 0.3s ease;}
+    .ad-slot.has-ad{min-height:250px;}
+    @media(max-width:768px){.ad-slot.has-ad{min-height:200px;}}
+    .ad-slot.ad-hidden{display:none!important;}
     /* ===== Inline Ad Banner (between article cards) ===== */
     .inline-ad-banner{grid-column:1/-1;margin:0.5rem 0;}
     </style>
@@ -136,7 +138,7 @@
         <div class="featured-section" id="featuredSection">
             <h2>Featured Insights</h2>
             <div id="featuredCards"></div>
-            <div id="featuredReadMoreWrap" style="display:none;">
+            <div id="featuredReadMoreWrap" style="display:none;text-align:right;">
                 <button class="featured-read-more" id="featuredReadMoreBtn" onclick="expandFeatured()">Read More</button>
             </div>
         </div>
@@ -148,7 +150,7 @@
         <div class="latest-section" id="latestSection">
             <h2>Latest Insights</h2>
             <div id="latestCards"></div>
-            <div id="latestReadMoreWrap" style="text-align:center;display:none;">
+            <div id="latestReadMoreWrap" style="text-align:right;display:none;">
                 <button class="read-more-btn-inline" id="latestReadMoreBtn" onclick="expandLatestInsights()">Read More</button>
             </div>
         </div>
@@ -256,7 +258,7 @@
     document.title = CFG.titleSuffix;
     document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
     document.getElementById('siteTagline').textContent = CFG.tagline;
-    document.getElementById('footerAboutTitle').textContent = 'About ' + CFG.name;
+    document.getElementById('footerAboutTitle').textContent = 'About HelloInsights';
     document.getElementById('footerAboutText').textContent = CFG.aboutText;
     // Hero Intro
     var heroIntroEl = document.getElementById('heroIntro');
@@ -498,7 +500,8 @@
         .then(function(data) {
             allArticlesCache = data.articles || [];
             allArticlesCache.sort(function(a, b) {
-                return (b.date || '').localeCompare(a.date || '');
+                var c = (b.date || '').localeCompare(a.date || '');
+                return c !== 0 ? c : (Math.random() - 0.5);
             });
             renderFeaturedInsights(allArticlesCache.slice(0, 12));
             renderLatestInsights(allArticlesCache.slice(0, 10));
