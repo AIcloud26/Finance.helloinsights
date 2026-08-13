@@ -147,19 +147,92 @@ function loadMGID(config) {
 }
 
 // ==========================================
-// 3. AdSense Manager — Lazy Load
+// 3. AdEngine — Unified Multi-Provider Ad Manager
 // ==========================================
+var AdEngine = {
+    providers: {},
+    slots: [],
+    registerProvider: function(name, provider) {
+        this.providers[name] = provider;
+    },
+    registerSlot: function(el, config) {
+        this.slots.push({ el: el, config: config });
+    },
+    renderAll: function() {
+        var providerKeys = Object.keys(this.providers);
+        for (var i = 0; i < this.slots.length; i++) {
+            var slot = this.slots[i];
+            var filled = false;
+            for (var p = 0; p < providerKeys.length; p++) {
+                var provider = this.providers[providerKeys[p]];
+                if (provider && typeof provider.render === 'function') {
+                    if (provider.render(slot.el, slot.config)) {
+                        slot.el.classList.add('has-ad');
+                        slot.el.classList.remove('ad-hidden');
+                        filled = true;
+                        break;
+                    }
+                }
+            }
+            if (!filled) {
+                // Will be checked later by checkAndHideUnfilled
+            }
+        }
+    }
+};
+
+// ==========================================
+// 3b. AdSense Manager — Lazy Load (Backward Compatible)
+// ==========================================
+var _adSenseClientId = null;
 function loadAdSense(config) {
     if (!config.adsense || !config.adsense.enabled) return;
     
     var clientId = config.adsense.clientId;
     if (!clientId || clientId.indexOf('XXXX') !== -1) return;
+    _adSenseClientId = clientId;
     
     var slots = config.adsense.slots || {};
     var pageAds = config.adsense.pageAds || {};
     var page = location.pathname.split('/').pop() || 'index.html';
     var adSlots = pageAds[page];
-    if (!adSlots || !adSlots.length) return;
+    
+    // If no pageAds config for this page, check if page has data-ad-slot elements
+    // and try to fill them with auto ads (supports article.html etc.)
+    if (!adSlots || !adSlots.length) {
+        var pageAdSlotEls = document.querySelectorAll('[data-ad-slot]');
+        if (pageAdSlotEls.length > 0) {
+            // Load AdSense script for auto-fill
+            if (!document.querySelector('script[src*="adsbygoogle"]')) {
+                var s = document.createElement('script');
+                s.async = true;
+                s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + clientId;
+                s.crossOrigin = 'anonymous';
+                document.head.appendChild(s);
+            }
+            // For unconfigured slots, add ad-hidden class — they'll be checked later
+            for (var u = 0; u < pageAdSlotEls.length; u++) {
+                var el = pageAdSlotEls[u];
+                if (!el._adCreated) {
+                    // Try auto-fill with a generic ins
+                    var ins = document.createElement('ins');
+                    ins.className = 'adsbygoogle';
+                    ins.style.display = 'block';
+                    ins.setAttribute('data-ad-client', clientId);
+                    ins.setAttribute('data-ad-slot', '');
+                    ins.setAttribute('data-ad-format', 'auto');
+                    ins.setAttribute('data-full-width-responsive', 'true');
+                    el.appendChild(ins);
+                    el._adCreated = true;
+                    try {
+                        (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch(e) {}
+                }
+            }
+            scheduleUnfilledCheck();
+        }
+        return;
+    }
     
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
         var s = document.createElement('script');
@@ -181,7 +254,7 @@ function loadAdSense(config) {
         if (def.height) anchor.style.minHeight = def.height;
         if (def.marginTop !== undefined) anchor.style.marginTop = def.marginTop;
         if (def.marginBottom !== undefined) anchor.style.marginBottom = def.marginBottom;
-        anchor.className = 'ad-container';
+        anchor.classList.add('ad-container');
         
         pendingSlots.push({ anchor: anchor, def: def });
     }
@@ -212,6 +285,51 @@ function loadAdSense(config) {
         scheduleUnfilledCheck();
     }
 }
+
+// Register AdSense as AdEngine provider
+AdEngine.registerProvider('adsense', {
+    render: function(el, config) {
+        if (!config || !config.clientId || config.clientId.indexOf('XXXX') !== -1) return false;
+        if (el._adCreated) return true;
+        el._adCreated = true;
+        var ins = document.createElement('ins');
+        ins.className = 'adsbygoogle';
+        ins.style.display = 'block';
+        ins.setAttribute('data-ad-client', config.clientId);
+        ins.setAttribute('data-ad-slot', config.id || '');
+        ins.setAttribute('data-ad-format', config.format || 'auto');
+        ins.setAttribute('data-full-width-responsive', 'true');
+        if (config.layoutKey) ins.setAttribute('data-ad-layout-key', config.layoutKey);
+        el.appendChild(ins);
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        return true;
+    }
+});
+
+// Register ADX provider (placeholder — user supplies ADX code)
+AdEngine.registerProvider('adx', {
+    render: function(el, config) {
+        // TODO: Implement ADX ad rendering when config is provided
+        if (!config || !config.enabled) return false;
+        return false;
+    }
+});
+
+// Register MGID provider for AdEngine
+AdEngine.registerProvider('mgid', {
+    render: function(el, config) {
+        if (!config || !config.widgetId) return false;
+        if (el._adCreated) return true;
+        el._adCreated = true;
+        var div = document.createElement('div');
+        div.setAttribute('data-type', '_mgwidget');
+        div.setAttribute('data-widget-id', config.widgetId);
+        el.appendChild(div);
+        try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
+        return true;
+    }
+});
+
 function createAdIns(anchor, def, clientId) {
     if (anchor._adCreated) return;
     anchor._adCreated = true;
@@ -226,27 +344,78 @@ function createAdIns(anchor, def, clientId) {
     if (def.layoutKey) ins.setAttribute('data-ad-layout-key', def.layoutKey);
     
     anchor.appendChild(ins);
+    anchor.classList.add('has-ad');
     
     try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch(e) {}
 }
-var _unfilledTimer = null;
-function scheduleUnfilledCheck() {
-    if (_unfilledTimer) return;
-    _unfilledTimer = setTimeout(function() {
-        hideUnfilledAds();
-        setTimeout(hideUnfilledAds, 5000);
-    }, 4000);
+
+// ==========================================
+// 3c. Ad Slot Init & Unfilled Detection
+// ==========================================
+function initAdSlots() {
+    var slotEls = document.querySelectorAll('[data-ad-slot]');
+    for (var i = 0; i < slotEls.length; i++) {
+        var el = slotEls[i];
+        // Ensure ad-slot class for styling
+        if (!el.classList.contains('ad-slot')) {
+            el.classList.add('ad-slot');
+        }
+    }
 }
-function hideUnfilledAds() {
+
+function checkAndHideUnfilled() {
+    var slotEls = document.querySelectorAll('[data-ad-slot]');
+    for (var i = 0; i < slotEls.length; i++) {
+        var el = slotEls[i];
+        if (el._adCreated || el.classList.contains('has-ad')) continue;
+        // Check if container has child elements with content
+        var hasContent = false;
+        var children = el.children;
+        for (var c = 0; c < children.length; c++) {
+            if (children[c].offsetHeight > 0 || children[c].scrollHeight > 0) {
+                hasContent = true;
+                break;
+            }
+        }
+        if (!hasContent && !el._adCreated) {
+            el.classList.add('ad-hidden');
+        }
+    }
+    // Also check ins.adsbygoogle for unfilled status
     var allIns = document.querySelectorAll('ins.adsbygoogle');
     for (var i = 0; i < allIns.length; i++) {
         if (allIns[i].getAttribute('data-ad-status') === 'unfilled') {
-            var container = allIns[i].closest('.ad-container');
-            if (container) container.style.display = 'none';
+            var container = allIns[i].closest('[data-ad-slot]') || allIns[i].closest('.ad-container');
+            if (container) {
+                container.classList.add('ad-hidden');
+                container.classList.remove('has-ad');
+            }
+        } else if (allIns[i].getAttribute('data-ad-status') === 'filled') {
+            var container = allIns[i].closest('[data-ad-slot]') || allIns[i].closest('.ad-container');
+            if (container) {
+                container.classList.add('has-ad');
+                container.classList.remove('ad-hidden');
+            }
         }
     }
+}
+
+var _unfilledTimer = null;
+function scheduleUnfilledCheck() {
+    if (_unfilledTimer) clearTimeout(_unfilledTimer);
+    _unfilledTimer = setTimeout(function() {
+        checkAndHideUnfilled();
+        // Check again after 5 seconds for slow-loading ads
+        setTimeout(function() {
+            checkAndHideUnfilled();
+        }, 5000);
+    }, 4000);
+}
+function hideUnfilledAds() {
+    // Legacy function — delegate to new checkAndHideUnfilled
+    checkAndHideUnfilled();
 }
 
 // ==========================================
@@ -268,10 +437,14 @@ window.addEventListener('scroll', function() {
 // 5. Auto Init
 // ==========================================
 document.addEventListener('DOMContentLoaded', function() {
+    initAdSlots();
     loadSiteConfig(function(config) {
         if (config) {
             loadMGID(config);
             loadAdSense(config);
+        } else {
+            // Config failed to load — hide all unconfigured ad slots
+            scheduleUnfilledCheck();
         }
     });
 });
