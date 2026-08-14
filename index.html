@@ -71,13 +71,11 @@
         .latest-card-meta{font-size:0.76rem!important;margin-bottom:0.25rem!important;}
         .latest-card-excerpt{font-size:0.82rem!important;line-height:1.4!important;}
     }
-    /* ===== Ad Slot Placeholders ===== */
+    /* ===== Ad Slots ===== */
     .ad-slot{margin:1.2rem auto;text-align:center;min-height:0;overflow:hidden;transition:all 0.3s ease;}
     .ad-slot.has-ad{min-height:250px;}
-    @media(max-width:768px){.ad-slot.has-ad{min-height:200px;}}
     .ad-slot.ad-hidden{display:none!important;}
-    /* ===== Inline Ad Banner (between article cards) ===== */
-    .inline-ad-banner{grid-column:1/-1;margin:0.5rem 0;}
+    @media(max-width:768px){.ad-slot.has-ad{min-height:200px;}}
     </style>
 </head>
 <body>
@@ -146,7 +144,7 @@
             <div class="loading" id="loading"></div>
         </div>
         <div class="pagination" id="pagination"></div>
-        <div class="ad-slot" data-ad-slot="interstitial"></div>
+        <div class="ad-slot" data-ad-slot="banner-mid"></div>
         <div class="latest-section" id="latestSection">
             <h2>Latest Insights</h2>
             <div id="latestCards"></div>
@@ -155,7 +153,6 @@
             </div>
         </div>
         <div class="ad-slot" data-ad-slot="banner-bottom"></div>
-        <div class="ad-slot" data-ad-slot="anchor" style="position:fixed;bottom:0;left:0;right:0;z-index:999;"></div>
     </main>
     <footer class="footer">
         <div class="footer-content">
@@ -313,9 +310,6 @@
             '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
             '</div></article>';
     }
-    function createInlineAdBanner(slotId) {
-        return '<div class="inline-ad-banner"><div class="ad-slot" data-ad-slot="' + slotId + '"></div></div>';
-    }
     function renderPagination(total) {
         var pages = Math.ceil(total / ARTICLES_PER_PAGE);
         var el = document.getElementById('pagination');
@@ -401,8 +395,6 @@
         var html = '';
         for (var i = 0; i < articles.length; i++) {
             html += createArticleCard(articles[i]);
-            if (i === 2) html += createInlineAdBanner('banner-mid-1');
-            if (i === 5) html += createInlineAdBanner('banner-mid-2');
         }
         grid.innerHTML = html;
         renderPagination(allArticlesCache.length);
@@ -425,8 +417,6 @@
         var html = '';
         for (var i = 0; i < page.length; i++) {
             html += createArticleCard(page[i]);
-            if (i === 2) html += createInlineAdBanner('banner-mid-1');
-            if (i === 5) html += createInlineAdBanner('banner-mid-2');
         }
         grid.innerHTML = html;
         renderPagination(articles.length);
