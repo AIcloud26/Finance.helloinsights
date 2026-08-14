@@ -72,12 +72,11 @@
         </div>
     </header>
     <main class="container">
-        <div data-ad-slot="article-banner"></div>
+        <div class="ad-slot" data-ad-slot="article-top"></div>
         <article class="article-detail" id="articleDetail">
             <div class="loading" id="loading"></div>
         </article>
-        <div data-ad-slot="article-mgid"></div>
-        <div data-ad-slot="article-interstitial"></div>
+        <div class="ad-slot" data-ad-slot="article-bottom"></div>
         <section class="internal-links-section" id="relatedSection" style="margin-top:3rem;">
             <h2 class="section-title">Related Articles</h2>
             <div class="article-grid" id="relatedGrid"></div>
@@ -182,6 +181,7 @@
     var maxArticleId = 0;
     var allArticlesGlobal = [];
     var defaultFallback = CFG.fallbackImage;
+    var usedImageIds = {};
     var fallbackImages = {
         'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
         'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
@@ -243,8 +243,7 @@
             '</div>' +
             '</div>';
         document.title = article.title + ' - ' + CFG.name;
-        // Initialize image dedup tracking
-        var usedImageIds = {};
+        // Initialize image dedup tracking (usedImageIds is in outer scope)
         var heroPhotoId = extractUnsplashId(article.image);
         if (heroPhotoId) usedImageIds[heroPhotoId] = true;
     }
