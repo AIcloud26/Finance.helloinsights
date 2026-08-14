@@ -188,18 +188,21 @@ body {
 .back-to-top.visible { opacity: 1; visibility: visible; }
 .back-to-top:hover { background: var(--primary-hover); transform: translateY(-3px); }
 /* ========== Ad Slots ========== */
-[data-ad-slot] {
-    display: none;
-    max-width: 728px;
-    margin: 0 auto;
-    padding: 0;
+.ad-slot {
+    margin: 1.2rem auto;
+    text-align: center;
+    min-height: 0;
     overflow: hidden;
     transition: all 0.3s ease;
 }
-[data-ad-slot].ad-visible {
-    display: block !important;
-    margin: 1.2rem auto !important;
-    padding: 0.5rem !important;
+.ad-slot.has-ad {
+    min-height: 250px;
+}
+.ad-slot.ad-hidden {
+    display: none !important;
+}
+@media (max-width: 768px) {
+    .ad-slot.has-ad { min-height: 200px; }
 }
 /* ========== Responsive — Tablet ========== */
 @media (max-width: 1200px) {
