@@ -1,5 +1,5 @@
-// HelloInsights — Unified Config & Ad Manager v3
-// Supports: MGID content widgets + Google AdSense banners + GA4 tracking
+// HelloInsights — Unified Config & Ad Manager v4
+// Supports: AdSense / MGID / ADX multi-provider ad system
 // All ad positions/sizes controlled by config.json — no HTML code changes needed
 var siteConfig = null;
 
@@ -100,326 +100,182 @@ function loadSiteConfig(callback) {
 }
 
 // ==========================================
-// 2. MGID Manager — Content Widgets
+// 2. Ad Manager — Unified Multi-Provider Ad System
 // ==========================================
-var _mgidLoaded = false;
-function loadMGID(config) {
-    var mgid = config.mgid;
-    if (!mgid || !mgid.enabled) return;
-    
-    var page = location.pathname.split('/').pop() || 'index.html';
-    var widgets = (mgid.widgets && mgid.widgets[page]) || [];
-    if (!widgets.length) return;
-    
-    if (!_mgidLoaded && !document.querySelector('script[src*="jsc.mgid.com"]')) {
-        var s = document.createElement('script');
-        s.src = 'https://jsc.mgid.com/site/' + mgid.siteId + '.js';
-        s.async = true;
-        document.head.appendChild(s);
-        _mgidLoaded = true;
-    }
-    
-    var placed = [];
-    for (var i = 0; i < widgets.length; i++) {
-        var w = widgets[i];
-        var anchor = document.querySelector('[data-ad-slot="' + w.slot + '"]');
-        if (!anchor) continue;
-        
-        if (w.height) anchor.style.minHeight = w.height;
-        if (w.marginTop !== undefined) anchor.style.marginTop = w.marginTop;
-        if (w.marginBottom !== undefined) anchor.style.marginBottom = w.marginBottom;
-        anchor.className = 'ad-container';
-        
-        var div = document.createElement('div');
-        div.setAttribute('data-type', '_mgwidget');
-        div.setAttribute('data-widget-id', w.widgetId);
-        anchor.appendChild(div);
-        placed.push(div);
-    }
-    
-    if (placed.length > 0) {
-        try {
-            (window._mgq = window._mgq || []).push(["_mgc.load"]);
-        } catch(e) {
-            console.warn('MGID trigger error:', e);
-        }
-    }
-}
-
-// ==========================================
-// 3. AdEngine — Unified Multi-Provider Ad Manager
-// ==========================================
-var AdEngine = {
+var AdManager = {
     providers: {},
-    slots: [],
+    config: null,
+    
+    // Register a provider (adsense / mgid / adx)
     registerProvider: function(name, provider) {
         this.providers[name] = provider;
     },
-    registerSlot: function(el, config) {
-        this.slots.push({ el: el, config: config });
-    },
-    renderAll: function() {
-        var providerKeys = Object.keys(this.providers);
-        for (var i = 0; i < this.slots.length; i++) {
-            var slot = this.slots[i];
-            var filled = false;
-            for (var p = 0; p < providerKeys.length; p++) {
-                var provider = this.providers[providerKeys[p]];
-                if (provider && typeof provider.render === 'function') {
-                    if (provider.render(slot.el, slot.config)) {
-                        slot.el.classList.add('has-ad');
-                        slot.el.classList.remove('ad-hidden');
-                        filled = true;
-                        break;
-                    }
-                }
+    
+    // Initialize from config.json
+    init: function(config) {
+        this.config = config;
+        var providerSwitches = config.adProviders || {};
+        var page = this._getPage();
+        var assignments = (config.slotAssignment || {})[page] || {};
+        
+        // Collect all ad slot elements on this page
+        var slotEls = document.querySelectorAll('[data-ad-slot]');
+        for (var i = 0; i < slotEls.length; i++) {
+            var el = slotEls[i];
+            if (!el.classList.contains('ad-slot')) el.classList.add('ad-slot');
+            
+            var slotName = el.getAttribute('data-ad-slot');
+            var providerName = assignments[slotName];
+            
+            if (!providerName) {
+                // No assignment → hide this slot
+                el.classList.add('ad-hidden');
+                continue;
             }
-            if (!filled) {
-                // Will be checked later by checkAndHideUnfilled
+            
+            // Check if provider is enabled
+            var providerSwitch = providerSwitches[providerName];
+            if (!providerSwitch || !providerSwitch.enabled) {
+                el.classList.add('ad-hidden');
+                continue;
+            }
+            
+            // Get provider config
+            var providerConfig = config[providerName] || {};
+            var slotConfig = (providerConfig.slots || {})[slotName] || {};
+            slotConfig._slotName = slotName;
+            
+            // Try to render with the assigned provider
+            var provider = this.providers[providerName];
+            if (provider && typeof provider.render === 'function') {
+                if (provider.render(el, slotConfig)) {
+                    el.classList.add('has-ad');
+                    el.classList.remove('ad-hidden');
+                } else {
+                    el.classList.add('ad-hidden');
+                }
+            } else {
+                el.classList.add('ad-hidden');
+            }
+        }
+        
+        // Schedule unfilled check
+        this._scheduleCheck();
+    },
+    
+    _getPage: function() {
+        var path = location.pathname.split('/').pop();
+        return path || 'index.html';
+    },
+    
+    _scheduleCheck: function() {
+        setTimeout(function() { AdManager._checkUnfilled(); }, 3000);
+        setTimeout(function() { AdManager._checkUnfilled(); }, 8000);
+    },
+    
+    _checkUnfilled: function() {
+        var allIns = document.querySelectorAll('ins.adsbygoogle');
+        for (var i = 0; i < allIns.length; i++) {
+            var status = allIns[i].getAttribute('data-ad-status');
+            if (status === 'unfilled') {
+                var container = allIns[i].closest('[data-ad-slot]');
+                if (container) {
+                    container.classList.add('ad-hidden');
+                    container.classList.remove('has-ad');
+                }
+            } else if (status === 'filled') {
+                var container = allIns[i].closest('[data-ad-slot]');
+                if (container) {
+                    container.classList.add('has-ad');
+                    container.classList.remove('ad-hidden');
+                }
             }
         }
     }
 };
 
 // ==========================================
-// 3b. AdSense Manager — Lazy Load (Backward Compatible)
+// 3. Provider: AdSense
 // ==========================================
-var _adSenseClientId = null;
-function loadAdSense(config) {
-    if (!config.adsense || !config.adsense.enabled) return;
-    
-    var clientId = config.adsense.clientId;
-    if (!clientId || clientId.indexOf('XXXX') !== -1) return;
-    _adSenseClientId = clientId;
-    
-    var slots = config.adsense.slots || {};
-    var pageAds = config.adsense.pageAds || {};
-    var page = location.pathname.split('/').pop() || 'index.html';
-    var adSlots = pageAds[page];
-    
-    // If no pageAds config for this page, check if page has data-ad-slot elements
-    // and try to fill them with auto ads (supports article.html etc.)
-    if (!adSlots || !adSlots.length) {
-        var pageAdSlotEls = document.querySelectorAll('[data-ad-slot]');
-        if (pageAdSlotEls.length > 0) {
-            // Load AdSense script for auto-fill
-            if (!document.querySelector('script[src*="adsbygoogle"]')) {
-                var s = document.createElement('script');
-                s.async = true;
-                s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + clientId;
-                s.crossOrigin = 'anonymous';
-                document.head.appendChild(s);
-            }
-            // For unconfigured slots, add ad-hidden class — they'll be checked later
-            for (var u = 0; u < pageAdSlotEls.length; u++) {
-                var el = pageAdSlotEls[u];
-                if (!el._adCreated) {
-                    // Try auto-fill with a generic ins
-                    var ins = document.createElement('ins');
-                    ins.className = 'adsbygoogle';
-                    ins.style.display = 'block';
-                    ins.setAttribute('data-ad-client', clientId);
-                    ins.setAttribute('data-ad-slot', '');
-                    ins.setAttribute('data-ad-format', 'auto');
-                    ins.setAttribute('data-full-width-responsive', 'true');
-                    el.appendChild(ins);
-                    el._adCreated = true;
-                    try {
-                        (window.adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch(e) {}
-                }
-            }
-            scheduleUnfilledCheck();
-        }
-        return;
-    }
-    
-    if (!document.querySelector('script[src*="adsbygoogle"]')) {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + clientId;
-        s.crossOrigin = 'anonymous';
-        document.head.appendChild(s);
-    }
-    
-    var pendingSlots = [];
-    for (var i = 0; i < adSlots.length; i++) {
-        var key = adSlots[i];
-        var def = slots[key];
-        if (!def) continue;
-        
-        var anchor = document.querySelector('[data-ad-slot="' + key + '"]');
-        if (!anchor) continue;
-        
-        if (def.height) anchor.style.minHeight = def.height;
-        if (def.marginTop !== undefined) anchor.style.marginTop = def.marginTop;
-        if (def.marginBottom !== undefined) anchor.style.marginBottom = def.marginBottom;
-        anchor.classList.add('ad-container');
-        
-        pendingSlots.push({ anchor: anchor, def: def });
-    }
-    
-    if (pendingSlots.length === 0) return;
-    
-    if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-            var triggered = false;
-            for (var j = 0; j < entries.length; j++) {
-                if (entries[j].isIntersecting) {
-                    var item = entries[j].target._adData;
-                    createAdIns(item.anchor, item.def, clientId);
-                    observer.unobserve(entries[j].target);
-                    triggered = true;
-                }
-            }
-            if (triggered) scheduleUnfilledCheck();
-        }, { rootMargin: '200px 0px' });
-        
-        for (var k = 0; k < pendingSlots.length; k++) {
-            pendingSlots[k].anchor._adData = pendingSlots[k];
-            observer.observe(pendingSlots[k]);
-        }
-    } else {
-        for (var k = 0; k < pendingSlots.length; k++)
-            createAdIns(pendingSlots[k].anchor, pendingSlots[k].def, clientId);
-        scheduleUnfilledCheck();
-    }
-}
-
-// Register AdSense as AdEngine provider
-AdEngine.registerProvider('adsense', {
+AdManager.registerProvider('adsense', {
     render: function(el, config) {
-        if (!config || !config.clientId || config.clientId.indexOf('XXXX') !== -1) return false;
+        var clientId = config.clientId || (AdManager.config && AdManager.config.adsense && AdManager.config.adsense.clientId);
+        if (!clientId || clientId.indexOf('XXXX') !== -1) return false;
+        
+        // Load AdSense script if not yet loaded
+        if (!document.querySelector('script[src*="adsbygoogle"]')) {
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + clientId;
+            s.crossOrigin = 'anonymous';
+            document.head.appendChild(s);
+        }
+        
         if (el._adCreated) return true;
         el._adCreated = true;
+        
         var ins = document.createElement('ins');
         ins.className = 'adsbygoogle';
         ins.style.display = 'block';
-        ins.setAttribute('data-ad-client', config.clientId);
+        ins.setAttribute('data-ad-client', clientId);
         ins.setAttribute('data-ad-slot', config.id || '');
         ins.setAttribute('data-ad-format', config.format || 'auto');
         ins.setAttribute('data-full-width-responsive', 'true');
         if (config.layoutKey) ins.setAttribute('data-ad-layout-key', config.layoutKey);
+        
         el.appendChild(ins);
+        el.classList.add('ad-container');
+        
         try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
         return true;
     }
 });
 
-// Register ADX provider (placeholder — user supplies ADX code)
-AdEngine.registerProvider('adx', {
-    render: function(el, config) {
-        // TODO: Implement ADX ad rendering when config is provided
-        if (!config || !config.enabled) return false;
-        return false;
-    }
-});
-
-// Register MGID provider for AdEngine
-AdEngine.registerProvider('mgid', {
+// ==========================================
+// 4. Provider: MGID
+// ==========================================
+AdManager.registerProvider('mgid', {
     render: function(el, config) {
         if (!config || !config.widgetId) return false;
+        var siteId = config.siteId || (AdManager.config && AdManager.config.mgid && AdManager.config.mgid.siteId);
+        if (!siteId) return false;
+        
+        // Load MGID script if not yet loaded
+        if (!document.querySelector('script[src*="jsc.mgid.com"]')) {
+            var s = document.createElement('script');
+            s.src = 'https://jsc.mgid.com/site/' + siteId + '.js';
+            s.async = true;
+            document.head.appendChild(s);
+        }
+        
         if (el._adCreated) return true;
         el._adCreated = true;
+        
         var div = document.createElement('div');
         div.setAttribute('data-type', '_mgwidget');
         div.setAttribute('data-widget-id', config.widgetId);
         el.appendChild(div);
+        el.classList.add('ad-container');
+        
         try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
         return true;
     }
 });
 
-function createAdIns(anchor, def, clientId) {
-    if (anchor._adCreated) return;
-    anchor._adCreated = true;
-    
-    var ins = document.createElement('ins');
-    ins.className = 'adsbygoogle';
-    ins.style.display = 'block';
-    ins.setAttribute('data-ad-client', clientId);
-    ins.setAttribute('data-ad-slot', def.id);
-    ins.setAttribute('data-ad-format', def.format || 'auto');
-    ins.setAttribute('data-full-width-responsive', 'true');
-    if (def.layoutKey) ins.setAttribute('data-ad-layout-key', def.layoutKey);
-    
-    anchor.appendChild(ins);
-    anchor.classList.add('has-ad');
-    
-    try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch(e) {}
-}
+// ==========================================
+// 5. Provider: ADX (placeholder — user supplies ad code)
+// ==========================================
+AdManager.registerProvider('adx', {
+    render: function(el, config) {
+        if (!config || !config.enabled) return false;
+        // TODO: When ADX is ready, implement ad tag rendering here
+        // Example: load ad tag script, create iframe, etc.
+        return false;
+    }
+});
 
 // ==========================================
-// 3c. Ad Slot Init & Unfilled Detection
-// ==========================================
-function initAdSlots() {
-    var slotEls = document.querySelectorAll('[data-ad-slot]');
-    for (var i = 0; i < slotEls.length; i++) {
-        var el = slotEls[i];
-        // Ensure ad-slot class for styling
-        if (!el.classList.contains('ad-slot')) {
-            el.classList.add('ad-slot');
-        }
-    }
-}
-
-function checkAndHideUnfilled() {
-    var slotEls = document.querySelectorAll('[data-ad-slot]');
-    for (var i = 0; i < slotEls.length; i++) {
-        var el = slotEls[i];
-        if (el._adCreated || el.classList.contains('has-ad')) continue;
-        // Check if container has child elements with content
-        var hasContent = false;
-        var children = el.children;
-        for (var c = 0; c < children.length; c++) {
-            if (children[c].offsetHeight > 0 || children[c].scrollHeight > 0) {
-                hasContent = true;
-                break;
-            }
-        }
-        if (!hasContent && !el._adCreated) {
-            el.classList.add('ad-hidden');
-        }
-    }
-    // Also check ins.adsbygoogle for unfilled status
-    var allIns = document.querySelectorAll('ins.adsbygoogle');
-    for (var i = 0; i < allIns.length; i++) {
-        if (allIns[i].getAttribute('data-ad-status') === 'unfilled') {
-            var container = allIns[i].closest('[data-ad-slot]') || allIns[i].closest('.ad-container');
-            if (container) {
-                container.classList.add('ad-hidden');
-                container.classList.remove('has-ad');
-            }
-        } else if (allIns[i].getAttribute('data-ad-status') === 'filled') {
-            var container = allIns[i].closest('[data-ad-slot]') || allIns[i].closest('.ad-container');
-            if (container) {
-                container.classList.add('has-ad');
-                container.classList.remove('ad-hidden');
-            }
-        }
-    }
-}
-
-var _unfilledTimer = null;
-function scheduleUnfilledCheck() {
-    if (_unfilledTimer) clearTimeout(_unfilledTimer);
-    _unfilledTimer = setTimeout(function() {
-        checkAndHideUnfilled();
-        // Check again after 5 seconds for slow-loading ads
-        setTimeout(function() {
-            checkAndHideUnfilled();
-        }, 5000);
-    }, 4000);
-}
-function hideUnfilledAds() {
-    // Legacy function — delegate to new checkAndHideUnfilled
-    checkAndHideUnfilled();
-}
-
-// ==========================================
-// 4. Utilities
+// 6. Utilities
 // ==========================================
 function toggleMenu() {
     var nav = document.getElementById('navContainer');
@@ -434,17 +290,12 @@ window.addEventListener('scroll', function() {
 });
 
 // ==========================================
-// 5. Auto Init
+// 7. Auto Init
 // ==========================================
 document.addEventListener('DOMContentLoaded', function() {
-    initAdSlots();
     loadSiteConfig(function(config) {
         if (config) {
-            loadMGID(config);
-            loadAdSense(config);
-        } else {
-            // Config failed to load — hide all unconfigured ad slots
-            scheduleUnfilledCheck();
+            AdManager.init(config);
         }
     });
 });
