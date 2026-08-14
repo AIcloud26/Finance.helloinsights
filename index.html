@@ -297,15 +297,19 @@
     }
     function getFallbackImage(cat) { return fallbackImages[cat] || defaultFallback; }
     function createArticleCard(article) {
-        var catName = categoryNames[article.category] || article.category;
+        if (!article || !article.id) return '';
+        var catName = categoryNames[article.category] || article.category || '';
         var fb = getFallbackImage(article.category);
         var dateDisplay = formatDate(article.date);
+        var title = article.title || 'Untitled';
+        var image = article.image || fb;
+        var excerpt = article.excerpt || '';
         return '<article class="article-card">' +
-            '<div class="card-image"><img src="' + article.image + '" alt="' + article.title + '" width="600" height="400" loading="lazy" decoding="async" onerror="this.src=\'' + fb + '\'"></div>' +
+            '<div class="card-image"><img src="' + image + '" alt="' + title + '" width="600" height="400" loading="lazy" decoding="async" onerror="this.src=\'' + fb + '\'"></div>' +
             '<div class="card-content">' +
             '<span class="card-category">' + catName + '</span>' +
-            '<h3 class="card-title"><a href="article.html?id=' + article.id + '">' + article.title + '</a></h3>' +
-            '<p class="card-excerpt">' + article.excerpt + '</p>' +
+            '<h3 class="card-title"><a href="article.html?id=' + article.id + '">' + title + '</a></h3>' +
+            '<p class="card-excerpt">' + excerpt + '</p>' +
             '<div class="card-meta"><span>' + dateDisplay + '</span></div>' +
             '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
             '</div></article>';
@@ -387,15 +391,17 @@
         var loading = document.getElementById('loading');
         if (loading) loading.remove();
         if (!grid) return;
-        if (articles.length === 0) {
+        var valid = articles.filter(function(a) { return a && a.id; });
+        if (valid.length === 0) {
             grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;">No articles found.</p>';
             document.getElementById('pagination').innerHTML = '';
             return;
         }
         var html = '';
-        for (var i = 0; i < articles.length; i++) {
-            html += createArticleCard(articles[i]);
+        for (var i = 0; i < valid.length; i++) {
+            try { html += createArticleCard(valid[i]); } catch(e) { console.warn('Card render error:', e); }
         }
+        if (!html) { grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;">No articles found.</p>'; document.getElementById('pagination').innerHTML = ''; return; }
         grid.innerHTML = html;
         renderPagination(allArticlesCache.length);
         if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
@@ -407,19 +413,20 @@
         var loading = document.getElementById('loading');
         if (loading) loading.remove();
         if (!grid) return;
-        if (articles.length === 0) {
+        var validAll = articles.filter(function(a) { return a && a.id; });
+        if (validAll.length === 0) {
             grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#666;">No articles found for "' + searchQuery + '".</p>';
             document.getElementById('pagination').innerHTML = '';
             return;
         }
         var start = (currentPage - 1) * ARTICLES_PER_PAGE;
-        var page = articles.slice(start, start + ARTICLES_PER_PAGE);
+        var page = validAll.slice(start, start + ARTICLES_PER_PAGE);
         var html = '';
         for (var i = 0; i < page.length; i++) {
             html += createArticleCard(page[i]);
         }
         grid.innerHTML = html;
-        renderPagination(articles.length);
+        renderPagination(validAll.length);
         if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
             window.AdConfig.renderAll();
         }
@@ -434,11 +441,12 @@
         var html = '';
         for (var i = 0; i < showCount; i++) {
             var a = articles[i];
-            var catName = categoryNames[a.category] || a.category;
+            if (!a || !a.id) continue;
+            var catName = categoryNames[a.category] || a.category || '';
             html += '<a class="featured-card" href="article.html?id=' + a.id + '">' +
-                '<p class="featured-card-title">' + a.title + '</p>' +
+                '<p class="featured-card-title">' + (a.title || '') + '</p>' +
                 '<p class="featured-card-meta"><span class="cat">' + catName + '</span> · ' + formatDate(a.date) + '</p>' +
-                '<p class="featured-card-excerpt">' + a.excerpt + '</p>' +
+                '<p class="featured-card-excerpt">' + (a.excerpt || '') + '</p>' +
                 '</a>';
         }
         container.innerHTML = html;
@@ -465,11 +473,12 @@
         var html = '';
         for (var i = 0; i < showCount; i++) {
             var a = articles[i];
-            var catName = categoryNames[a.category] || a.category;
+            if (!a || !a.id) continue;
+            var catName = categoryNames[a.category] || a.category || '';
             html += '<a class="latest-card" href="article.html?id=' + a.id + '">' +
-                '<p class="latest-card-title">' + a.title + '</p>' +
+                '<p class="latest-card-title">' + (a.title || '') + '</p>' +
                 '<p class="latest-card-meta"><span class="cat">' + catName + '</span> · ' + formatDate(a.date) + '</p>' +
-                '<p class="latest-card-excerpt">' + a.excerpt + '</p>' +
+                '<p class="latest-card-excerpt">' + (a.excerpt || '') + '</p>' +
                 '</a>';
         }
         container.innerHTML = html;
@@ -485,10 +494,10 @@
         latestExpanded = true;
         renderLatestInsights(allLatestArticles);
     }
-    fetch(CFG.jsonFile)
+    fetch(CFG.jsonFile + '?v=' + Date.now())
         .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
-            allArticlesCache = data.articles || [];
+            allArticlesCache = (data.articles || []).filter(function(a) { return a && a.id; });
             allArticlesCache.sort(function(a, b) {
                 var c = (b.date || '').localeCompare(a.date || '');
                 return c !== 0 ? c : (Math.random() - 0.5);
