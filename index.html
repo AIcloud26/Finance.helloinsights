@@ -4,117 +4,157 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HelloInsights</title>
-    <meta name="description" content="HelloInsights - News & Insights">
-    <meta name="keywords" content="news, insights">
+    <title>Finance Insights on Money, Investing, Markets & Banking | HelloInsights</title>
+    <meta name="description" content="Explore practical finance insights covering personal finance, investing, markets, banking, fintech, the economy and everyday money management.">
+    <meta name="keywords" content="finance, personal finance, investing, markets, banking, fintech, economy, money management, helloinsights">
+    <meta property="og:title" content="Finance Insights on Money, Investing, Markets & Banking | HelloInsights">
+    <meta property="og:description" content="Explore practical finance insights covering personal finance, investing, markets, banking, fintech, the economy and everyday money management.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="HelloInsights Finance">
+    <link rel="canonical" href="https://finance.helloinsights.online/">
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
-    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
     <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="style.css"></noscript>
+    <script src="site-config.js"></script>
     <script src="ads-config.js" defer></script>
-    <script>window.IS_SUBDOMAIN = true;</script>
-    <script src="config-loader.js" async></script>
-    <style>
-    /* ===== Page Header ===== */
-    .page-header{text-align:center;margin-bottom:1.5rem;}
-    .page-header .site-tagline{font-size:1.6rem;font-weight:800;color:#ff6b35;text-transform:uppercase;letter-spacing:1px;margin:0;}
-    /* ===== Featured Insights ===== */
-    .featured-section{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;text-align:left;}
-    .featured-section h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;}
-    .featured-card{display:block;padding:0.9rem 1.15rem;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:0.65rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
-    .featured-card:hover{border-color:#ff6b35;box-shadow:0 2px 10px rgba(255,107,53,.08);}
-    .featured-card-title{font-size:1.02rem;font-weight:600;color:#1a1a1a;margin:0 0 .2rem;line-height:1.35;}
-    .featured-card-meta{font-size:.8rem;color:#888;margin-bottom:.3rem;}
-    .featured-card-meta .cat{color:#ff6b35;font-weight:600;}
-    .featured-card-excerpt{font-size:.86rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
-    .featured-read-more{display:inline-block;margin-top:.5rem;padding:5px 16px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .2s;}
-    .featured-read-more:hover{background:#e55a2b;}
-    /* ===== Hero Intro — Left Aligned ===== */
-    .hero-intro{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;text-align:left;color:#444;line-height:1.75;font-size:0.95rem;}
-    .hero-intro p{margin-bottom:0.9rem;}
-    .hero-intro p:last-child{margin-bottom:0;}
-    /* ===== Latest Insights Section (Bottom) ===== */
-    .latest-section{max-width:1100px;margin:0 auto 3rem;padding:0 1rem;}
-    .latest-section h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin-bottom:1.1rem;}
-    .latest-card{display:block;padding:0.9rem 1.2rem;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:0.7rem;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
-    .latest-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.10);}
-    .latest-card-title{font-size:1.08rem;font-weight:700;color:#1a1a1a;margin:0 0 .25rem;line-height:1.35;}
-    .latest-card-meta{font-size:.82rem;color:#888;margin-bottom:.35rem;}
-    .latest-card-meta .cat{color:#ff6b35;font-weight:600;}
-    .latest-card-excerpt{font-size:.88rem;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;}
-    .read-more-btn-inline{display:inline-block;margin-top:.7rem;padding:5px 16px;background:#ff6b35;color:#fff;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .2s;}
-    .read-more-btn-inline:hover{background:#e55a2b;}
-    /* ===== Mobile Header Optimization ===== */
-    @media(max-width:768px){
-        .header-content{padding:0 16px!important;min-height:0!important;}
-        .header{padding:0!important;}
-        .logo svg{max-height:36px!important;width:auto!important;}
-        .nav{font-size:14px!important;}
-        .nav a{font-size:14px!important;padding:6px 8px!important;}
-        .search-box input{font-size:13px!important;height:32px!important;}
-        .search-box button{font-size:14px!important;height:32px!important;width:32px!important;}
-        .page-header{margin-top:0.5rem!important;margin-bottom:0.7rem!important;}
-        .page-header .site-tagline{font-size:1.25rem!important;}
-        .hero-intro{margin-bottom:1rem!important;}
-        .hero-intro p{font-size:0.85rem!important;line-height:1.5!important;margin-bottom:0.5rem!important;}
-        .featured-section{margin-bottom:1.2rem!important;}
-        .featured-section h2{font-size:1.15rem!important;}
-        .featured-card{padding:0.7rem 0.85rem!important;margin-bottom:0.5rem!important;}
-        .featured-card-title{font-size:0.92rem!important;}
-        .featured-card-meta{font-size:0.75rem!important;margin-bottom:0.2rem!important;}
-        .featured-card-excerpt{font-size:0.8rem!important;line-height:1.4!important;}
-        .latest-section{margin-bottom:1.5rem!important;}
-        .latest-card{padding:0.7rem 0.85rem!important;margin-bottom:0.55rem!important;}
-        .latest-card-title{font-size:0.95rem!important;}
-        .latest-card-meta{font-size:0.76rem!important;margin-bottom:0.25rem!important;}
-        .latest-card-excerpt{font-size:0.82rem!important;line-height:1.4!important;}
+    <!-- JSON-LD: WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "HelloInsights Finance",
+      "url": "https://finance.helloinsights.online/",
+      "description": "Practical finance insights covering personal finance, investing, markets, banking, fintech, the economy and money management.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "HelloInsights",
+        "url": "https://helloinsights.online"
+      }
     }
+    </script>
+    <style>
+    /* ===== Hero Section ===== */
+    .hero-section{max-width:1100px;margin:0 auto;padding:2.5rem 1rem 1.5rem;text-align:left;}
+    .hero-section h1{font-size:2.2rem;font-weight:800;color:#1a1a1a;line-height:1.25;margin:0 0 0.8rem;}
+    .hero-section .hero-subtitle{font-size:1.05rem;color:#555;line-height:1.7;max-width:680px;margin:0;}
+    .hero-section .hero-cta{display:inline-block;margin-top:1.2rem;padding:10px 28px;background:#ff6b35;color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:600;text-decoration:none;transition:background .2s;}
+    .hero-section .hero-cta:hover{background:#e55a2b;}
+    /* ===== Editorial Intro ===== */
+    .editorial-intro{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;color:#444;line-height:1.8;font-size:0.95rem;}
+    .editorial-intro h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:0.8rem;}
+    .editorial-intro p{margin-bottom:0.8rem;}
+    .editorial-intro p:last-child{margin-bottom:0;}
+    /* ===== Featured Section ===== */
+    .featured-section{max-width:1100px;margin:0 auto 2rem;padding:0 1rem;}
+    .featured-section h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;}
+    .featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;}
+    .featured-card{display:flex;flex-direction:column;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .featured-card:hover{border-color:#ff6b35;box-shadow:0 4px 16px rgba(255,107,53,.1);}
+    .featured-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;}
+    .featured-card-body{padding:0.9rem 1.1rem;}
+    .featured-card-cat{font-size:.75rem;font-weight:600;color:#ff6b35;text-transform:uppercase;letter-spacing:.5px;}
+    .featured-card-title{font-size:1rem;font-weight:600;color:#1a1a1a;margin:0.3rem 0;line-height:1.35;}
+    .featured-card-meta{font-size:.78rem;color:#888;margin-top:.3rem;}
+    /* ===== Topic Section ===== */
+    .topic-section{max-width:1100px;margin:0 auto 2.5rem;padding:0 1rem;}
+    .topic-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:2px solid #ff6b35;padding-bottom:0.5rem;}
+    .topic-header h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin:0;}
+    .topic-header a{font-size:.85rem;color:#ff6b35;font-weight:600;text-decoration:none;white-space:nowrap;}
+    .topic-header a:hover{text-decoration:underline;}
+    .topic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+    .topic-card{display:flex;flex-direction:column;background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .topic-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.08);}
+    .topic-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;}
+    .topic-card-body{padding:0.8rem 1rem;}
+    .topic-card-title{font-size:.95rem;font-weight:600;color:#1a1a1a;margin:0 0 .3rem;line-height:1.35;}
+    .topic-card-meta{font-size:.78rem;color:#888;}
+    /* ===== Latest Section ===== */
+    .latest-section{max-width:1100px;margin:0 auto 2.5rem;padding:0 1rem;}
+    .latest-section h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin-bottom:1.1rem;}
+    .latest-card{display:flex;gap:1rem;padding:0.9rem 0;border-bottom:1px solid #f0f0f0;text-decoration:none;color:inherit;transition:background .15s;}
+    .latest-card:hover{background:#fafafa;}
+    .latest-card-img{width:140px;min-width:140px;height:90px;object-fit:cover;border-radius:8px;}
+    .latest-card-body{flex:1;display:flex;flex-direction:column;justify-content:center;}
+    .latest-card-cat{font-size:.75rem;font-weight:600;color:#ff6b35;text-transform:uppercase;}
+    .latest-card-title{font-size:1rem;font-weight:600;color:#1a1a1a;margin:.2rem 0;line-height:1.35;}
+    .latest-card-meta{font-size:.78rem;color:#888;}
+    /* ===== Most Read ===== */
+    .most-read-section{max-width:1100px;margin:0 auto 3rem;padding:0 1rem;}
+    .most-read-section h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;border-bottom:2px solid #ff6b35;padding-bottom:0.5rem;}
+    .most-read-list{list-style:none;padding:0;margin:0;}
+    .most-read-item{display:flex;align-items:flex-start;gap:1rem;padding:0.8rem 0;border-bottom:1px solid #f0f0f0;}
+    .most-read-item:last-child{border-bottom:none;}
+    .most-read-rank{font-size:1.5rem;font-weight:800;color:#ff6b35;min-width:2rem;line-height:1;}
+    .most-read-title{font-size:.95rem;font-weight:500;color:#1a1a1a;line-height:1.4;}
+    .most-read-title a{color:inherit;text-decoration:none;}
+    .most-read-title a:hover{color:#ff6b35;}
+    .most-read-meta{font-size:.78rem;color:#888;margin-top:.2rem;}
+    /* ===== Search ===== */
+    .search-info{display:none;margin:0 auto 1rem;padding:.5rem 1rem;max-width:1100px;background:#fff3cd;border-radius:8px;}
+    .search-info.active{display:flex;align-items:center;justify-content:space-between;}
     /* ===== Ad Slots ===== */
-    .ad-slot{margin:1.2rem auto;text-align:center;min-height:0;overflow:hidden;transition:all 0.3s ease;}
-    .ad-slot.has-ad{min-height:250px;}
+    .ad-slot{margin:1.5rem auto;text-align:center;min-height:0;overflow:hidden;max-width:1100px;}
+    .ad-slot.has-ad{min-height:100px;}
     .ad-slot.ad-hidden{display:none!important;}
-    @media(max-width:768px){.ad-slot.has-ad{min-height:200px;}}
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+        .hero-section{padding:1.5rem 1rem 1rem;}
+        .hero-section h1{font-size:1.6rem;}
+        .hero-section .hero-subtitle{font-size:.9rem;}
+        .featured-grid{grid-template-columns:1fr;gap:1rem;}
+        .topic-grid{grid-template-columns:1fr;gap:1rem;}
+        .latest-card-img{width:100px;min-width:100px;height:70px;}
+        .latest-card-title{font-size:.9rem;}
+    }
+    @media(max-width:480px){
+        .hero-section h1{font-size:1.35rem;}
+        .topic-header h2{font-size:1.1rem;}
+        .latest-card{gap:.7rem;}
+        .latest-card-img{width:80px;min-width:80px;height:60px;}
+    }
     </style>
 </head>
 <body>
+    <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
-  <defs>
-    <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0%" stop-color="#FFB13B"/>
-      <stop offset="100%" stop-color="#FF4B12"/>
-    </linearGradient>
-    <linearGradient id="hello" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1B252B"/>
-      <stop offset="100%" stop-color="#111A20"/>
-    </linearGradient>
-  </defs>
-  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
-  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFFFFF"/>
-  <g fill="#FF9B27">
-    <rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/>
-    <rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/>
-    <rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/>
-    <rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/>
-  </g>
-  <text x="53.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
-  <text x="100.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
-</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
+                  <defs>
+                    <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
+                      <stop offset="0%" stop-color="#FFB13B"/>
+                      <stop offset="100%" stop-color="#FF4B12"/>
+                    </linearGradient>
+                    <linearGradient id="hello" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#1B252B"/>
+                      <stop offset="100%" stop-color="#111A20"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
+                  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFFFFF"/>
+                  <g fill="#FF9B27">
+                    <rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/>
+                    <rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/>
+                    <rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/>
+                    <rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/>
+                    <rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/>
+                    <rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/>
+                    <rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/>
+                    <rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/>
+                  </g>
+                  <text x="53.5" y="35.2" font-family="Arial,Helvetica,sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
+                  <text x="100.5" y="35.2" font-family="Arial,Helvetica,sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
+                </svg>
             </a>
             <div class="menu-toggle" onclick="toggleMenu()">
                 <span></span><span></span><span></span>
             </div>
             <div class="nav-container" id="navContainer">
                 <nav>
-                    <ul class="nav" id="navList"></ul>
+                    <ul class="nav" id="navList">
+                        <li><a href="index.html" class="active">Finance</a></li>
+                    </ul>
                 </nav>
                 <div class="search-box">
                     <input type="text" placeholder="Search articles..." id="searchInput">
@@ -123,46 +163,78 @@
             </div>
         </div>
     </header>
-    <main class="container">
+
+    <main>
+        <!-- ===== HERO ===== -->
+        <section class="hero-section">
+            <h1 id="heroTitle">Finance Insights for Smarter Money Decisions</h1>
+            <p class="hero-subtitle">Practical insights on personal finance, investing, markets, banking, fintech and the economy.</p>
+            <a href="#latest-section" class="hero-cta">Explore Topics</a>
+        </section>
+
+        <!-- ===== EDITORIAL INTRODUCTION ===== -->
+        <section class="editorial-intro" id="editorialIntro">
+            <h2>Finance Insights for Everyday Decisions</h2>
+            <div id="editorialContent"></div>
+        </section>
+
+        <!-- ===== AD: Top ===== -->
         <div class="ad-slot" data-ad-slot="native-top"></div>
-        <div class="page-header">
-            <h1 class="site-tagline" id="siteTagline"></h1>
-        </div>
-        <div class="hero-intro" id="heroIntro"></div>
-        <div id="searchInfo" style="display:none;margin-bottom:1rem;padding:.5rem 1rem;background:#fff3cd;border-radius:8px;">
-            <span id="searchText"></span>
-            <button onclick="clearSearch()" style="margin-left:10px;background:#ff6b35;color:white;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;">Clear</button>
-        </div>
-        <div class="featured-section" id="featuredSection">
+
+        <!-- ===== FEATURED INSIGHTS ===== -->
+        <section class="featured-section" id="featuredSection">
             <h2>Featured Insights</h2>
-            <div id="featuredCards"></div>
-            <div id="featuredReadMoreWrap" style="display:none;text-align:right;">
-                <button class="featured-read-more" id="featuredReadMoreBtn" onclick="expandFeatured()">Read More</button>
+            <div class="featured-grid" id="featuredGrid">
+                <div class="loading"></div>
             </div>
-        </div>
-        <div class="article-grid" id="articleGrid">
-            <div class="loading" id="loading"></div>
-        </div>
-        <div class="pagination" id="pagination"></div>
-        <div class="ad-slot" data-ad-slot="banner-mid"></div>
-        <div class="latest-section" id="latestSection">
-            <h2>Latest Insights</h2>
-            <div id="latestCards"></div>
+        </section>
+
+        <!-- ===== AD: Mid ===== -->
+        <div class="ad-slot" data-ad-slot="banner-mid-1"></div>
+
+        <!-- ===== LATEST FINANCE INSIGHTS ===== -->
+        <section class="latest-section" id="latest-section">
+            <h2>Latest Finance Insights</h2>
+            <div id="latestList">
+                <div class="loading"></div>
+            </div>
             <div id="latestReadMoreWrap" style="text-align:right;display:none;">
-                <button class="read-more-btn-inline" id="latestReadMoreBtn" onclick="expandLatestInsights()">Read More</button>
+                <button class="read-more-btn" id="latestReadMoreBtn" onclick="expandLatest()">Read More</button>
             </div>
-        </div>
+        </section>
+
+        <!-- ===== AD: Mid 2 ===== -->
+        <div class="ad-slot" data-ad-slot="banner-mid-2"></div>
+
+        <!-- ===== 7 TOPIC SECTIONS (rendered by JS) ===== -->
+        <div id="topicSections"></div>
+
+        <!-- ===== MOST READ ===== -->
+        <section class="most-read-section" id="mostReadSection">
+            <h2>Most Read</h2>
+            <ol class="most-read-list" id="mostReadList"></ol>
+        </section>
+
+        <!-- ===== AD: Bottom ===== -->
         <div class="ad-slot" data-ad-slot="banner-bottom"></div>
+
+        <!-- Search info bar -->
+        <div class="search-info" id="searchInfo">
+            <span id="searchText"></span>
+            <button onclick="clearSearch()" style="background:#ff6b35;color:white;border:none;padding:2px 10px;border-radius:4px;cursor:pointer;">Clear</button>
+        </div>
     </main>
+
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4 id="footerAboutTitle">About HelloInsights</h4>
-                <p id="footerAboutText"></p>
+                <h4>About HelloInsights</h4>
+                <p id="footerAboutText">Practical insights on money, investing, markets, banking, fintech and the economy.</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul id="footerLinks"></ul>
+                <h4>Topics</h4>
+                <ul id="footerTopicLinks"></ul>
             </div>
             <div class="footer-section">
                 <h4>Legal</h4>
@@ -178,351 +250,326 @@
             <p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights. All rights reserved.</p>
         </div>
     </footer>
+
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
     <script>
-    // ===== SUBDOMAIN CONFIG =====
-    var SITE_CONFIGS = {
-        'finance': {
-            name: 'Finance',
-            tagline: 'FINANCE NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
-            jsonFile: 'articles-finance.json',
-            titleSuffix: 'Finance News, Investing & Market Insights | HelloInsights',
-            metaDesc: 'Explore personal finance, investing, markets, banking, fintech, economic trends and money management insights from HelloInsights Finance.',
-            heroIntro: '<p>Finance influences how we save, invest, spend, and plan for the future. HelloInsights Finance explores <strong>Personal Finance, Investing, Markets, Banking, Fintech, Economy, and Money Management</strong>, connecting practical financial knowledge with broader trends shaping money and markets.</p><p>Our editorial coverage goes beyond headlines to explain why financial developments matter — from investment strategies and banking innovation to inflation, interest rates, and economic shifts.</p>',
-            gaId: 'G-FINANCE-XXXXXXX'
-        },
-        'technology': {
-            name: 'Technology',
-            tagline: 'TECHNOLOGY NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
-            jsonFile: 'articles-technology.json',
-            titleSuffix: 'Technology News & Innovation Insights | HelloInsights',
-            metaDesc: 'Explore the latest technology news, product reviews, digital innovation and industry insights from HelloInsights Technology.',
-            heroIntro: '',
-            gaId: 'G-TECH-XXXXXXX'
-        },
-        'ai-tools': {
-            name: 'AI Tools',
-            tagline: 'AI TOOLS NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
-            jsonFile: 'articles-ai-tools.json',
-            titleSuffix: 'AI Tools News & Reviews | HelloInsights',
-            metaDesc: 'Explore the latest AI tools news, reviews, and artificial intelligence insights from HelloInsights AI Tools.',
-            heroIntro: '',
-            gaId: 'G-AITOOLS-XXXXXXX'
-        },
-        'health-lifestyle': {
-            name: 'Health & Lifestyle',
-            tagline: 'HEALTH & LIFESTYLE INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop',
-            jsonFile: 'articles-health-lifestyle.json',
-            titleSuffix: 'Health & Lifestyle Insights | HelloInsights',
-            metaDesc: 'Explore the latest health news, wellness tips, and lifestyle insights from HelloInsights Health & Lifestyle.',
-            heroIntro: '',
-            gaId: 'G-HEALTH-XXXXXXX'
-        }
-    };
-    // ===== GA4 — Independent per subdomain =====
-    (function() {
-        var host = window.location.hostname;
-        var sub = host.split('.')[0];
-        var cfg = SITE_CONFIGS[sub];
-        var isSubdomain = !!cfg;
-        var gaId = isSubdomain ? cfg.gaId : 'G-Q4QHZKZT46';
-        if (!gaId || gaId.indexOf('XXXXXXX') !== -1) return;
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', gaId);
-    })();
-    // ===== Auto-detect subdomain =====
-    var host = window.location.hostname;
-    var sub = host.split('.')[0];
-    var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
-    var CAT_ID = sub;
-    // window.IS_SUBDOMAIN already set in <head> before config-loader.js loads
-    // ===== APPLY CONFIG TO PAGE =====
-    document.title = CFG.titleSuffix;
-    document.querySelector('meta[name="description"]').setAttribute('content', CFG.metaDesc);
-    document.getElementById('siteTagline').textContent = CFG.tagline;
-    document.getElementById('footerAboutTitle').textContent = 'About HelloInsights';
-    document.getElementById('footerAboutText').textContent = CFG.aboutText;
-    // Hero Intro
-    var heroIntroEl = document.getElementById('heroIntro');
-    if (heroIntroEl && CFG.heroIntro) {
-        heroIntroEl.innerHTML = CFG.heroIntro;
-    } else if (heroIntroEl) {
-        heroIntroEl.style.display = 'none';
-    }
-    // Nav
-    document.getElementById('navList').innerHTML =
-        '<li><a href="index.html">Home</a></li>' +
-        '<li><a href="index.html" class="active">' + CFG.name + '</a></li>';
-    // Footer links
-    document.getElementById('footerLinks').innerHTML =
-        '<li><a href="index.html">Home</a></li>' +
-        '<li><a href="index.html">' + CFG.name + '</a></li>';
-    // ===== ARTICLE LOGIC =====
-    var ARTICLES_PER_PAGE = 9;
-    var currentPage = 1;
-    var filteredArticles = [];
-    var isSearching = false;
-    var searchQuery = '';
-    var categoryNames = {};
-    categoryNames[CAT_ID] = CFG.name;
-    var fallbackImages = {};
-    fallbackImages[CAT_ID] = CFG.fallbackImage;
-    var defaultFallback = CFG.fallbackImage;
-    var allArticlesCache = [];
+    // ===== CONFIG =====
+    var CFG = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+    var SUBCATS = CFG.subcategories || [];
+    var ARTICLES_PER_TOPIC = 3;
+    var LATEST_INITIAL = 8;
+    var MOST_READ_COUNT = 5;
+    var allArticles = [];
+    var usedArticleIds = {};  // Track to avoid duplicates
     var latestExpanded = false;
-    var featuredExpanded = false;
-    var allFeaturedArticles = [];
+
+    // ===== INIT =====
+    (function() {
+        buildNav();
+        buildFooterTopics();
+        loadFinanceIndex();
+    })();
+
+    // ===== NAV: Add 7 subcategory links =====
+    function buildNav() {
+        var navList = document.getElementById('navList');
+        if (!navList || !SUBCATS.length) return;
+        var html = '<li><a href="index.html" class="active">Finance</a></li>';
+        for (var i = 0; i < SUBCATS.length; i++) {
+            var sc = SUBCATS[i];
+            html += '<li><a href="' + (CFG.categoryUrlMap[sc.id] || 'category.html?cat=' + sc.id) + '">' + sc.name + '</a></li>';
+        }
+        navList.innerHTML = html;
+    }
+
+    // ===== FOOTER: Add 7 subcategory links =====
+    function buildFooterTopics() {
+        var ul = document.getElementById('footerTopicLinks');
+        if (!ul || !SUBCATS.length) return;
+        var html = '<li><a href="index.html">Home</a></li>';
+        for (var i = 0; i < SUBCATS.length; i++) {
+            var sc = SUBCATS[i];
+            html += '<li><a href="' + (CFG.categoryUrlMap[sc.id] || 'category.html?cat=' + sc.id) + '">' + sc.name + '</a></li>';
+        }
+        ul.innerHTML = html;
+        document.getElementById('footerAboutText').textContent = CFG.aboutText || '';
+    }
+
+    // ===== DATA LOADING =====
+    function loadFinanceIndex() {
+        var jsonFile = CFG.jsonFile || 'finance-index.json';
+        fetch(jsonFile)
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function(data) {
+                allArticles = (data.articles || []).sort(function(a, b) {
+                    return (b.date || '').localeCompare(a.date || '');
+                });
+                renderAll();
+            })
+            .catch(function(e) {
+                console.error('Failed to load finance index:', e);
+                showFallbackMessage();
+            });
+    }
+
+    function showFallbackMessage() {
+        var sections = ['featuredGrid', 'latestList', 'topicSections', 'mostReadList'];
+        sections.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.innerHTML = '<p style="color:#888;padding:1rem;">Finance content is temporarily unavailable. Please check back soon.</p>';
+        });
+    }
+
+    // ===== RENDER ALL SECTIONS =====
+    function renderAll() {
+        usedArticleIds = {};
+        renderFeatured();
+        renderLatest();
+        renderTopicSections();
+        renderMostRead();
+        renderEditorial();
+    }
+
+    // ===== FEATURED (3-4 articles, with images) =====
+    function renderFeatured() {
+        var grid = document.getElementById('featuredGrid');
+        var featured = [];
+        for (var i = 0; i < allArticles.length && featured.length < 4; i++) {
+            if (!usedArticleIds[allArticles[i].id]) {
+                featured.push(allArticles[i]);
+                usedArticleIds[allArticles[i].id] = true;
+            }
+        }
+        if (!featured.length) { grid.innerHTML = ''; return; }
+        var html = '';
+        for (var i = 0; i < featured.length; i++) {
+            var a = featured[i];
+            var img = getImgUrl(a.image, 640, 360);
+            html += '<a class="featured-card" href="article.html?id=' + a.id + '">' +
+                '<img class="featured-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="640" height="360" loading="' + (i === 0 ? 'eager' : 'lazy') + '" decoding="async"' + (i === 0 ? ' fetchpriority="high"' : '') + ' onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
+                '<div class="featured-card-body">' +
+                '<span class="featured-card-cat">' + escHtml(a.category || '') + '</span>' +
+                '<h3 class="featured-card-title">' + escHtml(a.title) + '</h3>' +
+                '<div class="featured-card-meta">' + formatDate(a.date) + '</div>' +
+                '</div></a>';
+        }
+        grid.innerHTML = html;
+    }
+
+    // ===== LATEST (6-8 articles, horizontal cards) =====
+    function renderLatest() {
+        var container = document.getElementById('latestList');
+        var latest = [];
+        for (var i = 0; i < allArticles.length && latest.length < LATEST_INITIAL; i++) {
+            if (!usedArticleIds[allArticles[i].id]) {
+                latest.push(allArticles[i]);
+                usedArticleIds[allArticles[i].id] = true;
+            }
+        }
+        if (!latest.length) { container.innerHTML = ''; return; }
+        var html = '';
+        for (var i = 0; i < latest.length; i++) {
+            html += buildLatestCard(latest[i]);
+        }
+        container.innerHTML = html;
+        // Show "Read More" if more articles available
+        var remaining = countRemaining();
+        document.getElementById('latestReadMoreWrap').style.display = remaining > 0 ? '' : 'none';
+    }
+
+    function expandLatest() {
+        if (latestExpanded) return;
+        latestExpanded = true;
+        var container = document.getElementById('latestList');
+        var extra = [];
+        for (var i = 0; i < allArticles.length && extra.length < 10; i++) {
+            if (!usedArticleIds[allArticles[i].id]) {
+                extra.push(allArticles[i]);
+                usedArticleIds[allArticles[i].id] = true;
+            }
+        }
+        var html = '';
+        for (var i = 0; i < extra.length; i++) {
+            html += buildLatestCard(extra[i]);
+        }
+        container.insertAdjacentHTML('beforeend', html);
+        document.getElementById('latestReadMoreWrap').style.display = 'none';
+    }
+
+    function buildLatestCard(a) {
+        var img = getImgUrl(a.image, 320, 180);
+        return '<a class="latest-card" href="article.html?id=' + a.id + '">' +
+            '<img class="latest-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="140" height="90" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
+            '<div class="latest-card-body">' +
+            '<span class="latest-card-cat">' + escHtml(a.category || '') + '</span>' +
+            '<h3 class="latest-card-title">' + escHtml(a.title) + '</h3>' +
+            '<div class="latest-card-meta">' + formatDate(a.date) + '</div>' +
+            '</div></a>';
+    }
+
+    // ===== 7 TOPIC SECTIONS =====
+    function renderTopicSections() {
+        var container = document.getElementById('topicSections');
+        if (!container || !SUBCATS.length) return;
+        var html = '';
+        for (var s = 0; s < SUBCATS.length; s++) {
+            var sc = SUBCATS[s];
+            var articles = getSubcategoryArticles(sc.id, ARTICLES_PER_TOPIC);
+            var catUrl = CFG.categoryUrlMap[sc.id] || ('category.html?cat=' + sc.id);
+            html += '<section class="topic-section">';
+            html += '<div class="topic-header"><h2>' + escHtml(sc.name) + '</h2><a href="' + catUrl + '">View all ' + escHtml(sc.name) + ' &rarr;</a></div>';
+            html += '<div class="topic-grid">';
+            for (var i = 0; i < articles.length; i++) {
+                var a = articles[i];
+                var img = getImgUrl(a.image, 480, 270);
+                html += '<a class="topic-card" href="article.html?id=' + a.id + '">' +
+                    '<img class="topic-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
+                    '<div class="topic-card-body">' +
+                    '<h3 class="topic-card-title">' + escHtml(a.title) + '</h3>' +
+                    '<div class="topic-card-meta">' + formatDate(a.date) + '</div>' +
+                    '</div></a>';
+            }
+            html += '</div></section>';
+            // Add ad slot after 3rd topic section
+            if (s === 2) {
+                html += '<div class="ad-slot" data-ad-slot="banner-mid-2b"></div>';
+            }
+        }
+        container.innerHTML = html;
+    }
+
+    function getSubcategoryArticles(subcatId, count) {
+        var result = [];
+        for (var i = 0; i < allArticles.length && result.length < count; i++) {
+            var a = allArticles[i];
+            if (a.subcategory === subcatId && !usedArticleIds[a.id]) {
+                result.push(a);
+                usedArticleIds[a.id] = true;
+            }
+        }
+        return result;
+    }
+
+    // ===== MOST READ (5, text-only numbered list) =====
+    function renderMostRead() {
+        var list = document.getElementById('mostReadList');
+        if (!list) return;
+        // Pick articles that haven't been used yet, fallback to recent
+        var candidates = allArticles.filter(function(a) { return !usedArticleIds[a.id]; });
+        if (candidates.length < MOST_READ_COUNT) {
+            candidates = allArticles.slice(0, MOST_READ_COUNT + 5);
+        }
+        var picked = candidates.slice(0, MOST_READ_COUNT);
+        var html = '';
+        for (var i = 0; i < picked.length; i++) {
+            var a = picked[i];
+            html += '<li class="most-read-item">' +
+                '<span class="most-read-rank">0' + (i + 1) + '</span>' +
+                '<div class="most-read-title"><a href="article.html?id=' + a.id + '">' + escHtml(a.title) + '</a>' +
+                '<div class="most-read-meta">' + formatDate(a.date) + '</div></div></li>';
+        }
+        list.innerHTML = html;
+    }
+
+    // ===== EDITORIAL INTRO =====
+    function renderEditorial() {
+        var el = document.getElementById('editorialContent');
+        if (!el) return;
+        if (CFG.heroIntro) {
+            el.innerHTML = CFG.heroIntro;
+        }
+    }
+
+    // ===== UTILITIES =====
+    function countRemaining() {
+        var count = 0;
+        for (var i = 0; i < allArticles.length; i++) {
+            if (!usedArticleIds[allArticles[i].id]) count++;
+        }
+        return count;
+    }
+
+    function getImgUrl(url, w, h) {
+        if (!url) return CFG.fallbackImage || '';
+        // Replace Unsplash dimensions for 16:9
+        return url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h).replace(/fit=crop/, 'fit=crop');
+    }
+
     function formatDate(dateStr) {
         if (!dateStr) return '';
         var parts = dateStr.split('-');
         if (parts.length !== 3) return dateStr;
-        var d = new Date(parts[0] + '-' + parts[1] + '-' + parts[2]);
         var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var d = new Date(parts[0], parts[1] - 1, parts[2]);
         return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
     }
-    function getFallbackImage(cat) { return fallbackImages[cat] || defaultFallback; }
-    function createArticleCard(article) {
-        if (!article || !article.id) return '';
-        var catName = categoryNames[article.category] || article.category || '';
-        var fb = getFallbackImage(article.category);
-        var dateDisplay = formatDate(article.date);
-        var title = article.title || 'Untitled';
-        var image = article.image || fb;
-        var excerpt = article.excerpt || '';
-        return '<article class="article-card">' +
-            '<div class="card-image"><img src="' + image + '" alt="' + title + '" width="600" height="400" loading="lazy" decoding="async" onerror="this.src=\'' + fb + '\'"></div>' +
-            '<div class="card-content">' +
-            '<span class="card-category">' + catName + '</span>' +
-            '<h3 class="card-title"><a href="article.html?id=' + article.id + '">' + title + '</a></h3>' +
-            '<p class="card-excerpt">' + excerpt + '</p>' +
-            '<div class="card-meta"><span>' + dateDisplay + '</span></div>' +
-            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
-            '</div></article>';
+
+    function escHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-    function renderPagination(total) {
-        var pages = Math.ceil(total / ARTICLES_PER_PAGE);
-        var el = document.getElementById('pagination');
-        if (!el || pages <= 1) { if (el) el.innerHTML = ''; return; }
-        var h = '';
-        if (currentPage > 1) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage - 1) + ');return false;">‹</a>';
-        else h += '<span class="page-btn disabled">‹</span>';
-        var range = 2;
-        var start = Math.max(2, currentPage - range);
-        var end = Math.min(pages - 1, currentPage + range);
-        if (currentPage === 1) h += '<span class="page-btn active">1</span>';
-        else h += '<a href="#" class="page-btn" onclick="changePage(1);return false;">1</a>';
-        if (start > 2) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        for (var i = start; i <= end; i++) {
-            if (i === currentPage) h += '<span class="page-btn active">' + i + '</span>';
-            else h += '<a href="#" class="page-btn" onclick="changePage(' + i + ');return false;">' + i + '</a>';
-        }
-        if (end < pages - 1) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        if (currentPage === pages) h += '<span class="page-btn active">' + pages + '</span>';
-        else h += '<a href="#" class="page-btn" onclick="changePage(' + pages + ');return false;">' + pages + '</a>';
-        if (currentPage < pages) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage + 1) + ');return false;">›</a>';
-        else h += '<span class="page-btn disabled">›</span>';
-        el.innerHTML = h;
+
+    // ===== SEARCH =====
+    var searchInput = document.getElementById('searchInput');
+    var searchBtn = document.getElementById('searchBtn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', doSearch);
     }
-    function changePage(p) {
-        if (isSearching) {
-            var t = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
-            if (p < 1 || p > t) return;
-            currentPage = p;
-            renderSearchResults(filteredArticles);
-        } else {
-            var t2 = Math.ceil(allArticlesCache.length / ARTICLES_PER_PAGE);
-            if (p < 1 || p > t2) return;
-            currentPage = p;
-            fetchArticlesForPage(p);
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function handleSearch() {
-        var input = document.getElementById('searchInput');
-        if (!input) return;
-        var q = input.value.trim();
-        searchQuery = q;
-        if (!q) { clearSearch(); return; }
-        isSearching = true; currentPage = 1;
-        var lq = q.toLowerCase();
-        filteredArticles = allArticlesCache.filter(function(a) {
-            var cn = categoryNames[a.category] || a.category;
-            return a.title.toLowerCase().indexOf(lq) !== -1 || a.excerpt.toLowerCase().indexOf(lq) !== -1 ||
-                   a.category.toLowerCase().indexOf(lq) !== -1 || cn.toLowerCase().indexOf(lq) !== -1;
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doSearch();
         });
-        var si = document.getElementById('searchInfo'), st = document.getElementById('searchText');
-        if (si && st) { si.style.display = 'block'; st.textContent = 'Found ' + filteredArticles.length + ' results for "' + q + '"'; }
-        renderSearchResults(filteredArticles);
+    }
+    function doSearch() {
+        var q = (searchInput.value || '').trim().toLowerCase();
+        if (!q) return;
+        var results = allArticles.filter(function(a) {
+            return a.title.toLowerCase().indexOf(q) !== -1 || (a.excerpt || '').toLowerCase().indexOf(q) !== -1;
+        });
+        var container = document.getElementById('latestList');
+        var info = document.getElementById('searchInfo');
+        var searchText = document.getElementById('searchText');
+        if (results.length === 0) {
+            container.innerHTML = '<p style="color:#888;padding:1rem;">No articles found for "' + escHtml(q) + '"</p>';
+        } else {
+            var html = '';
+            for (var i = 0; i < results.length; i++) {
+                html += buildLatestCard(results[i]);
+            }
+            container.innerHTML = html;
+        }
+        searchText.textContent = 'Search: "' + q + '" — ' + results.length + ' result(s)';
+        info.classList.add('active');
+        // Hide other sections
+        document.getElementById('featuredSection').style.display = 'none';
+        document.getElementById('topicSections').style.display = 'none';
+        document.getElementById('mostReadSection').style.display = 'none';
     }
     function clearSearch() {
-        isSearching = false; searchQuery = ''; currentPage = 1;
-        var input = document.getElementById('searchInput');
-        if (input) input.value = '';
-        var si = document.getElementById('searchInfo');
-        if (si) si.style.display = 'none';
-        fetchArticlesForPage(1);
+        searchInput.value = '';
+        document.getElementById('searchInfo').classList.remove('active');
+        document.getElementById('featuredSection').style.display = '';
+        document.getElementById('topicSections').style.display = '';
+        document.getElementById('mostReadSection').style.display = '';
+        usedArticleIds = {};
+        renderAll();
     }
-    function initSearch() {
-        var input = document.getElementById('searchInput'), btn = document.getElementById('searchBtn');
-        if (input) input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } });
-        if (btn) btn.addEventListener('click', function(e) { e.preventDefault(); handleSearch(); });
+
+    // ===== MENU TOGGLE & SCROLL (same as before) =====
+    function toggleMenu() {
+        document.getElementById('navContainer').classList.toggle('active');
     }
-    function fetchArticlesForPage(page) {
-        var start = (page - 1) * ARTICLES_PER_PAGE;
-        renderPageArticles(allArticlesCache.slice(start, start + ARTICLES_PER_PAGE));
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    function renderPageArticles(articles) {
-        var grid = document.getElementById('articleGrid');
-        var loading = document.getElementById('loading');
-        if (loading) loading.remove();
-        if (!grid) return;
-        var valid = articles.filter(function(a) { return a && a.id; });
-        if (valid.length === 0) {
-            grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;">No articles found.</p>';
-            document.getElementById('pagination').innerHTML = '';
-            return;
-        }
-        var html = '';
-        for (var i = 0; i < valid.length; i++) {
-            try { html += createArticleCard(valid[i]); } catch(e) { console.warn('Card render error:', e); }
-        }
-        if (!html) { grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;">No articles found.</p>'; document.getElementById('pagination').innerHTML = ''; return; }
-        grid.innerHTML = html;
-        renderPagination(allArticlesCache.length);
-        if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
-            window.AdConfig.renderAll();
-        }
-    }
-    function renderSearchResults(articles) {
-        var grid = document.getElementById('articleGrid');
-        var loading = document.getElementById('loading');
-        if (loading) loading.remove();
-        if (!grid) return;
-        var validAll = articles.filter(function(a) { return a && a.id; });
-        if (validAll.length === 0) {
-            grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#666;">No articles found for "' + searchQuery + '".</p>';
-            document.getElementById('pagination').innerHTML = '';
-            return;
-        }
-        var start = (currentPage - 1) * ARTICLES_PER_PAGE;
-        var page = validAll.slice(start, start + ARTICLES_PER_PAGE);
-        var html = '';
-        for (var i = 0; i < page.length; i++) {
-            html += createArticleCard(page[i]);
-        }
-        grid.innerHTML = html;
-        renderPagination(validAll.length);
-        if (window.AdConfig && typeof window.AdConfig.renderAll === 'function') {
-            window.AdConfig.renderAll();
-        }
-    }
-    function renderFeaturedInsights(articles) {
-        allFeaturedArticles = articles;
-        var container = document.getElementById('featuredCards');
-        var section = document.getElementById('featuredSection');
-        var readMoreWrap = document.getElementById('featuredReadMoreWrap');
-        if (!container || !section || articles.length === 0) { if (section) section.style.display = 'none'; return; }
-        var showCount = featuredExpanded ? Math.min(12, articles.length) : Math.min(3, articles.length);
-        var html = '';
-        for (var i = 0; i < showCount; i++) {
-            var a = articles[i];
-            if (!a || !a.id) continue;
-            var catName = categoryNames[a.category] || a.category || '';
-            html += '<a class="featured-card" href="article.html?id=' + a.id + '">' +
-                '<p class="featured-card-title">' + (a.title || '') + '</p>' +
-                '<p class="featured-card-meta"><span class="cat">' + catName + '</span> · ' + formatDate(a.date) + '</p>' +
-                '<p class="featured-card-excerpt">' + (a.excerpt || '') + '</p>' +
-                '</a>';
-        }
-        container.innerHTML = html;
-        if (readMoreWrap) {
-            if (!featuredExpanded && articles.length > 3) {
-                readMoreWrap.style.display = 'block';
-            } else {
-                readMoreWrap.style.display = 'none';
-            }
-        }
-    }
-    function expandFeatured() {
-        featuredExpanded = true;
-        renderFeaturedInsights(allFeaturedArticles);
-    }
-    var allLatestArticles = [];
-    function renderLatestInsights(articles) {
-        allLatestArticles = articles;
-        var container = document.getElementById('latestCards');
-        var section = document.getElementById('latestSection');
-        var readMoreWrap = document.getElementById('latestReadMoreWrap');
-        if (!container || !section || articles.length === 0) { if (section) section.style.display = 'none'; return; }
-        var showCount = latestExpanded ? articles.length : Math.min(3, articles.length);
-        var html = '';
-        for (var i = 0; i < showCount; i++) {
-            var a = articles[i];
-            if (!a || !a.id) continue;
-            var catName = categoryNames[a.category] || a.category || '';
-            html += '<a class="latest-card" href="article.html?id=' + a.id + '">' +
-                '<p class="latest-card-title">' + (a.title || '') + '</p>' +
-                '<p class="latest-card-meta"><span class="cat">' + catName + '</span> · ' + formatDate(a.date) + '</p>' +
-                '<p class="latest-card-excerpt">' + (a.excerpt || '') + '</p>' +
-                '</a>';
-        }
-        container.innerHTML = html;
-        if (readMoreWrap) {
-            if (!latestExpanded && articles.length > 3) {
-                readMoreWrap.style.display = 'block';
-            } else {
-                readMoreWrap.style.display = 'none';
-            }
-        }
-    }
-    function expandLatestInsights() {
-        latestExpanded = true;
-        renderLatestInsights(allLatestArticles);
-    }
-    fetch(CFG.jsonFile + '?v=' + Date.now())
-        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function(data) {
-            allArticlesCache = (data.articles || []).filter(function(a) { return a && a.id; });
-            allArticlesCache.sort(function(a, b) {
-                var c = (b.date || '').localeCompare(a.date || '');
-                return c !== 0 ? c : (Math.random() - 0.5);
-            });
-            renderFeaturedInsights(allArticlesCache.slice(0, 12));
-            renderLatestInsights(allArticlesCache.slice(0, 10));
-            fetchArticlesForPage(1);
-            initSearch();
-        })
-        .catch(function(err) {
-            console.error('Load error:', err.message);
-            var grid = document.getElementById('articleGrid');
-            if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles: ' + err.message + '</p>';
-        });
-    if (typeof loadSiteConfig === 'function') {
-        loadSiteConfig(function(config) {
-            if (config && config.categories) {
-                for (var i = 0; i < config.categories.length; i++) {
-                    if (config.categories[i].id === CAT_ID) {
-                        categoryNames[CAT_ID] = config.categories[i].name;
-                    }
-                }
-            }
-        });
-    }
+    window.addEventListener('scroll', function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
+    });
     </script>
 </body>
 </html>

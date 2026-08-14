@@ -3,356 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse articles by category on HelloInsights.">
-    <title>Category - HelloInsights</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E">
+    <title id="pageTitle">Finance | HelloInsights</title>
+    <meta name="description" id="metaDesc" content="Finance insights from HelloInsights.">
+    <link rel="canonical" id="canonicalUrl" href="https://finance.helloinsights.online/">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" id="ogTitle" content="Finance | HelloInsights">
+    <meta property="og:description" id="ogDesc" content="Finance insights from HelloInsights.">
+    <meta property="og:url" id="ogUrl" content="https://finance.helloinsights.online/">
+    <meta property="og:site_name" content="HelloInsights Finance">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twTitle" content="Finance | HelloInsights">
+    <meta name="twitter:description" id="twDesc" content="Finance insights from HelloInsights.">
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
-    <!-- ============ Subdomain Config (must run early) ============ -->
-    <script>
-    (function() {
-        var hostname = window.location.hostname;
-        var subdomain = '';
-        var parts = hostname.split('.');
-        if (parts.length > 2 && parts[0] !== 'www') {
-            subdomain = parts[0];
+    <!-- Config -->
+    <script src="site-config.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Category Hero */
+        .category-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            padding: 80px 20px 60px;
+            text-align: center;
         }
-        var subCategoryMap = {
-            'technology': 'technology',
-            'finance': 'finance',
-            'ai-tools': 'ai-tools',
-            'health-lifestyle': 'health-lifestyle'
-        };
-        window.SUBDOMAIN_CATEGORY = subCategoryMap[subdomain] || null;
-        window.IS_SUBDOMAIN = !!window.SUBDOMAIN_CATEGORY;
+        .category-hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+        .category-hero p {
+            font-size: 1.15rem;
+            max-width: 680px;
+            margin: 0 auto;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .category-hero .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .category-hero .breadcrumb a {
+            color: #ff6b35;
+            text-decoration: none;
+        }
+        .category-hero .breadcrumb a:hover { text-decoration: underline; }
 
-        if (window.IS_SUBDOMAIN) {
-            var link = document.createElement('link');
-            link.rel = 'preload';
-            link.href = 'articles-' + window.SUBDOMAIN_CATEGORY + '.json';
-            link.as = 'fetch';
-            link.crossOrigin = 'anonymous';
-            document.head.appendChild(link);
+        /* Article Grid */
+        .category-grid {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
         }
-    })();
+        @media (max-width: 900px) { .category-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .category-grid { grid-template-columns: 1fr; } }
+
+        .category-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .category-card .card-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+        .category-card .card-body {
+            padding: 20px;
+        }
+        .category-card .card-date {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .category-card .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .category-card .card-title a {
+            color: #1a1a2e;
+            text-decoration: none;
+        }
+        .category-card .card-title a:hover { color: #ff6b35; }
+        .category-card .card-excerpt {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Pagination */
+        .pagination {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .pagination button {
+            padding: 10px 18px;
+            border: 2px solid #ff6b35;
+            background: #fff;
+            color: #ff6b35;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .pagination button:hover,
+        .pagination button.active {
+            background: #ff6b35;
+            color: #fff;
+        }
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .pagination .page-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0 12px;
+        }
+
+        /* Explore Topics */
+        .explore-topics {
+            background: #f8f9fa;
+            padding: 60px 20px;
+            margin-top: 40px;
+        }
+        .explore-topics h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 32px;
+            color: #1a1a2e;
+        }
+        .explore-topics .topics-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .explore-topics .topic-link {
+            display: block;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .explore-topics .topic-link:hover {
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+        }
+        .explore-topics .topic-link .topic-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .explore-topics .topic-link .topic-count {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .explore-topics .topic-link.current {
+            border-color: #ff6b35;
+            background: #fff5f0;
+        }
+
+        /* Ad slot */
+        .ad-slot { text-align: center; margin: 20px 0; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            .category-hero { padding: 60px 16px 40px; }
+            .category-hero h1 { font-size: 2rem; }
+        }
+    </style>
+    <!-- JSON-LD -->
+    <script type="application/ld+json" id="jsonldBreadcrumb">
+    {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Finance","item":"https://finance.helloinsights.online/"},{"@type":"ListItem","position":2,"name":"Category","item":""}]}
     </script>
-    <!-- Ads -->
-    <script src="ads-config.js" defer></script>
-    <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="style.css"></noscript>
-    <script src="config-loader.js" async></script>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:3rem;width:auto;display:block;">
-  <defs>
-    <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0%" stop-color="#FFB13B"/>
-      <stop offset="100%" stop-color="#FF4B12"/>
-    </linearGradient>
-    <linearGradient id="hello" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1B252B"/>
-      <stop offset="100%" stop-color="#111A20"/>
-    </linearGradient>
-  </defs>
-  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
-  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFFFFF"/>
-  <g fill="#FF9B27">
-    <rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/>
-    <rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/>
-    <rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/>
-    <rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/>
-  </g>
-  <text x="53.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
-  <text x="100.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
-</svg>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="160" height="32">
+                    <circle cx="16" cy="20" r="14" fill="#ff6b35"/>
+                    <text x="36" y="28" font-size="22" font-weight="800" fill="#1a1a2e" font-family="Arial, sans-serif">Hello</text>
+                    <text x="100" y="28" font-size="22" font-weight="800" fill="#ff6b35" font-family="Arial, sans-serif">Insights</text>
+                </svg>
             </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
+            <div class="nav-links">
+                <span class="site-badge" id="headerBadge">Finance</span>
             </div>
-            <div class="nav-container" id="navContainer">
-                <nav>
-                    <ul class="nav" id="navList">
-                        <!-- Dynamic nav rendered by JavaScript based on subdomain -->
-                    </ul>
-                </nav>
-                <div class="search-box">
-                    <input type="text" placeholder="Search articles..." id="searchInput">
-                    <button type="button" id="searchBtn">🔍</button>
-                </div>
-            </div>
-        </div>
+        </nav>
     </header>
-    <main class="container">
-        <!-- AdSense Top -->
-        <div data-ad-slot="cat-top"></div>
-        <div class="page-header" id="categoryHeader">
-            <h2 class="site-tagline" id="categoryTitle">Category</h2>
-            <p class="site-description" id="categoryDesc">Browse articles in this category.</p>
+
+    <!-- Category Hero -->
+    <section class="category-hero">
+        <div class="breadcrumb">
+            <a href="/">Finance</a> &rsaquo; <span id="breadcrumbCat">Category</span>
         </div>
-        <div class="article-grid" id="articleGrid">
-            <div class="loading" id="loading"></div>
-        </div>
-        <!-- MGID Mid -->
-        <div data-ad-slot="cat-mid">
-            <!-- MGID widget code here -->
-        </div>
-        <div class="pagination" id="pagination"></div>
-        <!-- AdSense Bottom -->
-        <div data-ad-slot="cat-bottom"></div>
-    </main>
-    <footer class="footer">
+        <h1 id="catTitle">Category</h1>
+        <p id="catDesc">Category description</p>
+    </section>
+
+    <!-- Ad: native-top -->
+    <div class="ad-slot" id="ad-native-top" data-ad-slot="native-top"></div>
+
+    <!-- Article Grid -->
+    <div class="category-grid" id="articleGrid">
+        <div class="loading">Loading articles...</div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+    <!-- Ad: banner-bottom -->
+    <div class="ad-slot" id="ad-banner-bottom" data-ad-slot="banner-bottom"></div>
+
+    <!-- Explore Other Topics -->
+    <section class="explore-topics">
+        <h2>Explore Other Topics</h2>
+        <div class="topics-grid" id="topicsGrid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h4>About HelloInsights</h4>
-                <p id="footerAbout">Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
+            <div class="footer-brand">
+                <strong>HelloInsights Finance</strong>
+                <p>Practical finance insights for smarter money decisions.</p>
             </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul id="footerNav">
-                    <!-- Dynamic footer nav rendered by JavaScript based on subdomain -->
-                </ul>
+            <div class="footer-links">
+                <h4>Topics</h4>
+                <ul id="footerTopics"></ul>
             </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
+            <div class="footer-links">
+                <h4>More</h4>
                 <ul>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="https://helloinsights.online" target="_blank">HelloInsights Main</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights. All rights reserved.</p>
+            <p>&copy; 2025 HelloInsights. All rights reserved.</p>
         </div>
     </footer>
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <!-- Ads -->
+    <script src="ads-config.js"></script>
+    <script src="ads.js"></script>
+
     <script>
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function() {}); }
+    (function() {
+        'use strict';
 
-    // ==========================================
-    // Subdomain-based Navigation & Footer
-    // ==========================================
-    var categoryNames = {
-        'technology': 'Technology', 'finance': 'Finance',
-        'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle'
-    };
-    var categoryDescs = {
-        'technology': 'Latest innovations in software, hardware, cloud, and emerging tech.',
-        'finance': 'Market trends, investment strategies, and financial insights.',
-        'ai-tools': 'AI-powered tools and platforms to boost your productivity.',
-        'health-lifestyle': 'Wellness tips, fitness guides, and healthy living advice.'
-    };
+        // --- Detect category from URL ---
+        function detectCategory() {
+            var path = window.location.pathname.replace(/\/+$/, '');
+            var segments = path.split('/').filter(Boolean);
+            var catId = segments[segments.length - 1] || '';
 
-    function renderNavigation() {
-        var navList = document.getElementById('navList');
-        if (!navList) return;
-        var html = '';
-        if (window.IS_SUBDOMAIN) {
-            var cat = window.SUBDOMAIN_CATEGORY;
-            html += '<li><a href="index.html">' + categoryNames[cat] + '</a></li>';
-        } else {
-            html += '<li><a href="index.html">All</a></li>';
-            html += '<li><a href="category.html?cat=technology">Technology</a></li>';
-            html += '<li><a href="category.html?cat=finance">Finance</a></li>';
-            html += '<li><a href="category.html?cat=ai-tools">AI Tools</a></li>';
-            html += '<li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>';
+            // Also check query param fallback
+            if (!catId) {
+                var params = new URLSearchParams(window.location.search);
+                catId = params.get('cat') || '';
+            }
+            return catId;
         }
-        navList.innerHTML = html;
-    }
 
-    function renderFooterNav() {
-        var footerNav = document.getElementById('footerNav');
-        var footerAbout = document.getElementById('footerAbout');
-        if (window.IS_SUBDOMAIN) {
-            var cat = window.SUBDOMAIN_CATEGORY;
-            if (footerNav) {
-                footerNav.innerHTML = '<li><a href="index.html">Home</a></li>' +
-                    '<li><a href="category.html?cat=' + cat + '">' + categoryNames[cat] + '</a></li>';
-            }
-            if (footerAbout) {
-                footerAbout.textContent = 'Your trusted source for the latest ' + categoryNames[cat] + ' news and insights.';
-            }
-        } else {
-            if (footerNav) {
-                footerNav.innerHTML = '<li><a href="index.html">Home</a></li>' +
-                    '<li><a href="category.html?cat=technology">Technology</a></li>' +
-                    '<li><a href="category.html?cat=finance">Finance</a></li>' +
-                    '<li><a href="category.html?cat=ai-tools">AI Tools</a></li>' +
-                    '<li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>';
-            }
+        var currentCatId = detectCategory();
+        var catConfig = null;
+        var allArticles = [];
+        var filteredArticles = [];
+        var perPage = 9;
+        var currentPage = 1;
+
+        // Find category config
+        if (typeof SITE_CONFIG !== 'undefined') {
+            catConfig = SITE_CONFIG.subcategories.find(function(s) { return s.id === currentCatId; });
         }
-    }
 
-    renderNavigation();
-    renderFooterNav();
-
-    // ==========================================
-    // Core Logic
-    // ==========================================
-    var ARTICLES_PER_PAGE = 9;
-    var allArticles = [];
-    var currentPage = 1;
-    var currentCategory = '';
-    var fallbackImages = {
-        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&fm=webp&q=80',
-        'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop&fm=webp&q=80',
-        'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop&fm=webp&q=80',
-        'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&fm=webp&q=80'
-    };
-    var defaultFallback = fallbackImages['technology'];
-    function formatDate(dateStr) {
-        if (!dateStr) return '';
-        var d = new Date(dateStr + 'T00:00:00');
-        var m = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
-    }
-    function getFallbackImage(cat) { return fallbackImages[cat] || defaultFallback; }
-    function getUrlParam(name) { return new URLSearchParams(window.location.search).get(name); }
-    function createArticleCard(article) {
-        var catName = categoryNames[article.category] || article.category;
-        var fb = getFallbackImage(article.category);
-        var date = article.date ? formatDate(article.date) : '';
-        return '<article class="article-card">' +
-            '<div class="card-image"><img src="' + article.image + '" alt="' + article.title + '" width="600" height="400" loading="lazy" decoding="async" onerror="this.src=\'' + fb + '\'"></div>' +
-            '<div class="card-content">' +
-            '<span class="card-category">' + catName + '</span>' +
-            '<h3 class="card-title"><a href="article.html?id=' + article.id + '">' + article.title + '</a></h3>' +
-            '<p class="card-excerpt">' + article.excerpt + '</p>' +
-            (date ? '<div class="card-meta"><span>' + date + '</span></div>' : '') +
-            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
-            '</div></article>';
-    }
-    function renderPage(page) {
-        currentPage = page;
-        var totalPages = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
-        if (page < 1) page = 1;
-        if (page > totalPages && totalPages > 0) page = totalPages;
-        currentPage = page;
-        var startIdx = (page - 1) * ARTICLES_PER_PAGE;
-        var pageArticles = allArticles.slice(startIdx, startIdx + ARTICLES_PER_PAGE);
-        var grid = document.getElementById('articleGrid');
-        var loading = document.getElementById('loading');
-        if (loading) loading.remove();
-        if (!grid) return;
-        if (pageArticles.length === 0) {
-            grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#666;">No articles found in this category.</p>';
-            document.getElementById('pagination').innerHTML = '';
+        if (!catConfig) {
+            // Invalid category → redirect to home
+            window.location.href = '/';
             return;
         }
-        var html = '';
-        for (var i = 0; i < pageArticles.length; i++) html += createArticleCard(pageArticles[i]);
-        grid.innerHTML = html;
-        renderPagination(allArticles.length);
-    }
-    function renderPagination(total) {
-        var pages = Math.ceil(total / ARTICLES_PER_PAGE);
-        var el = document.getElementById('pagination');
-        if (!el || pages <= 1) { if (el) el.innerHTML = ''; return; }
-        var h = '';
-        if (currentPage > 1) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage - 1) + ');return false;">‹</a>';
-        else h += '<span class="page-btn disabled">‹</span>';
-        var range = 2;
-        var start = Math.max(2, currentPage - range);
-        var end = Math.min(pages - 1, currentPage + range);
-        if (currentPage === 1) h += '<span class="page-btn active">1</span>';
-        else h += '<a href="#" class="page-btn" onclick="changePage(1);return false;">1</a>';
-        if (start > 2) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        for (var i = start; i <= end; i++) {
-            if (i === currentPage) h += '<span class="page-btn active">' + i + '</span>';
-            else h += '<a href="#" class="page-btn" onclick="changePage(' + i + ');return false;">' + i + '</a>';
+
+        // --- Set page metadata ---
+        var base = 'https://finance.helloinsights.online';
+        var catUrl = base + '/' + currentCatId + '/';
+        var pageTitleText = catConfig.name + ' — ' + SITE_CONFIG.siteName + ' Insights | HelloInsights';
+        var pageDesc = catConfig.desc + ' Expert analysis, guides and news from the HelloInsights editorial team.';
+
+        document.getElementById('pageTitle').textContent = pageTitleText;
+        document.getElementById('metaDesc').setAttribute('content', pageDesc);
+        document.getElementById('canonicalUrl').setAttribute('href', catUrl);
+        document.getElementById('ogTitle').setAttribute('content', pageTitleText);
+        document.getElementById('ogDesc').setAttribute('content', pageDesc);
+        document.getElementById('ogUrl').setAttribute('content', catUrl);
+        document.getElementById('twTitle').setAttribute('content', pageTitleText);
+        document.getElementById('twDesc').setAttribute('content', pageDesc);
+
+        // Category hero
+        document.getElementById('catTitle').textContent = catConfig.name;
+        document.getElementById('catDesc').textContent = catConfig.desc;
+        document.getElementById('breadcrumbCat').textContent = catConfig.name;
+
+        // JSON-LD Breadcrumb
+        var jsonld = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Finance", "item": base + "/" },
+                { "@type": "ListItem", "position": 2, "name": catConfig.name, "item": catUrl }
+            ]
+        };
+        document.getElementById('jsonldBreadcrumb').textContent = JSON.stringify(jsonld);
+
+        // --- Load articles ---
+        var jsonFile = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.jsonFile : 'finance-index.json';
+
+        fetch(jsonFile, { cache: 'no-cache' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                allArticles = data.articles || [];
+                filteredArticles = allArticles.filter(function(a) {
+                    return a.subcategory === currentCatId;
+                });
+
+                // Sort by date desc
+                filteredArticles.sort(function(a, b) {
+                    return new Date(b.date) - new Date(a.date);
+                });
+
+                if (filteredArticles.length === 0) {
+                    document.getElementById('articleGrid').innerHTML =
+                        '<p style="text-align:center;color:#888;grid-column:1/-1;padding:60px 20px;">No articles found in this category.</p>';
+                    return;
+                }
+
+                renderPage(1);
+                renderPagination();
+            })
+            .catch(function(err) {
+                console.error('Failed to load index:', err);
+                document.getElementById('articleGrid').innerHTML =
+                    '<p style="text-align:center;color:#c00;grid-column:1/-1;padding:60px 20px;">Failed to load articles. Please try again later.</p>';
+            });
+
+        // --- Render article cards for current page ---
+        function renderPage(page) {
+            currentPage = page;
+            var start = (page - 1) * perPage;
+            var end = Math.min(start + perPage, filteredArticles.length);
+            var pageArticles = filteredArticles.slice(start, end);
+
+            var html = '';
+            pageArticles.forEach(function(article) {
+                var imgUrl = article.image || SITE_CONFIG.fallbackImage;
+                // Optimize image: lazy load
+                var dateFormatted = formatDate(article.date);
+                var articleUrl = '/article.html?id=' + encodeURIComponent(article.id);
+
+                html += '<article class="category-card">' +
+                    '<a href="' + articleUrl + '">' +
+                    '<img class="card-image" src="' + imgUrl + '" alt="' + escapeHtml(article.title) + '" loading="lazy" decoding="async" width="640" height="360">' +
+                    '</a>' +
+                    '<div class="card-body">' +
+                    '<div class="card-date">' + dateFormatted + '</div>' +
+                    '<h2 class="card-title"><a href="' + articleUrl + '">' + escapeHtml(article.title) + '</a></h2>' +
+                    '<p class="card-excerpt">' + escapeHtml(article.excerpt || '') + '</p>' +
+                    '</div>' +
+                    '</article>';
+            });
+
+            document.getElementById('articleGrid').innerHTML = html;
         }
-        if (end < pages - 1) h += '<span class="page-btn disabled" style="cursor:default;">…</span>';
-        if (currentPage === pages) h += '<span class="page-btn active">' + pages + '</span>';
-        else h += '<a href="#" class="page-btn" onclick="changePage(' + pages + ');return false;">' + pages + '</a>';
-        if (currentPage < pages) h += '<a href="#" class="page-btn" onclick="changePage(' + (currentPage + 1) + ');return false;">›</a>';
-        else h += '<span class="page-btn disabled">›</span>';
-        el.innerHTML = h;
-    }
-    function changePage(p) {
-        var t = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
-        if (p < 1 || p > t) return;
-        renderPage(p);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function toggleMenu() {
-        var nav = document.getElementById('navContainer');
-        if (nav) nav.classList.toggle('active');
-    }
-    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    window.addEventListener('scroll', function() {
-        var btn = document.getElementById('backToTop');
-        if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
-    });
 
-    /* Determine category: subdomain forces its category, URL param for main domain */
-    if (window.IS_SUBDOMAIN) {
-        currentCategory = window.SUBDOMAIN_CATEGORY;
-    } else {
-        currentCategory = getUrlParam('cat') || 'technology';
-    }
-    var catName = categoryNames[currentCategory] || currentCategory;
-    var catDesc = categoryDescs[currentCategory] || '';
-    document.title = catName + ' - HelloInsights';
-    var titleEl = document.getElementById('categoryTitle');
-    var descEl = document.getElementById('categoryDesc');
-    if (titleEl) titleEl.textContent = catName;
-    if (descEl) descEl.textContent = catDesc;
-
-    /* Load articles: subdomain loads only its category, main domain uses index for version */
-    if (window.IS_SUBDOMAIN) {
-        fetch('articles-' + currentCategory + '.json', { cache: 'force-cache' })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                allArticles = data.articles || [];
-                allArticles = allArticles.filter(function(a) { return a.category === currentCategory; });
-                allArticles.sort(function(a, b) {
-                    if (a.date && b.date) return new Date(b.date) - new Date(a.date);
-                    return (b.id || 0) - (a.id || 0);
-                });
-                renderPage(1);
-            })
-            .catch(function(err) {
-                var grid = document.getElementById('articleGrid');
-                if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles.</p>';
-            });
-    } else {
-        fetch('articles-index.json?v=' + Date.now())
-            .then(function(r) { return r.json(); })
-            .then(function(index) {
-                var v = index.v || Date.now();
-                return fetch('articles-' + currentCategory + '.json?v=' + v)
-                    .then(function(r) { return r.json(); });
-            })
-            .then(function(data) {
-                allArticles = data.articles || [];
-                allArticles.sort(function(a, b) {
-                    if (a.date && b.date) return new Date(b.date) - new Date(a.date);
-                    return (b.id || 0) - (a.id || 0);
-                });
-                renderPage(1);
-            })
-            .catch(function(err) {
-                var grid = document.getElementById('articleGrid');
-                if (grid) grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:3rem;color:#999;">Unable to load articles: ' + err.message + '</p>';
-            });
-    }
-
-    if (typeof loadSiteConfig === 'function') {
-        loadSiteConfig(function(config) {
-            if (config && config.categories) {
-                for (var i = 0; i < config.categories.length; i++)
-                    categoryNames[config.categories[i].id] = config.categories[i].name;
+        // --- Render pagination ---
+        function renderPagination() {
+            var totalPages = Math.ceil(filteredArticles.length / perPage);
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = '';
+                return;
             }
-        });
-    }
+
+            var html = '';
+            // Prev button
+            html += '<button ' + (currentPage <= 1 ? 'disabled' : '') + ' onclick="window.__changePage(' + (currentPage - 1) + ')">&laquo; Prev</button>';
+
+            // Page numbers
+            for (var i = 1; i <= totalPages; i++) {
+                if (totalPages > 7) {
+                    // Show first, last, current±1, and ellipses
+                    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                        html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="window.__changePage(' + i + ')">' + i + '</button>';
+                    } else if (i === currentPage - 2 || i === currentPage + 2) {
+                        html += '<span class="page-info">&hellip;</span>';
+                    }
+                } else {
+                    html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="window.__changePage(' + i + ')">' + i + '</button>';
+                }
+            }
+
+            // Next button
+            html += '<button ' + (currentPage >= totalPages ? 'disabled' : '') + ' onclick="window.__changePage(' + (currentPage + 1) + ')">Next &raquo;</button>';
+
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        // Global page change handler
+        window.__changePage = function(page) {
+            var totalPages = Math.ceil(filteredArticles.length / perPage);
+            if (page < 1 || page > totalPages) return;
+            renderPage(page);
+            renderPagination();
+            // Scroll to top of grid
+            document.getElementById('articleGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        // --- Explore Topics ---
+        function renderExploreTopics() {
+            var grid = document.getElementById('topicsGrid');
+            var html = '';
+
+            // Count articles per category
+            var counts = {};
+            allArticles.forEach(function(a) {
+                counts[a.subcategory] = (counts[a.subcategory] || 0) + 1;
+            });
+
+            SITE_CONFIG.subcategories.forEach(function(sub) {
+                var isCurrent = (sub.id === currentCatId);
+                var url = SITE_CONFIG.categoryUrlMap[sub.id] || '/' + sub.id + '/';
+                html += '<a class="topic-link' + (isCurrent ? ' current' : '') + '" href="' + url + '">' +
+                    '<div class="topic-name">' + (isCurrent ? '&#10003; ' : '') + escapeHtml(sub.name) + '</div>' +
+                    '<div class="topic-count">' + (counts[sub.id] || 0) + ' articles</div>' +
+                    '</a>';
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // --- Footer Topics ---
+        function renderFooterTopics() {
+            var ul = document.getElementById('footerTopics');
+            var html = '';
+            SITE_CONFIG.subcategories.forEach(function(sub) {
+                var url = SITE_CONFIG.categoryUrlMap[sub.id] || '/' + sub.id + '/';
+                html += '<li><a href="' + url + '">' + escapeHtml(sub.name) + '</a></li>';
+            });
+            ul.innerHTML = html;
+        }
+
+        // --- Utilities ---
+        function formatDate(dateStr) {
+            try {
+                var d = new Date(dateStr);
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch(e) { return dateStr; }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // Init
+        renderExploreTopics();
+        renderFooterTopics();
+    })();
     </script>
 </body>
 </html>

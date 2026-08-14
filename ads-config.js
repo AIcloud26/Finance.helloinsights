@@ -37,9 +37,9 @@
         // --- Index Page ---
         'native-top': {
             enabled: true,
-            network: 'mgid',         // adsense | adx | mgid
+            network: 'mgid',
             type: 'native',
-            pages: ['index'],
+            pages: ['index', 'category'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
@@ -69,7 +69,7 @@
             enabled: true,
             network: 'mgid',
             type: 'banner',
-            pages: ['index'],
+            pages: ['index', 'category'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
@@ -79,7 +79,7 @@
             enabled: false,
             network: 'mgid',
             type: 'anchor',
-            pages: ['index'],
+            pages: ['index', 'category'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
@@ -89,7 +89,7 @@
             enabled: false,
             network: 'mgid',
             type: 'interstitial',
-            pages: ['index'],
+            pages: ['index', 'article', 'category'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
@@ -304,26 +304,16 @@
     // Public API
     // ========================================
     window.AdConfig = {
-        /**
-         * Toggle a specific ad slot on/off
-         * @param {string} slotId - The slot key (e.g. 'native-top')
-         * @param {boolean} enabled - true to enable, false to disable
-         */
         toggle: function(slotId, enabled) {
             if (SLOTS[slotId]) {
                 SLOTS[slotId].enabled = !!enabled;
                 console.log('[AdConfig] ' + slotId + ' → ' + (enabled ? 'ON' : 'OFF'));
-                // Re-render if currently on page
                 renderAll();
                 setTimeout(checkFill, 2000);
             } else {
                 console.warn('[AdConfig] Slot not found: ' + slotId);
             }
         },
-        /**
-         * Get status of all ad slots
-         * @returns {Object} Slot status map
-         */
         getStatus: function() {
             var status = {};
             for (var key in SLOTS) {
@@ -339,9 +329,6 @@
             status._master = AD_ENABLED_MASTER;
             return status;
         },
-        /**
-         * Enable all slots at once
-         */
         enableAll: function() {
             for (var key in SLOTS) {
                 if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = true;
@@ -349,18 +336,12 @@
             renderAll();
             setTimeout(checkFill, 2000);
         },
-        /**
-         * Disable all slots at once
-         */
         disableAll: function() {
             for (var key in SLOTS) {
                 if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = false;
             }
             renderAll();
         },
-        /**
-         * Re-render all ad slots (for dynamic content)
-         */
         renderAll: renderAll
     };
 
@@ -369,11 +350,10 @@
     // ========================================
     function init() {
         renderAll();
-        // Multi-round fill detection (SDK loading delay)
         setTimeout(checkFill, 1500);
         setTimeout(checkFill, 4000);
         setTimeout(checkFill, 8000);
-        setTimeout(checkFill, 15000); // Final check for slow-loading MGID ads
+        setTimeout(checkFill, 15000);
     }
 
     if (document.readyState === 'loading') {
@@ -382,7 +362,6 @@
         init();
     }
 
-    // Log status on load
     console.log('[AdConfig] Loaded. Master: ' + (AD_ENABLED_MASTER ? 'ON' : 'OFF'));
     console.log('[AdConfig] MGID Site ID: ' + MGID_SITE_ID);
     console.log('[AdConfig] Use window.AdConfig.getStatus() to view slots');

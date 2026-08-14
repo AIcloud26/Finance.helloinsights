@@ -4,444 +4,351 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff6b35'/%3E%3Ctext x='16' y='23' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='22'%3EH%3C/text%3E%3C/svg%3E">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Read the latest insights and articles on HelloInsights.">
-    <title>Article - HelloInsights</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://images.unsplash.com">
+    <title>Article - HelloInsights Finance</title>
+    <meta name="description" content="Read the latest finance insights and articles on HelloInsights.">
+    <link rel="canonical" href="https://finance.helloinsights.online/article.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="HelloInsights Finance">
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="stylesheet" href="style.css">
+    <script src="site-config.js"></script>
     <script src="ads-config.js" defer></script>
-    <script>window.IS_SUBDOMAIN = true;</script>
-    <script src="config-loader.js"></script>
     <style>
-        .internal-links-section { margin-bottom: 2rem; }
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--accent-color, #ff6b35);
-            color: #1a1a2e;
-        }
+    .breadcrumb{max-width:800px;margin:1rem auto 0;padding:0 1.5rem;font-size:.85rem;color:#888;}
+    .breadcrumb a{color:#ff6b35;text-decoration:none;}
+    .breadcrumb a:hover{text-decoration:underline;}
+    .breadcrumb span{margin:0 .3rem;}
+    .article-hero{max-width:1000px;margin:1.5rem auto;position:relative;}
+    .article-hero img{width:100%;max-height:450px;object-fit:cover;border-radius:12px;}
+    .article-body{max-width:800px;margin:0 auto;padding:1.5rem;}
+    .article-header .card-category{display:inline-block;font-size:.78rem;font-weight:600;color:#ff6b35;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem;}
+    .article-header .card-category a{color:inherit;text-decoration:none;}
+    .article-header h1{font-size:2rem;font-weight:800;color:#1a1a1a;line-height:1.25;margin-bottom:.8rem;}
+    .article-meta{font-size:.88rem;color:#888;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #eee;}
+    .article-content{font-size:1.05rem;line-height:1.85;color:#333;}
+    .article-content p{margin-bottom:1.3rem;}
+    .article-content h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin:2rem 0 1rem;}
+    .article-content h3{font-size:1.2rem;color:#1a1a1a;margin:1.5rem 0 .8rem;}
+    .article-content ul,.article-content ol{margin:1.3rem 0;padding-left:1.8rem;}
+    .article-content li{margin-bottom:.7rem;}
+    .article-content blockquote{border-left:4px solid #ff6b35;padding-left:1.3rem;margin:1.8rem 0;font-style:italic;color:#555;}
+    .article-content strong{color:#1a1a1a;}
+    .share-section{margin-top:2rem;padding-top:1.5rem;border-top:1px solid #eee;}
+    .share-section h4{margin-bottom:.8rem;color:#1a1a1a;font-size:1rem;}
+    .share-buttons{display:flex;gap:.6rem;flex-wrap:wrap;}
+    .share-btn{padding:.5rem 1rem;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:500;color:#fff;}
+    .share-btn.twitter{background:#1da1f2;}.share-btn.facebook{background:#4267b2;}.share-btn.linkedin{background:#0077b5;}
+    .related-section{max-width:1000px;margin:2.5rem auto;padding:0 1.5rem;}
+    .related-section h2{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:1rem;border-bottom:2px solid #ff6b35;padding-bottom:.5rem;}
+    .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+    .related-card{display:flex;flex-direction:column;background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow .2s,border-color .2s;}
+    .related-card:hover{border-color:#ff6b35;box-shadow:0 2px 12px rgba(255,107,53,.08);}
+    .related-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;}
+    .related-card-body{padding:.8rem 1rem;}
+    .related-card-title{font-size:.92rem;font-weight:600;color:#1a1a1a;line-height:1.35;margin:0 0 .3rem;}
+    .related-card-meta{font-size:.78rem;color:#888;}
+    .topics-links{max-width:800px;margin:2rem auto;padding:0 1.5rem;}
+    .topics-links h3{font-size:1.1rem;font-weight:600;color:#1a1a1a;margin-bottom:.8rem;}
+    .topics-links-list{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .topics-links-list a{display:inline-block;padding:.4rem 1rem;background:#f5f5f5;border-radius:20px;font-size:.85rem;color:#555;text-decoration:none;transition:all .2s;}
+    .topics-links-list a:hover{background:#ff6b35;color:#fff;}
+    .back-to-finance{max-width:800px;margin:1.5rem auto;padding:0 1.5rem;}
+    .back-to-finance a{color:#ff6b35;font-weight:600;text-decoration:none;font-size:.9rem;}
+    .back-to-finance a:hover{text-decoration:underline;}
+    .ad-slot{margin:1.5rem auto;text-align:center;min-height:0;overflow:hidden;max-width:800px;}
+    .ad-slot.has-ad{min-height:100px;}
+    .ad-slot.ad-hidden{display:none!important;}
+    @media(max-width:768px){
+        .article-header h1{font-size:1.5rem;}
+        .article-body{padding:1rem;}
+        .article-content{font-size:.95rem;}
+        .related-grid{grid-template-columns:1fr;}
+        .article-hero img{max-height:250px;border-radius:8px;}
+    }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
             <a href="index.html" class="logo">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
-  <defs>
-    <linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0%" stop-color="#FFB13B"/>
-      <stop offset="100%" stop-color="#FF4B12"/>
-    </linearGradient>
-    <linearGradient id="hello" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1B252B"/>
-      <stop offset="100%" stop-color="#111A20"/>
-    </linearGradient>
-  </defs>
-  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
-  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFFFFF"/>
-  <g fill="#FF9B27">
-    <rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/>
-    <rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/>
-    <rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/>
-    <rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/>
-    <rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/>
-    <rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/>
-  </g>
-  <text x="53.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
-  <text x="100.5" y="35.2" font-family="Arial, Helvetica, sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
-</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 58" width="180" height="58" role="img" aria-label="HelloInsights logo" style="max-height:2.2rem;width:auto;display:block;">
+                  <defs><linearGradient id="orange" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#FFB13B"/><stop offset="100%" stop-color="#FF4B12"/></linearGradient><linearGradient id="hello" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1B252B"/><stop offset="100%" stop-color="#111A20"/></linearGradient></defs>
+                  <path d="M7.2 11.5 C7.2 8.3 9.8 5.8 13 5.8 H39.3 C42.5 5.8 45 8.3 45 11.5 V36.8 C45 40 42.5 42.5 39.3 42.5 H22.2 L16.5 47.3 C15.8 47.9 14.7 47.4 14.7 46.5 V42.5 H13 C9.8 42.5 7.2 40 7.2 36.8 Z" fill="url(#orange)"/>
+                  <path d="M15.4 12.7 H20.8 V21.2 H28.8 V12.7 H34.2 V35.5 H28.8 V26.4 H20.8 V35.5 H15.4 Z" fill="#FFF"/>
+                  <g fill="#FF9B27"><rect x="36.3" y="4.2" width="2.2" height="2.2" rx="0.35"/><rect x="42.0" y="2.8" width="1.9" height="1.9" rx="0.3"/><rect x="39.4" y="7.5" width="2.0" height="2.0" rx="0.3"/><rect x="45.0" y="6.3" width="1.6" height="1.6" rx="0.25"/><rect x="35.0" y="9.1" width="1.6" height="1.6" rx="0.25"/><rect x="42.5" y="10.5" width="2.0" height="2.0" rx="0.3"/><rect x="46.8" y="11.8" width="1.4" height="1.4" rx="0.2"/><rect x="38.2" y="13.1" width="1.5" height="1.5" rx="0.2"/></g>
+                  <text x="53.5" y="35.2" font-family="Arial,Helvetica,sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="url(#hello)">Hello</text>
+                  <text x="100.5" y="35.2" font-family="Arial,Helvetica,sans-serif" font-size="17.2" font-weight="700" letter-spacing="-0.75" fill="#FF4B12">Insights</text>
+                </svg>
             </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
-            </div>
+            <div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
             <div class="nav-container" id="navContainer">
-                <nav>
-                    <ul class="nav" id="navList"></ul>
-                </nav>
-                <div class="search-box">
-                    <input type="text" placeholder="Search articles..." id="searchInput">
-                    <button type="button" id="searchBtn">🔍</button>
-                </div>
+                <nav><ul class="nav" id="navList"></ul></nav>
+                <div class="search-box"><input type="text" placeholder="Search..." id="searchInput"><button type="button" id="searchBtn">🔍</button></div>
             </div>
         </div>
     </header>
-    <main class="container">
-        <div class="ad-slot" data-ad-slot="article-top"></div>
-        <article class="article-detail" id="articleDetail">
-            <div class="loading" id="loading"></div>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" id="breadcrumb"></nav>
+
+    <main>
+        <div class="ad-slot" data-ad-slot="article-banner-top"></div>
+        <article class="article-body" id="articleDetail">
+            <div class="loading"></div>
         </article>
-        <div class="ad-slot" data-ad-slot="article-bottom"></div>
-        <section class="internal-links-section" id="relatedSection" style="margin-top:3rem;">
-            <h2 class="section-title">Related Articles</h2>
-            <div class="article-grid" id="relatedGrid"></div>
+        <div class="ad-slot" data-ad-slot="article-banner-mid"></div>
+
+        <section class="related-section" id="relatedSection" style="display:none;">
+            <h2>Related Articles</h2>
+            <div class="related-grid" id="relatedGrid"></div>
         </section>
-        <section class="internal-links-section" id="popularSection" style="margin-top:2.5rem;display:none;">
-            <h2 class="section-title">Popular This Week</h2>
-            <div class="article-grid" id="popularGrid"></div>
-        </section>
-        <section class="internal-links-section" id="recommendedSection" style="margin-top:2.5rem;display:none;">
-            <h2 class="section-title">Recommended Reading</h2>
-            <div class="article-grid" id="recommendedGrid"></div>
-        </section>
+
+        <div class="topics-links" id="topicsLinks"></div>
+
+        <div class="back-to-finance">
+            <a href="index.html">&larr; Back to Finance</a>
+        </div>
     </main>
+
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h4 id="footerAboutTitle">About HelloInsights</h4>
-                <p id="footerAboutText">Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul id="footerLinks">
-                    <li><a href="index.html">Home</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                </ul>
-            </div>
+            <div class="footer-section"><h4>About HelloInsights</h4><p id="footerAboutText"></p></div>
+            <div class="footer-section"><h4>Topics</h4><ul id="footerTopicLinks"></ul></div>
+            <div class="footer-section"><h4>Legal</h4><ul>
+                <li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact Us</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li>
+            </ul></div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights. All rights reserved.</p>
-        </div>
+        <div class="footer-bottom"><p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights. All rights reserved.</p></div>
     </footer>
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <script>
-    // ===== SUBDOMAIN DETECTION (same as index.html) =====
-    var SITE_CONFIGS = {
-        'finance': {
-            name: 'Finance',
-            tagline: 'FINANCE NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
-            jsonFile: 'articles-finance.json',
-            titleSuffix: 'Finance News, Investing & Market Insights | HelloInsights',
-            metaDesc: 'Explore personal finance, investing, markets, banking, fintech, economic trends and money management insights from HelloInsights Finance.',
-            gaId: 'G-FINANCE-XXXXXXX'
-        },
-        'technology': {
-            name: 'Technology',
-            tagline: 'TECHNOLOGY NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
-            jsonFile: 'articles-technology.json',
-            titleSuffix: 'Technology News & Innovation Insights | HelloInsights',
-            metaDesc: 'Explore the latest technology news, product reviews, digital innovation and industry insights from HelloInsights Technology.',
-            gaId: 'G-TECH-XXXXXXX'
-        },
-        'ai-tools': {
-            name: 'AI Tools',
-            tagline: 'AI TOOLS NEWS & INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1677442136019-21780ecf995?w=600&h=400&fit=crop',
-            jsonFile: 'articles-ai-tools.json',
-            titleSuffix: 'AI Tools News & Reviews | HelloInsights',
-            metaDesc: 'Explore the latest AI tools news, reviews, and artificial intelligence insights from HelloInsights AI Tools.',
-            gaId: 'G-AITOOLS-XXXXXXX'
-        },
-        'health-lifestyle': {
-            name: 'Health & Lifestyle',
-            tagline: 'HEALTH & LIFESTYLE INSIGHTS',
-            aboutText: 'Your trusted source for the latest insights in Technology, Finance, AI Tools, and Health & Lifestyle.',
-            fallbackImage: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop',
-            jsonFile: 'articles-health-lifestyle.json',
-            titleSuffix: 'Health & Lifestyle Insights | HelloInsights',
-            metaDesc: 'Explore the latest health news, wellness tips, and lifestyle insights from HelloInsights Health & Lifestyle.',
-            gaId: 'G-HEALTH-XXXXXXX'
-        }
-    };
-    var host = window.location.hostname;
-    var sub = host.split('.')[0];
-    var CFG = SITE_CONFIGS[sub] || SITE_CONFIGS['finance'];
-    var CAT_ID = sub;
-    // Apply subdomain config (window.IS_SUBDOMAIN already set in <head>)
-    document.getElementById('footerAboutTitle').textContent = 'About HelloInsights';
-    document.getElementById('footerAboutText').textContent = CFG.aboutText;
-    document.getElementById('navList').innerHTML =
-        '<li><a href="index.html">Home</a></li>' +
-        '<li><a href="index.html" class="active">' + CFG.name + '</a></li>';
-    document.getElementById('footerLinks').innerHTML =
-        '<li><a href="index.html">Home</a></li>' +
-        '<li><a href="index.html">' + CFG.name + '</a></li>';
 
-    // ===== ARTICLE PAGE LOGIC =====
-    var categoryNames = {};
-    categoryNames[CAT_ID] = CFG.name;
-    var maxArticleId = 0;
-    var allArticlesGlobal = [];
-    var defaultFallback = CFG.fallbackImage;
-    var usedImageIds = {};
-    var fallbackImages = {
-        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop',
-        'finance': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
-        'ai-tools': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
-        'health-lifestyle': 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop'
-    };
-    function buildCategoryNames(config) {
-        var names = {};
-        if (config && config.categories) {
-            for (var i = 0; i < config.categories.length; i++) {
-                names[config.categories[i].id] = config.categories[i].name;
-            }
-        } else {
-            names = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+    var CFG = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
+    var SUBCATS = CFG.subcategories || [];
+    var allIndexArticles = [];
+    var allFullArticles = [];
+    var currentArticle = null;
+    var currentSubcat = '';
+
+    // Init
+    (function() {
+        buildNav();
+        buildFooter();
+        loadArticle();
+    })();
+
+    function buildNav() {
+        var nav = document.getElementById('navList');
+        var html = '<li><a href="index.html">Finance</a></li>';
+        for (var i = 0; i < SUBCATS.length; i++) {
+            html += '<li><a href="' + (CFG.categoryUrlMap[SUBCATS[i].id] || 'category.html?cat=' + SUBCATS[i].id) + '">' + SUBCATS[i].name + '</a></li>';
         }
-        return names;
+        nav.innerHTML = html;
     }
-    function getFallbackImage(category) {
-        return fallbackImages[category] || defaultFallback;
-    }
-    function formatDate(dateStr) {
-        if (dateStr) {
-            var d = new Date(dateStr);
-            return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    function buildFooter() {
+        document.getElementById('footerAboutText').textContent = CFG.aboutText || '';
+        var ul = document.getElementById('footerTopicLinks');
+        var html = '<li><a href="index.html">Home</a></li>';
+        for (var i = 0; i < SUBCATS.length; i++) {
+            html += '<li><a href="' + (CFG.categoryUrlMap[SUBCATS[i].id] || 'category.html?cat=' + SUBCATS[i].id) + '">' + SUBCATS[i].name + '</a></li>';
         }
-        return '';
+        ul.innerHTML = html;
     }
-    function generateDate(articleId, maxId) {
-        var today = new Date();
-        var date = new Date(today);
-        date.setDate(date.getDate() - Math.floor((maxId - articleId) / 3));
-        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+    function loadArticle() {
+        var params = new URLSearchParams(window.location.search);
+        var articleId = parseInt(params.get('id'));
+        if (!articleId) { showError(); return; }
+
+        // Step 1: Load index for metadata + subcategory
+        fetch(CFG.jsonFile || 'finance-index.json')
+            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(function(data) {
+                allIndexArticles = data.articles || [];
+                var meta = allIndexArticles.find(function(a) { return a.id === articleId; });
+                if (!meta) throw new Error('Article not in index');
+                currentSubcat = meta.subcategory || '';
+                // Step 2: Load full articles for content
+                return fetch(CFG.fullArticleJson || 'articles-finance.json');
+            })
+            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(function(data) {
+                allFullArticles = data.articles || [];
+                var full = allFullArticles.find(function(a) { return a.id === articleId; });
+                if (!full) throw new Error('Article content not found');
+                currentArticle = full;
+                // Find index meta for this article
+                var meta = allIndexArticles.find(function(a) { return a.id === articleId; });
+                renderArticle(full, meta);
+                renderRelated(meta);
+                renderTopicsLinks();
+                updateSEO(full, meta);
+            })
+            .catch(function(e) {
+                console.error('Load article failed:', e);
+                // Fallback: try loading full articles directly
+                fallbackLoad(articleId);
+            });
     }
-    function renderArticle(article, maxId) {
+
+    function fallbackLoad(articleId) {
+        fetch(CFG.fullArticleJson || 'articles-finance.json')
+            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(function(data) {
+                var full = (data.articles || []).find(function(a) { return a.id === articleId; });
+                if (!full) { showError(); return; }
+                currentArticle = full;
+                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: '', date: full.date, image: full.image, excerpt: full.excerpt };
+                renderArticle(full, fakeMeta);
+                updateSEO(full, fakeMeta);
+            })
+            .catch(function(e) { console.error('Fallback failed:', e); showError(); });
+    }
+
+    function renderArticle(article, meta) {
         var container = document.getElementById('articleDetail');
-        var loading = document.getElementById('loading');
-        if (loading) loading.remove();
-        var date = article.date ? formatDate(article.date) : generateDate(article.id, maxId);
-        var catName = categoryNames[article.category] || article.category;
-        var fallbackImg = getFallbackImage(article.category);
-        var heroImg = article.image.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp';
-        var articleContent = article.content
-            ? article.content
-            : '<p>' + article.excerpt + '</p><p><em>This article is being updated. Check back soon for the full content.</em></p>';
+        var catName = meta ? (meta.category || 'Finance') : 'Finance';
+        var subcatId = meta ? (meta.subcategory || '') : '';
+        var catUrl = subcatId ? (CFG.categoryUrlMap[subcatId] || ('category.html?cat=' + subcatId)) : 'index.html';
+        var heroImg = (article.image || CFG.fallbackImage || '').replace(/w=\d+/, 'w=1200').replace(/h=\d+/, 'h=675');
+        if (heroImg.indexOf('fm=') === -1) heroImg += '&fm=webp';
+        var date = article.date ? formatDate(article.date) : '';
+        var content = article.content || ('<p>' + (article.excerpt || '') + '</p>');
+
+        // Breadcrumb
+        var bc = document.getElementById('breadcrumb');
+        bc.innerHTML = '<a href="index.html">Home</a><span>›</span>' +
+            '<a href="' + catUrl + '">' + escHtml(catName) + '</a><span>›</span>' +
+            '<span>' + escHtml(article.title) + '</span>';
+
+        // JSON-LD Breadcrumb
+        var bcScript = document.createElement('script');
+        bcScript.type = 'application/ld+json';
+        bcScript.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://finance.helloinsights.online/" },
+                { "@type": "ListItem", "position": 2, "name": catName, "item": "https://finance.helloinsights.online" + catUrl },
+                { "@type": "ListItem", "position": 3, "name": article.title }
+            ]
+        });
+        document.head.appendChild(bcScript);
+
         container.innerHTML =
             '<div class="article-hero">' +
-            '<img src="' + heroImg + '" alt="' + article.title + '" loading="eager" fetchpriority="high" onerror="this.src=\'' + fallbackImg.replace('w=600&h=400', 'w=1200&h=600') + '&fm=webp\'">' +
+            '<img src="' + heroImg + '" alt="' + escHtml(article.title) + '" width="1200" height="675" loading="eager" fetchpriority="high" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
             '</div>' +
-            '<div class="article-body">' +
             '<header class="article-header">' +
-            '<span class="card-category">' + catName + '</span>' +
-            '<h1>' + article.title + '</h1>' +
-            '<div class="article-meta">' +
-            '<span>' + date + '</span>' +
-            '</div>' +
+            '<span class="card-category"><a href="' + catUrl + '">' + escHtml(catName) + '</a></span>' +
+            '<h1>' + escHtml(article.title) + '</h1>' +
+            '<div class="article-meta"><span>' + date + '</span></div>' +
             '</header>' +
-            '<div class="article-content">' +
-            articleContent +
-            '</div>' +
-            '</div>';
-        document.title = article.title + ' - ' + CFG.name;
-        // Initialize image dedup tracking (usedImageIds is in outer scope)
-        var heroPhotoId = extractUnsplashId(article.image);
-        if (heroPhotoId) usedImageIds[heroPhotoId] = true;
+            '<div class="article-content">' + content + '</div>' +
+            '<div class="share-section">' +
+            '<h4>Share this article</h4>' +
+            '<div class="share-buttons">' +
+            '<a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(article.title) + '&url=' + encodeURIComponent(location.href) + '" target="_blank" rel="noopener">Twitter</a>' +
+            '<a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href) + '" target="_blank" rel="noopener">Facebook</a>' +
+            '<a class="share-btn linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(article.title) + '" target="_blank" rel="noopener">LinkedIn</a>' +
+            '</div></div>';
     }
-    function extractUnsplashId(url) {
-        var m = url && url.match(/photo-([a-f0-9]+)/);
-        return m ? m[1] : '';
-    }
-    function getUniqueImage(article, fallback) {
-        var photoId = extractUnsplashId(article.image);
-        if (photoId && usedImageIds[photoId]) {
-            return fallback;
-        }
-        if (photoId) usedImageIds[photoId] = true;
-        return article.image;
-    }
-    function buildCardHTML(article, fallback, imageOverride) {
-        var imgSrc = imageOverride || article.image;
-        var catName = categoryNames[article.category] || article.category;
-        var date = article.date ? formatDate(article.date) : generateDate(article.id, maxArticleId);
-        return '<article class="article-card">' +
-            '<div class="card-image">' +
-            '<img src="' + imgSrc + '" alt="' + article.title + '" loading="lazy" onerror="this.src=\'' + fallback + '\'">' +
-            '</div>' +
-            '<div class="card-content">' +
-            '<span class="card-category">' + catName + '</span>' +
-            '<h3 class="card-title">' +
-            '<a href="article.html?id=' + article.id + '">' + article.title + '</a>' +
-            '</h3>' +
-            '<p class="card-excerpt">' + article.excerpt + '</p>' +
-            '<div class="card-meta">' +
-            '<span> ' + date + '</span>' +
-            '</div>' +
-            '<a href="article.html?id=' + article.id + '" class="read-more-btn">Read More</a>' +
-            '</div>' +
-            '</article>';
-    }
-    function renderRelated(currentArticle, allArticles) {
-        var related = allArticles.filter(function(a) {
-            return a.category === currentArticle.category && a.id !== currentArticle.id;
-        }).sort(function(a, b) {
-            return (b.date || '').localeCompare(a.date || '');
+
+    function renderRelated(meta) {
+        if (!meta || !meta.subcategory) return;
+        var related = allIndexArticles.filter(function(a) {
+            return a.subcategory === meta.subcategory && a.id !== meta.id;
         }).slice(0, 3);
-        if (related.length === 0) {
-            document.getElementById('relatedSection').style.display = 'none';
-            return 0;
-        }
+        if (!related.length) return;
+
+        // Also try to get full article data for better info
+        var section = document.getElementById('relatedSection');
+        section.style.display = '';
         var grid = document.getElementById('relatedGrid');
         var html = '';
         for (var i = 0; i < related.length; i++) {
-            var fb = getFallbackImage(related[i].category);
-            var uniqImg = getUniqueImage(related[i], fb);
-            html += buildCardHTML(related[i], fb, uniqImg);
+            var a = related[i];
+            var img = (a.image || CFG.fallbackImage || '').replace(/w=\d+/, 'w=480').replace(/h=\d+/, 'h=270');
+            html += '<a class="related-card" href="article.html?id=' + a.id + '">' +
+                '<img class="related-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
+                '<div class="related-card-body">' +
+                '<h3 class="related-card-title">' + escHtml(a.title) + '</h3>' +
+                '<div class="related-card-meta">' + formatDate(a.date) + '</div>' +
+                '</div></a>';
         }
         grid.innerHTML = html;
-        return related.length;
     }
-    function renderPopular(currentArticle, allArticles) {
-        var now = new Date();
-        var weekAgo = new Date(now);
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        var weekStr = weekAgo.toISOString().slice(0, 10);
-        var popular = allArticles.filter(function(a) {
-            return a.id !== currentArticle.id && a.date && a.date >= weekStr;
-        }).sort(function(a, b) {
-            return (b.date || '').localeCompare(a.date || '');
-        }).slice(0, 3);
-        if (popular.length < 3) {
-            var extra = allArticles.filter(function(a) {
-                return a.id !== currentArticle.id;
-            }).sort(function(a, b) {
-                return (b.date || '').localeCompare(a.date || '');
-            });
-            var ids = {};
-            for (var p = 0; p < popular.length; p++) ids[popular[p].id] = true;
-            for (var e = 0; e < extra.length && popular.length < 3; e++) {
-                if (!ids[extra[e].id]) {
-                    popular.push(extra[e]);
-                    ids[extra[e].id] = true;
-                }
-            }
+
+    function renderTopicsLinks() {
+        var el = document.getElementById('topicsLinks');
+        if (!el || !SUBCATS.length) return;
+        var html = '<h3>Explore Topics</h3><div class="topics-links-list">';
+        for (var i = 0; i < SUBCATS.length; i++) {
+            if (SUBCATS[i].id === currentSubcat) continue; // skip current
+            var url = CFG.categoryUrlMap[SUBCATS[i].id] || ('category.html?cat=' + SUBCATS[i].id);
+            html += '<a href="' + url + '">' + SUBCATS[i].name + '</a>';
         }
-        if (popular.length === 0) return 0;
-        var section = document.getElementById('popularSection');
-        section.style.display = 'block';
-        var grid = document.getElementById('popularGrid');
-        var html = '';
-        for (var i = 0; i < popular.length; i++) {
-            var fb = getFallbackImage(popular[i].category);
-            var uniqImg = getUniqueImage(popular[i], fb);
-            html += buildCardHTML(popular[i], fb, uniqImg);
-        }
-        grid.innerHTML = html;
-        return popular.length;
+        html += '</div>';
+        el.innerHTML = html;
     }
-    function renderRecommended(currentArticle, allArticles) {
-        var currentCat = currentArticle.category;
-        var categories = {};
-        for (var i = 0; i < allArticles.length; i++) {
-            var cat = allArticles[i].category;
-            if (cat !== currentCat && allArticles[i].id !== currentArticle.id) {
-                if (!categories[cat]) categories[cat] = [];
-                categories[cat].push(allArticles[i]);
-            }
-        }
-        var recommended = [];
-        var catKeys = Object.keys(categories);
-        for (var c = 0; c < catKeys.length; c++) {
-            categories[catKeys[c]].sort(function(a, b) {
-                return (b.date || '').localeCompare(a.date || '');
-            });
-            recommended.push(categories[catKeys[c]][0]);
-        }
-        recommended = recommended.slice(0, 3);
-        if (recommended.length === 0) return 0;
-        var section = document.getElementById('recommendedSection');
-        section.style.display = 'block';
-        var grid = document.getElementById('recommendedGrid');
-        var html = '';
-        for (var i = 0; i < recommended.length; i++) {
-            var fb = getFallbackImage(recommended[i].category);
-            var uniqImg = getUniqueImage(recommended[i], fb);
-            html += buildCardHTML(recommended[i], fb, uniqImg);
-        }
-        grid.innerHTML = html;
-        return recommended.length;
-    }
-    async function loadArticle() {
-        // Step 1: Load config for category names
-        await new Promise(function(resolve) {
-            loadSiteConfig(function(config) {
-                if (config) {
-                    categoryNames = buildCategoryNames(config);
-                    // Override current subdomain category name
-                    categoryNames[CAT_ID] = CFG.name;
-                } else {
-                    categoryNames = { 'technology': 'Technology', 'finance': 'Finance', 'ai-tools': 'AI Tools', 'health-lifestyle': 'Health & Lifestyle' };
-                    categoryNames[CAT_ID] = CFG.name;
-                }
-                resolve();
-            });
+
+    function updateSEO(article, meta) {
+        var catName = meta ? (meta.category || 'Finance') : 'Finance';
+        var desc = (article.excerpt || '').substring(0, 155);
+        document.title = article.title + ' - ' + catName + ' | HelloInsights Finance';
+        document.querySelector('meta[name="description"]').setAttribute('content', desc);
+        var canonical = 'https://finance.helloinsights.online/article.html?id=' + article.id;
+        document.querySelector('link[rel="canonical"]').setAttribute('href', canonical);
+        // OG
+        setOG('og:title', article.title);
+        setOG('og:description', desc);
+        setOG('og:image', article.image || CFG.fallbackImage || '');
+        setOG('og:url', canonical);
+        // JSON-LD Article
+        var ldScript = document.createElement('script');
+        ldScript.type = 'application/ld+json';
+        ldScript.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": article.title,
+            "image": article.image || CFG.fallbackImage,
+            "datePublished": article.date || '',
+            "author": { "@type": "Organization", "name": "HelloInsights" },
+            "publisher": { "@type": "Organization", "name": "HelloInsights Finance", "url": "https://finance.helloinsights.online" }
         });
-        // Step 2: Get article ID from URL
-        var urlParams = new URLSearchParams(window.location.search);
-        var articleId = parseInt(urlParams.get('id')) || 1;
-        try {
-            // Step 3: Fetch articles-index.json (format: { v, articles: {id: category}, ids: [] })
-            var indexData = await fetch('articles-index.json?v=' + Date.now()).then(function(r) {
-                if (!r.ok) throw new Error('index HTTP ' + r.status);
-                return r.json();
-            });
-            var articleMap = indexData.articles || indexData;
-            var indexV = indexData.v || Date.now();
-            var category = articleMap[articleId];
-            if (!category) throw new Error('Article ' + articleId + ' not in index');
-            // Step 4: Fetch category articles
-            var catData = await fetch('articles-' + category + '.json?v=' + indexV).then(function(r) {
-                if (!r.ok) throw new Error('category file HTTP ' + r.status);
-                return r.json();
-            });
-            var catArticles = catData.articles || [];
-            var article = catArticles.find(function(a) { return a.id === articleId; });
-            if (!article) throw new Error('Article ' + articleId + ' not found in ' + category);
-            // Step 5: Fetch ALL articles from all categories for cross-linking
-            var allCategories = ['technology', 'finance', 'ai-tools', 'health-lifestyle'];
-            var fetchPromises = [];
-            for (var i = 0; i < allCategories.length; i++) {
-                if (allCategories[i] === category) {
-                    fetchPromises.push(Promise.resolve(catArticles));
-                } else {
-                    fetchPromises.push(
-                        fetch('articles-' + allCategories[i] + '.json?v=' + indexV)
-                            .then(function(r) { return r.json(); })
-                            .then(function(d) { return d.articles || []; })
-                            .catch(function() { return []; })
-                    );
-                }
-            }
-            var allCatResults = await Promise.all(fetchPromises);
-            allArticlesGlobal = [];
-            for (var i = 0; i < allCatResults.length; i++) {
-                allArticlesGlobal = allArticlesGlobal.concat(allCatResults[i]);
-            }
-            // Step 6: Render article + internal linking sections
-            maxArticleId = Math.max.apply(null, catArticles.map(function(a) { return a.id; }));
-            renderArticle(article, maxArticleId);
-            var totalLinks = 0;
-            totalLinks += renderRelated(article, allArticlesGlobal);
-            totalLinks += renderPopular(article, allArticlesGlobal);
-            totalLinks += renderRecommended(article, allArticlesGlobal);
-        } catch (error) {
-            console.error('Article load error:', error.message);
-            var container = document.getElementById('articleDetail');
-            if (container) {
-                container.innerHTML = '<p style="text-align:center;padding:3rem;">Unable to load article: ' + error.message + '. <a href="index.html">Return to homepage</a></p>';
-            }
-        }
+        document.head.appendChild(ldScript);
     }
-    document.addEventListener('DOMContentLoaded', loadArticle);
+
+    function setOG(prop, content) {
+        var el = document.querySelector('meta[property="' + prop + '"]');
+        if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+        el.setAttribute('content', content);
+    }
+
+    function showError() {
+        document.getElementById('articleDetail').innerHTML =
+            '<p style="text-align:center;color:#888;padding:3rem;">Article not found. <a href="index.html" style="color:#ff6b35;">Back to Finance</a></p>';
+    }
+
+    // Utilities
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var p = dateStr.split('-');
+        if (p.length !== 3) return dateStr;
+        var m = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var d = new Date(p[0], p[1]-1, p[2]);
+        return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    function escHtml(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+    function toggleMenu() { document.getElementById('navContainer').classList.toggle('active'); }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    window.addEventListener('scroll', function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
+    });
     </script>
 </body>
 </html>
