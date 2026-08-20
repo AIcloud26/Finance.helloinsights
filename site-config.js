@@ -28,14 +28,14 @@ var SITE_CONFIG = {
         { id: 'economy', name: 'Economy', desc: 'Global economic outlook, policy analysis and macro trends.' },
         { id: 'money-management', name: 'Money Management', desc: 'Wealth management, financial advisory and asset allocation.' }
     ],
-    // 导航 URL 映射（用于 _redirects 或 JS 路由）
+    // 导航 URL 映射
     categoryUrlMap: {
-        'personal-finance': '/personal-finance/',
-        'investing': '/investing/',
-        'markets': '/markets/',
-        'banking': '/banking/',
-        'fintech': '/fintech/',
-        'economy': '/economy/',
-        'money-management': '/money-management/'
+        'personal-finance': 'category.html?cat=personal-finance',
+        'investing': 'category.html?cat=investing',
+        'markets': 'category.html?cat=markets',
+        'banking': 'category.html?cat=banking',
+        'fintech': 'category.html?cat=fintech',
+        'economy': 'category.html?cat=economy',
+        'money-management': 'category.html?cat=money-management'
     }
 };
