@@ -10,7 +10,9 @@
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="HelloInsights Finance">
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://images.pexels.com">
     <link rel="stylesheet" href="style.css">
     <script src="site-config.js"></script>
     <script src="ads-config.js" defer></script>
@@ -25,7 +27,7 @@
     .article-header .card-category{display:inline-block;font-size:.78rem;font-weight:600;color:#ff6b35;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem;}
     .article-header .card-category a{color:inherit;text-decoration:none;}
     .article-header h1{font-size:2rem;font-weight:800;color:#1a1a1a;line-height:1.25;margin-bottom:.8rem;}
-    .article-meta{font-size:.88rem;color:#888;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #eee;}
+    .article-meta{font-size:.88rem;color:#888;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #eee;}.article-author{font-weight:600;color:#555;}.author-role{color:#999;font-weight:400;}.content-type-label{color:#ff6b35;font-weight:600;text-transform:uppercase;font-size:.78rem;letter-spacing:.3px;}.meta-sep{margin:0 .2rem;}
     .article-content{font-size:1.05rem;line-height:1.85;color:#333;}
     .article-content p{margin-bottom:1.3rem;}
     .article-content h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin:2rem 0 1rem;}
@@ -133,6 +135,30 @@
     var currentArticle = null;
     var currentSubcat = '';
 
+
+    function getImgUrl(url, w, h) {
+        if (!url) return CFG.fallbackImage || '';
+        w = w || 1200; h = h || 675;
+        if (url.indexOf('pexels.com') !== -1) {
+            return url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h);
+        }
+        if (url.indexOf('unsplash.com') !== -1) {
+            var u = url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h);
+            if (u.indexOf('fm=') === -1) u += (u.indexOf('?') !== -1 ? '&' : '?') + 'fm=webp';
+            return u;
+        }
+        return url;
+    }
+
+    function subcatName(sc) {
+        if (!sc) return 'Finance';
+        var list = CFG.subcategories || [];
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === sc) return list[i].name;
+        }
+        return sc.charAt(0).toUpperCase() + sc.slice(1).replace(/-/g, ' ');
+    }
+
     // Init
     (function() {
         buildNav();
@@ -164,7 +190,7 @@
         if (!articleId) { showError(); return; }
 
         // Step 1: Load index for metadata + subcategory
-        fetch(CFG.jsonFile || 'finance-index.json')
+        fetch(CFG.jsonFile || 'finance-index.json', { cache: 'no-cache' })
             .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
             .then(function(data) {
                 allIndexArticles = data.articles || [];
@@ -172,7 +198,7 @@
                 if (!meta) throw new Error('Article not in index');
                 currentSubcat = meta.subcategory || '';
                 // Step 2: Load full articles for content
-                return fetch(CFG.fullArticleJson || 'articles-finance.json');
+                return fetch(CFG.fullArticleJson || 'articles-finance.json', { cache: 'no-cache' });
             })
             .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
             .then(function(data) {
@@ -195,13 +221,13 @@
     }
 
     function fallbackLoad(articleId) {
-        fetch(CFG.fullArticleJson || 'articles-finance.json')
+        fetch(CFG.fullArticleJson || 'articles-finance.json', { cache: 'no-cache' })
             .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
             .then(function(data) {
                 var full = (data.articles || []).find(function(a) { return a.id === articleId; });
                 if (!full) { showError(); return; }
                 currentArticle = full;
-                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: '', date: full.date, image: full.image, excerpt: full.excerpt };
+                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: full.subcategory || '', date: full.date, image: full.image, excerpt: full.excerpt, author: full.author, authorRole: full.authorRole, contentType: full.contentType };
                 renderArticle(full, fakeMeta);
                 updateSEO(full, fakeMeta);
             })
@@ -210,11 +236,10 @@
 
     function renderArticle(article, meta) {
         var container = document.getElementById('articleDetail');
-        var catName = meta ? (meta.category || 'Finance') : 'Finance';
         var subcatId = meta ? (meta.subcategory || '') : '';
+        var catName = subcatId ? subcatName(subcatId) : 'Finance';
         var catUrl = subcatId ? (CFG.categoryUrlMap[subcatId] || ('category.html?cat=' + subcatId)) : 'index.html';
-        var heroImg = (article.image || CFG.fallbackImage || '').replace(/w=\d+/, 'w=1200').replace(/h=\d+/, 'h=675');
-        if (heroImg.indexOf('fm=') === -1) heroImg += '&fm=webp';
+        var heroImg = getImgUrl(article.image || CFG.fallbackImage, 1200, 675);
         var date = article.date ? formatDate(article.date) : '';
         var content = article.content || ('<p>' + (article.excerpt || '') + '</p>');
 
@@ -245,7 +270,7 @@
             '<header class="article-header">' +
             '<span class="card-category"><a href="' + catUrl + '">' + escHtml(catName) + '</a></span>' +
             '<h1>' + escHtml(article.title) + '</h1>' +
-            '<div class="article-meta"><span>' + date + '</span></div>' +
+            '<div class="article-meta"><span>' + date + '</span>' + (article.author ? '<span class="meta-sep"> · </span><span class="article-author">' + escHtml(article.author) + '</span>' + (article.authorRole ? '<span class="author-role">, ' + escHtml(article.authorRole) + '</span>' : '') + '</span>' : '') + (article.contentType ? '<span class="meta-sep"> · </span><span class="content-type-label">' + escHtml(article.contentType.charAt(0).toUpperCase() + article.contentType.slice(1)) + '</span>' : '') + '</div>' +
             '</header>' +
             '<div class="article-content">' + content + '</div>' +
             '<div class="share-section">' +
@@ -271,7 +296,7 @@
         var html = '';
         for (var i = 0; i < related.length; i++) {
             var a = related[i];
-            var img = (a.image || CFG.fallbackImage || '').replace(/w=\d+/, 'w=480').replace(/h=\d+/, 'h=270');
+            var img = getImgUrl(a.image || CFG.fallbackImage, 480, 270);
             html += '<a class="related-card" href="article.html?id=' + a.id + '">' +
                 '<img class="related-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
                 '<div class="related-card-body">' +
@@ -314,10 +339,28 @@
             "@context": "https://schema.org",
             "@type": "Article",
             "headline": article.title,
-            "image": article.image || CFG.fallbackImage,
+            "description": (article.excerpt || '').substring(0, 200),
+            "image": [getImgUrl(article.image || CFG.fallbackImage, 1200, 675)],
             "datePublished": article.date || '',
-            "author": { "@type": "Organization", "name": "HelloInsights" },
-            "publisher": { "@type": "Organization", "name": "HelloInsights Finance", "url": "https://finance.helloinsights.online" }
+            "dateModified": article.date || '',
+            "author": {
+                "@type": "Person",
+                "name": article.author || 'HelloInsights Editorial Team',
+                "jobTitle": article.authorRole || ''
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "HelloInsights",
+                "url": "https://finance.helloinsights.online",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://finance.helloinsights.online/favicon.svg"
+                }
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": canonical
+            }
         });
         document.head.appendChild(ldScript);
     }

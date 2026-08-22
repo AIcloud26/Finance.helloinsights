@@ -217,7 +217,7 @@
     <!-- Header -->
     <header class="site-header">
         <nav class="nav-container">
-            <a href="/" class="logo">
+            <a href="index.html" class="logo">
                 <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="160" height="32">
                     <circle cx="16" cy="20" r="14" fill="#ff6b35"/>
                     <text x="36" y="28" font-size="22" font-weight="800" fill="#1a1a2e" font-family="Arial, sans-serif">Hello</text>
@@ -233,7 +233,7 @@
     <!-- Category Hero -->
     <section class="category-hero">
         <div class="breadcrumb">
-            <a href="/">Finance</a> &rsaquo; <span id="breadcrumbCat">Category</span>
+            <a href="index.html">Finance</a> &rsaquo; <span id="breadcrumbCat">Category</span>
         </div>
         <h1 id="catTitle">Category</h1>
         <p id="catDesc">Category description</p>
@@ -273,7 +273,7 @@
             <div class="footer-links">
                 <h4>More</h4>
                 <ul>
-                    <li><a href="/">Home</a></li>
+                    <li><a href="index.html">Home</a></li>
                     <li><a href="https://helloinsights.online" target="_blank">HelloInsights Main</a></li>
                 </ul>
             </div>
@@ -292,17 +292,25 @@
         'use strict';
 
         // --- Detect category from URL ---
+        // Supports both ?cat=xxx (query param) and /xxx/ (clean path)
+        var VALID_CAT_IDS = [
+            'personal-finance', 'investing', 'markets', 'banking',
+            'fintech', 'economy', 'money-management'
+        ];
         function detectCategory() {
-            var path = window.location.pathname.replace(/\/+$/, '');
-            var segments = path.split('/').filter(Boolean);
-            var catId = segments[segments.length - 1] || '';
+            // 1) Query parameter takes priority (works on category.html?cat=xxx)
+            var params = new URLSearchParams(window.location.search);
+            var fromQuery = (params.get('cat') || '').trim().toLowerCase();
+            if (fromQuery && VALID_CAT_IDS.indexOf(fromQuery) !== -1) return fromQuery;
 
-            // Also check query param fallback
-            if (!catId) {
-                var params = new URLSearchParams(window.location.search);
-                catId = params.get('cat') || '';
+            // 2) Clean URL path: /banking/ or /investing/
+            var path = window.location.pathname.replace(/\/+$/, '').toLowerCase();
+            var segments = path.split('/').filter(Boolean);
+            for (var i = segments.length - 1; i >= 0; i--) {
+                var seg = segments[i].replace(/\.html?$/, '');
+                if (seg && seg !== 'category' && VALID_CAT_IDS.indexOf(seg) !== -1) return seg;
             }
-            return catId;
+            return '';
         }
 
         var currentCatId = detectCategory();
@@ -318,14 +326,14 @@
         }
 
         if (!catConfig) {
-            // Invalid category → redirect to home
-            window.location.href = '/';
+            // Invalid or missing category → redirect to home
+            window.location.href = 'index.html';
             return;
         }
 
         // --- Set page metadata ---
         var base = 'https://finance.helloinsights.online';
-        var catUrl = base + '/category.html?cat=' + currentCatId;
+        var catUrl = base + '/' + currentCatId + '/';
         var pageTitleText = catConfig.name + ' — ' + SITE_CONFIG.siteName + ' Insights | HelloInsights';
         var pageDesc = catConfig.desc + ' Expert analysis, guides and news from the HelloInsights editorial team.';
 
@@ -397,7 +405,7 @@
                 var imgUrl = article.image || SITE_CONFIG.fallbackImage;
                 // Optimize image: lazy load
                 var dateFormatted = formatDate(article.date);
-                var articleUrl = '/article.html?id=' + encodeURIComponent(article.id);
+                var articleUrl = 'article.html?id=' + encodeURIComponent(article.id);
 
                 html += '<article class="category-card">' +
                     '<a href="' + articleUrl + '">' +

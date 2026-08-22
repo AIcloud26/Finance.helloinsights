@@ -1,41 +1,46 @@
 /**
- * HelloInsights — 子站点配置 (Template)
- * 
- * 矩阵化复用：复制此文件到子站仓库，修改 SITE_CONFIG 中的字段即可。
- * 需修改项：siteName, tagline, subcategories, SEO, heroIntro, gaId
+ * HelloInsights — Finance sub-site configuration
+ *
+ * Matrix reuse: copy this file to each sub-site, edit SITE_CONFIG fields.
+ * Editable: siteName, tagline, subcategories, SEO, heroIntro, gaId, domain
  */
 var SITE_CONFIG = {
     siteName: 'Finance',
     fullSiteName: 'HelloInsights Finance',
     tagline: 'Finance Insights for Smarter Money Decisions',
     aboutText: 'Practical insights on money, investing, markets, banking, fintech and the economy.',
-    fallbackImage: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop',
+    domain: 'https://finance.helloinsights.online',
+    fallbackImage: 'https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
     jsonFile: 'finance-index.json',
     fullArticleJson: 'articles-finance.json',
-    gaId: 'G-FINANCE-XXXXXXX',
+    gaId: 'G-Q4QHZKZT46',
     // SEO
     titleSuffix: 'Finance Insights on Money, Investing, Markets & Banking | HelloInsights',
-    metaDesc: 'Explore practical finance insights covering personal finance, investing, markets, banking, fintech, the economy and everyday money management.',
-    // Hero
-    heroIntro: '<p>Money shapes every decision we make — from daily spending to long-term wealth. HelloInsights Finance cuts through the noise to deliver <strong>actionable insights on personal finance, investing, markets, banking, fintech, the economy, and money management</strong>.</p><p>Our editors go beyond headlines: we explain what matters, why it matters, and how it affects your wallet.</p>',
-    // 7 个 Finance 子分类
+    metaDesc: 'Actionable finance insights on personal finance, investing, markets, banking, fintech, the economy and money management — for readers who want clarity, not noise.',
+    // Hero (100–150 words, 2 paragraphs, no AI template phrases)
+    heroIntro: '<p>Money decisions have a way of looking simple from a distance and messy up close. A headline tells you the market moved; it rarely tells you what the move means for your savings, your mortgage, or your next career move. HelloInsights Finance exists for the second question.</p><p>We cover personal finance, investing, markets, banking, fintech, the economy, and money management with one rule: explain what matters, why it matters, and what you can reasonably do about it. No slogans. No certainty where none exists. Just clear, sourced analysis from people who spend their days reading the fine print.</p>',
+    // 7 Finance sub-categories
     subcategories: [
-        { id: 'personal-finance', name: 'Personal Finance', desc: 'Budgeting, saving, real estate and retirement planning for everyday life.' },
-        { id: 'investing', name: 'Investing', desc: 'Stock market analysis, portfolio strategies and wealth building.' },
-        { id: 'markets', name: 'Markets', desc: 'Real-time market trends, analysis and breaking financial news.' },
-        { id: 'banking', name: 'Banking', desc: 'Digital banking, fintech disruption and the future of financial services.' },
-        { id: 'fintech', name: 'Fintech', desc: 'Cryptocurrency, DeFi, blockchain and financial technology innovation.' },
-        { id: 'economy', name: 'Economy', desc: 'Global economic outlook, policy analysis and macro trends.' },
-        { id: 'money-management', name: 'Money Management', desc: 'Wealth management, financial advisory and asset allocation.' }
+        { id: 'personal-finance', name: 'Personal Finance', desc: 'Budgeting, saving, debt, household cash flow and the everyday decisions that shape long-term financial health.' },
+        { id: 'investing', name: 'Investing', desc: 'Stock market analysis, portfolio strategy, asset allocation, and evidence-based approaches to building wealth.' },
+        { id: 'markets', name: 'Markets', desc: 'Real-time market trends, rates, earnings, sector moves and the forces driving prices across asset classes.' },
+        { id: 'banking', name: 'Banking', desc: 'Digital banking, deposits, lending, neobanks and the fast-changing business of holding and moving money.' },
+        { id: 'fintech', name: 'Fintech', desc: 'Cryptocurrency, DeFi, payments, embedded finance and the technology reshaping how money moves.' },
+        { id: 'economy', name: 'Economy', desc: 'Inflation, jobs, growth, policy and macro trends — and what they actually mean for households and investors.' },
+        { id: 'money-management', name: 'Money Management', desc: 'Wealth management, retirement, tax-efficient planning, insurance and the business of keeping what you earn.' }
     ],
-    // 导航 URL 映射
+    // Navigation URL map — clean URLs (Cloudflare Pages _redirects maps /xxx/ → category.html?cat=xxx)
     categoryUrlMap: {
-        'personal-finance': 'category.html?cat=personal-finance',
-        'investing': 'category.html?cat=investing',
-        'markets': 'category.html?cat=markets',
-        'banking': 'category.html?cat=banking',
-        'fintech': 'category.html?cat=fintech',
-        'economy': 'category.html?cat=economy',
-        'money-management': 'category.html?cat=money-management'
-    }
+        'personal-finance': 'personal-finance/',
+        'investing':       'investing/',
+        'markets':         'markets/',
+        'banking':         'banking/',
+        'fintech':         'fintech/',
+        'economy':         'economy/',
+        'money-management':'money-management/'
+    },
+    // Article URL builder (single source of truth)
+    articleUrl: function(id) { return 'article.html?id=' + id; },
+    // Category URL builder
+    categoryUrl: function(catId) { return (this.categoryUrlMap[catId] || ('category.html?cat=' + catId)); }
 };

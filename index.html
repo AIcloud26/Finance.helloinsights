@@ -258,7 +258,7 @@
     var CFG = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
     var SUBCATS = CFG.subcategories || [];
     var ARTICLES_PER_TOPIC = 3;
-    var LATEST_INITIAL = 8;
+    var LATEST_INITIAL = 10;
     var MOST_READ_COUNT = 5;
     var allArticles = [];
     var usedArticleIds = {};  // Track to avoid duplicates
@@ -299,7 +299,7 @@
     // ===== DATA LOADING =====
     function loadFinanceIndex() {
         var jsonFile = CFG.jsonFile || 'finance-index.json';
-        fetch(jsonFile)
+        fetch(jsonFile, { cache: 'no-cache' })
             .then(function(r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
@@ -338,6 +338,15 @@
     function renderFeatured() {
         var grid = document.getElementById('featuredGrid');
         var featured = [];
+        // First pass: articles explicitly marked featured
+        for (var i = 0; i < allArticles.length; i++) {
+            if (allArticles[i].featured && !usedArticleIds[allArticles[i].id]) {
+                featured.push(allArticles[i]);
+                usedArticleIds[allArticles[i].id] = true;
+                if (featured.length >= 4) break;
+            }
+        }
+        // Fallback: fill with most recent if not enough featured
         for (var i = 0; i < allArticles.length && featured.length < 4; i++) {
             if (!usedArticleIds[allArticles[i].id]) {
                 featured.push(allArticles[i]);
@@ -352,7 +361,7 @@
             html += '<a class="featured-card" href="article.html?id=' + a.id + '">' +
                 '<img class="featured-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="640" height="360" loading="' + (i === 0 ? 'eager' : 'lazy') + '" decoding="async"' + (i === 0 ? ' fetchpriority="high"' : '') + ' onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
                 '<div class="featured-card-body">' +
-                '<span class="featured-card-cat">' + escHtml(a.category || '') + '</span>' +
+                '<span class="featured-card-cat">' + escHtml(subcatName(a.subcategory)) + '</span>' +
                 '<h3 class="featured-card-title">' + escHtml(a.title) + '</h3>' +
                 '<div class="featured-card-meta">' + formatDate(a.date) + '</div>' +
                 '</div></a>';
@@ -405,7 +414,7 @@
         return '<a class="latest-card" href="article.html?id=' + a.id + '">' +
             '<img class="latest-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="140" height="90" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
             '<div class="latest-card-body">' +
-            '<span class="latest-card-cat">' + escHtml(a.category || '') + '</span>' +
+            '<span class="latest-card-cat">' + escHtml(subcatName(a.subcategory)) + '</span>' +
             '<h3 class="latest-card-title">' + escHtml(a.title) + '</h3>' +
             '<div class="latest-card-meta">' + formatDate(a.date) + '</div>' +
             '</div></a>';
@@ -495,8 +504,21 @@
 
     function getImgUrl(url, w, h) {
         if (!url) return CFG.fallbackImage || '';
-        // Replace Unsplash dimensions for 16:9
-        return url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h).replace(/fit=crop/, 'fit=crop');
+        // Unsplash: replace w/h params
+        if (url.indexOf('unsplash.com') !== -1) {
+            return url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h).replace(/fit=crop/, 'fit=crop');
+        }
+        // Pexels: replace w/h params
+        if (url.indexOf('pexels.com') !== -1) {
+            return url.replace(/w=\d+/, 'w=' + w).replace(/h=\d+/, 'h=' + h);
+        }
+        return url;
+    }
+    function subcatName(scid) {
+        for (var i = 0; i < SUBCATS.length; i++) {
+            if (SUBCATS[i].id === scid) return SUBCATS[i].name;
+        }
+        return scid || 'Finance';
     }
 
     function formatDate(dateStr) {
