@@ -56,6 +56,10 @@ body {
 .search-box input::placeholder { color: var(--text-light); }
 .search-box button { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 1.1rem; transition: var(--transition); }
 .search-box button:hover { color: var(--primary-color); }
+/* Header search - compact fit next to nav */
+.header-search { padding: 0.35rem 0.8rem; flex-shrink: 0; }
+.header-search input { width: 130px; font-size: 0.88rem; }
+.header-search button { font-size: 0.95rem; }
 .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 0.5rem; }
 .menu-toggle span { width: 28px; height: 3px; background: var(--text-dark); border-radius: 2px; transition: var(--transition); }
 /* ========== Main Content Container ========== */
@@ -222,6 +226,8 @@ body {
     .nav a { padding: 0.8rem 1rem; text-align: center; border-bottom: 1px solid #eee; }
     .search-box { width: 100%; }
     .search-box input { width: 100%; }
+    .header-search { width: auto; padding: 0.3rem 0.6rem; }
+    .header-search input { width: 100px; }
     .container { padding: 1.2rem 1rem; }
     .article-grid { grid-template-columns: 1fr; gap: 1.5rem; }
     .page-header { margin-bottom: 1.5rem; }

@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Studio — HelloInsights Finance</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* ========== Reset & Variables ========== */
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --primary:#ff6b35;--primary-hover:#e85a2a;--primary-light:rgba(255,107,53,.08);
+            --bg:#f8f9fa;--white:#fff;--text:#1a1a2e;--text-secondary:#64748b;--text-muted:#94a3b8;
+            --border:#e2e8f0;--border-light:#f1f5f9;--shadow:0 1px 3px rgba(0,0,0,.06);
+            --shadow-lg:0 4px 16px rgba(0,0,0,.08);--radius:10px;--radius-sm:6px;
+            --sidebar-w:240px;--transition:all .2s ease;
+            --status-draft:#94a3b8;--status-review:#3b82f6;--status-approved:#22c55e;--status-published:#15803d;
+            --danger:#ef4444;--danger-hover:#dc2626;--warning:#f59e0b;--success:#22c55e;
+        }
+        html{font-size:16px;scroll-behavior:smooth}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+            line-height:1.6;color:var(--text);background:var(--bg);min-height:100vh}
+        a{color:var(--primary);text-decoration:none}
+        a:hover{text-decoration:underline}
+        button{cursor:pointer;font-family:inherit}
+        input,textarea,select{font-family:inherit;font-size:.9rem}
+
+        /* ========== Layout ========== */
+        #app{display:flex;min-height:100vh}
+
+        /* Sidebar */
+        .sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);
+            display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
+            transition:transform .3s ease}
+        .sidebar-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+        .sidebar-logo{font-size:1.1rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+        .sidebar-logo span{color:var(--primary)}
+        .sidebar-subtitle{font-size:.72rem;color:var(--text-muted);margin-top:.15rem;letter-spacing:.5px;text-transform:uppercase}
+        .sidebar-nav{flex:1;padding:1rem 0;overflow-y:auto}
+        .nav-group-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;
+            letter-spacing:.8px;padding:.75rem 1.5rem .4rem}
+        .nav-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;
+            font-size:.88rem;color:var(--text-secondary);cursor:pointer;transition:var(--transition);
+            border-left:3px solid transparent;text-decoration:none}
+        .nav-item:hover{background:var(--primary-light);color:var(--primary);text-decoration:none}
+        .nav-item.active{background:var(--primary-light);color:var(--primary);border-left-color:var(--primary);font-weight:600}
+        .nav-item .icon{font-size:1.1rem;width:1.25rem;text-align:center}
+        .nav-item .badge{margin-left:auto;background:var(--primary);color:#fff;font-size:.7rem;
+            padding:.1rem .45rem;border-radius:10px;font-weight:600}
+        .sidebar-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text-muted)}
+
+        /* Main content */
+        .main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh}
+        .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.75rem 2rem;
+            display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+        .topbar-title{font-size:1rem;font-weight:600;color:var(--text)}
+        .topbar-actions{display:flex;gap:.5rem;align-items:center}
+        .content-area{flex:1;padding:2rem}
+
+        /* Demo banner */
+        .demo-banner{background:#fef3cd;color:#856404;padding:.6rem 2rem;font-size:.85rem;
+            text-align:center;border-bottom:1px solid #ffc107}
+
+        /* Mobile sidebar toggle */
+        .sidebar-toggle{display:none;background:none;border:none;font-size:1.3rem;color:var(--text);padding:.25rem}
+
+        /* ========== Components ========== */
+        /* Cards */
+        .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-bottom:2rem}
+        .stat-card{background:var(--white);border-radius:var(--radius);padding:1.25rem 1.5rem;
+            box-shadow:var(--shadow);border:1px solid var(--border)}
+        .stat-card .label{font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.35rem}
+        .stat-card .value{font-size:1.8rem;font-weight:700;color:var(--text)}
+        .stat-card .sub{font-size:.78rem;color:var(--text-muted);margin-top:.2rem}
+
+        .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem}
+        .card-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .card-header h2{font-size:1.05rem;font-weight:600}
+        .card-body{padding:1.5rem}
+
+        /* Buttons */
+        .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:var(--radius-sm);
+            font-size:.85rem;font-weight:500;border:1px solid transparent;transition:var(--transition);line-height:1.4}
+        .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .btn-primary:hover{background:var(--primary-hover)}
+        .btn-secondary{background:var(--white);color:var(--text);border-color:var(--border)}
+        .btn-secondary:hover{background:var(--bg)}
+        .btn-danger{background:var(--danger);color:#fff}
+        .btn-danger:hover{background:var(--danger-hover)}
+        .btn-ghost{background:transparent;color:var(--text-secondary);border:none;padding:.4rem .6rem}
+        .btn-ghost:hover{color:var(--primary);background:var(--primary-light)}
+        .btn-sm{padding:.3rem .7rem;font-size:.8rem}
+        .btn:disabled{opacity:.5;cursor:not-allowed}
+
+        /* Forms */
+        .form-group{margin-bottom:1.25rem}
+        .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+        .form-label .required{color:var(--danger);margin-left:.15rem}
+        .form-input,.form-textarea,.form-select{width:100%;padding:.55rem .75rem;border:1px solid var(--border);
+            border-radius:var(--radius-sm);font-size:.9rem;color:var(--text);background:var(--white);
+            transition:var(--transition);line-height:1.5}
+        .form-input:focus,.form-textarea:focus,.form-select:focus{outline:none;border-color:var(--primary);
+            box-shadow:0 0 0 3px rgba(255,107,53,.1)}
+        .form-textarea{resize:vertical;min-height:80px}
+        .form-hint{font-size:.75rem;color:var(--text-muted);margin-top:.3rem}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+        /* Table */
+        .table-wrap{overflow-x:auto}
+        table{width:100%;border-collapse:collapse;font-size:.88rem}
+        th{text-align:left;padding:.75rem 1rem;font-weight:600;color:var(--text-muted);font-size:.75rem;
+            text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:var(--bg)}
+        td{padding:.75rem 1rem;border-bottom:1px solid var(--border-light);color:var(--text);vertical-align:middle}
+        tr:hover td{background:rgba(0,0,0,.01)}
+
+        /* Status badges */
+        .status{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:20px;
+            font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+        .status-draft{background:#f1f5f9;color:#64748b}
+        .status-review{background:#eff6ff;color:#3b82f6}
+        .status-approved{background:#f0fdf4;color:#22c55e}
+        .status-published{background:#dcfce7;color:#15803d}
+
+        /* Rich text editor */
+        .editor-toolbar{display:flex;flex-wrap:wrap;gap:.25rem;padding:.5rem;background:var(--bg);
+            border:1px solid var(--border);border-bottom:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+        .editor-toolbar button{background:var(--white);border:1px solid var(--border);border-radius:4px;
+            padding:.3rem .55rem;font-size:.82rem;color:var(--text-secondary);transition:var(--transition);min-width:30px}
+        .editor-toolbar button:hover{background:var(--primary-light);color:var(--primary);border-color:var(--primary)}
+        .editor-toolbar .sep{width:1px;background:var(--border);margin:0 .25rem}
+        .editor-content{border:1px solid var(--border);border-radius:0 0 var(--radius-sm) var(--radius-sm);
+            padding:1.25rem;min-height:300px;max-height:600px;overflow-y:auto;font-size:.95rem;line-height:1.8;
+            color:var(--text);background:var(--white);outline:none}
+        .editor-content:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,107,53,.08)}
+        .editor-content h2{font-size:1.4rem;margin:1.5rem 0 .8rem;color:var(--text)}
+        .editor-content h3{font-size:1.15rem;margin:1.2rem 0 .6rem;color:var(--text)}
+        .editor-content p{margin-bottom:1rem}
+        .editor-content blockquote{border-left:3px solid var(--primary);padding-left:1rem;margin:1rem 0;color:var(--text-secondary);font-style:italic}
+        .editor-content ul,.editor-content ol{margin:.8rem 0;padding-left:1.5rem}
+        .editor-content li{margin-bottom:.4rem}
+
+        /* Source list */
+        .source-item{display:flex;gap:.75rem;align-items:flex-start;padding:.75rem;background:var(--bg);
+            border-radius:var(--radius-sm);margin-bottom:.5rem}
+        .source-item .form-input{padding:.4rem .6rem;font-size:.82rem}
+        .source-remove{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1.1rem;padding:.25rem}
+
+        /* Tabs */
+        .tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:1.5rem;gap:0}
+        .tab{padding:.6rem 1.25rem;font-size:.88rem;font-weight:500;color:var(--text-secondary);
+            cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transition)}
+        .tab:hover{color:var(--primary)}
+        .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+
+        /* Review panels */
+        .review-item{padding:1rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:.75rem;border-left:3px solid var(--border)}
+        .review-item.verified{border-left-color:var(--success)}
+        .review-item.needs-review{border-left-color:var(--warning)}
+        .review-item.unsupported{border-left-color:var(--danger)}
+        .review-item .claim{font-size:.88rem;color:var(--text);margin-bottom:.5rem}
+        .review-item .review-actions{display:flex;gap:.4rem;flex-wrap:wrap}
+        .review-item .review-actions button{font-size:.75rem;padding:.2rem .5rem}
+
+        /* Health check */
+        .health-grade{display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;
+            border-radius:50%;font-size:1.3rem;font-weight:800;color:#fff}
+        .grade-a{background:#22c55e}.grade-b{background:#3b82f6}.grade-c{background:#f59e0b}.grade-d{background:#ef4444}
+
+        /* Version history */
+        .version-item{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;background:var(--bg);
+            border-radius:var(--radius-sm);margin-bottom:.5rem;cursor:pointer;transition:var(--transition)}
+        .version-item:hover{background:var(--primary-light)}
+        .version-item .v-num{font-weight:700;color:var(--primary);font-size:.9rem;min-width:2rem}
+        .version-item .v-type{font-size:.75rem;font-weight:600;padding:.15rem .4rem;border-radius:4px;background:var(--border-light)}
+        .version-item .v-time{font-size:.78rem;color:var(--text-muted);margin-left:auto}
+
+        /* Modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:center;justify-content:center;padding:2rem}
+        .modal{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+            max-width:600px;width:100%;max-height:80vh;overflow-y:auto}
+        .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .modal-header h3{font-size:1.05rem;font-weight:600}
+        .modal-body{padding:1.5rem}
+        .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.5rem;justify-content:flex-end}
+
+        /* Toast */
+        .toast-container{position:fixed;top:1rem;right:1rem;z-index:2000;display:flex;flex-direction:column;gap:.5rem}
+        .toast{padding:.75rem 1.25rem;border-radius:var(--radius-sm);font-size:.85rem;color:#fff;
+            box-shadow:var(--shadow-lg);animation:slideIn .3s ease;max-width:360px}
+        .toast-success{background:#22c55e}.toast-error{background:#ef4444}
+        .toast-info{background:#3b82f6}.toast-warning{background:#f59e0b}
+        @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+        /* Login / Setup */
+        .login-container{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:2rem}
+        .login-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+            max-width:440px;width:100%;padding:2.5rem}
+        .login-card h1{font-size:1.5rem;font-weight:700;margin-bottom:.5rem;color:var(--text)}
+        .login-card .subtitle{color:var(--text-muted);font-size:.88rem;margin-bottom:2rem}
+
+        /* Filters */
+        .filters{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+        .filter-select{padding:.4rem .75rem;border:1px solid var(--border);border-radius:var(--radius-sm);
+            font-size:.82rem;color:var(--text);background:var(--white)}
+        .search-input{padding:.4rem .75rem;border:1px solid var(--border);border-radius:var(--radius-sm);
+            font-size:.82rem;width:220px}
+
+        /* Empty state */
+        .empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted)}
+        .empty-state .icon{font-size:3rem;margin-bottom:1rem}
+        .empty-state h3{font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
+        .empty-state p{font-size:.88rem;margin-bottom:1.5rem}
+
+        /* Loading */
+        .loading-spinner{display:flex;align-items:center;justify-content:center;padding:3rem}
+        .loading-spinner::after{content:'';width:36px;height:36px;border:3px solid var(--border);
+            border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* Responsive */
+        @media(max-width:768px){
+            .sidebar{transform:translateX(-100%)}
+            .sidebar.open{transform:translateX(0)}
+            .sidebar-toggle{display:block}
+            .main{margin-left:0}
+            .content-area{padding:1.25rem}
+            .form-row{grid-template-columns:1fr}
+            .stat-grid{grid-template-columns:repeat(2,1fr)}
+            .topbar{padding:.75rem 1rem}
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Toast notifications -->
+    <div class="toast-container">
+        <div v-for="(t,i) in toasts" :key="i" :class="'toast toast-'+t.type">{{ t.message }}</div>
+    </div>
+
+    <!-- LOGIN / SETUP SCREEN -->
+    <div v-if="!initialized" class="login-container">
+        <div class="login-card">
+            <h1>📰 Content Studio</h1>
+            <p class="subtitle">HelloInsights Finance — Editorial Management System</p>
+            <div class="form-group">
+                <label class="form-label">Supabase URL</label>
+                <input class="form-input" v-model="setup.supabaseUrl" placeholder="https://xxxxx.supabase.co">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Anon Key</label>
+                <input class="form-input" v-model="setup.supabaseKey" placeholder="eyJhbGciOi..." type="password">
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1.5rem">
+                <button class="btn btn-primary" @click="connectSupabase" :disabled="!setup.supabaseUrl||!setup.supabaseKey">
+                    Connect & Start
+                </button>
+                <button class="btn btn-secondary" @click="startDemo">
+                    Demo Mode
+                </button>
+            </div>
+            <p class="form-hint" style="margin-top:1rem">Demo mode runs entirely in browser memory — no database needed.</p>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <template v-else>
+        <!-- Demo banner -->
+        <div v-if="isDemo" class="demo-banner">⚡ Demo Mode — data is stored in memory only and will be lost on refresh.</div>
+
+        <div id="app-layout" style="display:flex;min-height:100vh">
+            <!-- Sidebar -->
+            <aside class="sidebar" :class="{open:sidebarOpen}">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">📰 <span>Content</span> Studio</div>
+                    <div class="sidebar-subtitle">Finance · Editorial</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="nav-group-label">Content</div>
+                    <a class="nav-item" :class="{active:currentView==='dashboard'}" @click="navigate('dashboard')">
+                        <span class="icon">📊</span> Dashboard
+                    </a>
+                    <a class="nav-item" :class="{active:currentView==='articles'}" @click="navigate('articles')">
+                        <span class="icon">📄</span> Articles
+                        <span v-if="counts.published" class="badge">{{ counts.published }}</span>
+                    </a>
+                    <a class="nav-item" :class="{active:currentView==='create'}" @click="navigate('create')">
+                        <span class="icon">✍️</span> Create Article
+                    </a>
+                    <a class="nav-item" :class="{active:currentView==='optimize'}" @click="navigate('optimize')">
+                        <span class="icon">🔧</span> Optimize Existing
+                    </a>
+
+                    <div class="nav-group-label">Workflow</div>
+                    <a class="nav-item" :class="{active:currentView==='drafts'}" @click="navigate('drafts')">
+                        <span class="icon">📝</span> Drafts
+                        <span v-if="counts.draft" class="badge">{{ counts.draft }}</span>
+                    </a>
+                    <a class="nav-item" :class="{active:currentView==='review'}" @click="navigate('review')">
+                        <span class="icon">✅</span> Review
+                        <span v-if="counts.review" class="badge">{{ counts.review }}</span>
+                    </a>
+                    <a class="nav-item" :class="{active:currentView==='versions'}" @click="navigate('versions')">
+                        <span class="icon">🕐</span> Versions
+                    </a>
+
+                    <div class="nav-group-label">System</div>
+                    <a class="nav-item" :class="{active:currentView==='settings'}" @click="navigate('settings')">
+                        <span class="icon">⚙️</span> Settings
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    v1.0 · {{ isDemo ? 'Demo Mode' : 'Connected' }}
+                </div>
+            </aside>
+
+            <!-- Main -->
+            <div class="main">
+                <div class="topbar">
+                    <div style="display:flex;align-items:center;gap:.75rem">
+                        <button class="sidebar-toggle" @click="sidebarOpen=!sidebarOpen">☰</button>
+                        <span class="topbar-title">{{ viewTitle }}</span>
+                    </div>
+                    <div class="topbar-actions">
+                        <button class="btn btn-primary btn-sm" @click="navigate('create')">+ New Article</button>
+                    </div>
+                </div>
+                <div class="content-area">
+
+                    <!-- ============ DASHBOARD ============ -->
+                    <template v-if="currentView==='dashboard'">
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <div class="label">Total Articles</div>
+                                <div class="value">{{ articles.length }}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="label">Drafts</div>
+                                <div class="value">{{ counts.draft }}</div>
+                                <div class="sub">Ready for review</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="label">In Review</div>
+                                <div class="value">{{ counts.review }}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="label">Published</div>
+                                <div class="value">{{ counts.published }}</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h2>Recently Updated</h2></div>
+                            <div class="card-body">
+                                <div v-if="recentArticles.length===0" class="empty-state">
+                                    <div class="icon">📭</div>
+                                    <h3>No articles yet</h3>
+                                    <p>Create your first article to get started.</p>
+                                    <button class="btn btn-primary" @click="navigate('create')">Create Article</button>
+                                </div>
+                                <div class="table-wrap" v-else>
+                                    <table>
+                                        <thead><tr><th>Title</th><th>Status</th><th>Category</th><th>Updated</th><th></th></tr></thead>
+                                        <tbody>
+                                            <tr v-for="a in recentArticles" :key="a.id">
+                                                <td style="font-weight:500;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.title }}</td>
+                                                <td><span :class="'status status-'+a.status">{{ a.status }}</span></td>
+                                                <td>{{ a.category }}</td>
+                                                <td style="color:var(--text-muted);font-size:.82rem">{{ formatDate(a.updated_at) }}</td>
+                                                <td><button class="btn btn-ghost btn-sm" @click="editArticle(a)">Edit</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ ARTICLES LIST ============ -->
+                    <template v-if="currentView==='articles'">
+                        <div class="filters">
+                            <input class="search-input" v-model="articleSearch" placeholder="Search articles...">
+                            <select class="filter-select" v-model="filterStatus">
+                                <option value="">All Status</option>
+                                <option value="draft">Draft</option>
+                                <option value="review">In Review</option>
+                                <option value="approved">Approved</option>
+                                <option value="published">Published</option>
+                            </select>
+                            <select class="filter-select" v-model="filterCategory">
+                                <option value="">All Categories</option>
+                                <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+                            </select>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div v-if="filteredArticles.length===0" class="empty-state">
+                                    <div class="icon">🔍</div>
+                                    <h3>No articles found</h3>
+                                    <p>Try adjusting your filters or create a new article.</p>
+                                </div>
+                                <div class="table-wrap" v-else>
+                                    <table>
+                                        <thead><tr><th>Title</th><th>Category</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+                                        <tbody>
+                                            <tr v-for="a in filteredArticles" :key="a.id">
+                                                <td style="font-weight:500;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.title }}</td>
+                                                <td>{{ a.category }}</td>
+                                                <td style="font-size:.82rem;color:var(--text-secondary)">{{ a.content_type || '—' }}</td>
+                                                <td><span :class="'status status-'+a.status">{{ a.status }}</span></td>
+                                                <td style="color:var(--text-muted);font-size:.82rem">{{ formatDate(a.updated_at) }}</td>
+                                                <td>
+                                                    <button class="btn btn-ghost btn-sm" @click="editArticle(a)">Edit</button>
+                                                    <button class="btn btn-ghost btn-sm" style="color:var(--danger)" @click="deleteArticle(a)">✕</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ CREATE / EDIT ARTICLE ============ -->
+                    <template v-if="currentView==='create'||currentView==='edit'">
+                        <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
+                            <!-- Left: Editor -->
+                            <div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>{{ editingId ? 'Edit Article' : 'New Article' }}</h2>
+                                        <div style="display:flex;gap:.5rem">
+                                            <button class="btn btn-secondary btn-sm" @click="saveDraft">💾 Save Draft</button>
+                                            <button class="btn btn-primary btn-sm" @click="submitReview" :disabled="!editor.title||!editor.editorial_angle">Submit for Review</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label">Title <span class="required">*</span></label>
+                                            <input class="form-input" v-model="editor.title" placeholder="Enter article title...">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">Content Type</label>
+                                                <select class="form-select" v-model="editor.content_type">
+                                                    <option value="">— Select —</option>
+                                                    <option v-for="t in contentTypes" :key="t" :value="t">{{ t }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Category</label>
+                                                <select class="form-select" v-model="editor.category">
+                                                    <option value="">— Select —</option>
+                                                    <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">Subcategory</label>
+                                                <input class="form-input" v-model="editor.subcategory" placeholder="e.g. Stocks, Crypto...">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Slug</label>
+                                                <input class="form-input" v-model="editor.slug" placeholder="auto-generated-from-title">
+                                                <p class="form-hint">Leave empty to auto-generate from title.</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Excerpt</label>
+                                            <textarea class="form-textarea" v-model="editor.excerpt" rows="2" placeholder="Brief summary for article cards..."></textarea>
+                                        </div>
+
+                                        <!-- Rich text editor -->
+                                        <div class="form-group">
+                                            <label class="form-label">Content</label>
+                                            <div class="editor-toolbar">
+                                                <button @click="execCmd('bold')" title="Bold"><b>B</b></button>
+                                                <button @click="execCmd('italic')" title="Italic"><i>I</i></button>
+                                                <button @click="execCmd('underline')" title="Underline"><u>U</u></button>
+                                                <div class="sep"></div>
+                                                <button @click="execCmd('formatBlock','<h2>')" title="Heading 2">H2</button>
+                                                <button @click="execCmd('formatBlock','<h3>')" title="Heading 3">H3</button>
+                                                <button @click="execCmd('formatBlock','<p>')" title="Paragraph">¶</button>
+                                                <div class="sep"></div>
+                                                <button @click="execCmd('insertUnorderedList')" title="Bullet list">• List</button>
+                                                <button @click="execCmd('insertOrderedList')" title="Numbered list">1. List</button>
+                                                <button @click="execCmd('formatBlock','<blockquote>')" title="Quote">" Quote</button>
+                                                <div class="sep"></div>
+                                                <button @click="insertLink()" title="Insert link">🔗</button>
+                                            </div>
+                                            <div class="editor-content" ref="editorEl" contenteditable="true"
+                                                 @input="onEditorInput" v-html="editor.content"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Sidebar panels -->
+                            <div>
+                                <!-- Editorial -->
+                                <div class="card">
+                                    <div class="card-header"><h2>Editorial</h2></div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label">Editorial Angle <span class="required">*</span></label>
+                                            <textarea class="form-textarea" v-model="editor.editorial_angle" rows="2" placeholder="What's the unique angle or thesis?"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">My View</label>
+                                            <textarea class="form-textarea" v-model="editor.author_view" rows="2" placeholder="Your personal take in one sentence..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Key Points</label>
+                                            <textarea class="form-textarea" v-model="editor.key_points" rows="3" placeholder="One point per line..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Editorial Notes</label>
+                                            <textarea class="form-textarea" v-model="editor.editorial_notes" rows="2" placeholder="Instructions for tone, structure, etc."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sources -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>Sources</h2>
+                                        <button class="btn btn-ghost btn-sm" @click="addSource">+ Add</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div v-if="editor.sources.length===0" style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:.5rem">
+                                            No sources added yet.
+                                        </div>
+                                        <div v-for="(s,i) in editor.sources" :key="i" class="source-item">
+                                            <div style="flex:1;display:flex;flex-direction:column;gap:.35rem">
+                                                <input class="form-input" v-model="s.source_name" placeholder="Source name">
+                                                <input class="form-input" v-model="s.source_url" placeholder="https://...">
+                                                <select class="form-select" v-model="s.source_type" style="font-size:.78rem;padding:.25rem .5rem">
+                                                    <option value="official">Official</option>
+                                                    <option value="media">Media</option>
+                                                    <option value="research">Research</option>
+                                                    <option value="data">Data</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <button class="source-remove" @click="editor.sources.splice(i,1)">✕</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SEO -->
+                                <div class="card">
+                                    <div class="card-header"><h2>SEO</h2></div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label">SEO Title</label>
+                                            <input class="form-input" v-model="editor.seo_title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Meta Description</label>
+                                            <textarea class="form-textarea" v-model="editor.meta_description" rows="2"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Primary Keyword</label>
+                                            <input class="form-input" v-model="editor.primary_keyword">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Secondary Keywords</label>
+                                            <input class="form-input" v-model="editor.secondary_keywords" placeholder="comma separated">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Image Alt Text</label>
+                                            <input class="form-input" v-model="editor.image_alt">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ OPTIMIZE ============ -->
+                    <template v-if="currentView==='optimize'">
+                        <div class="card">
+                            <div class="card-header"><h2>Optimize Existing Article</h2></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label">Select Article</label>
+                                    <select class="form-select" v-model="optimize.selectedId" @change="loadOptimizeArticle">
+                                        <option value="">— Choose an article —</option>
+                                        <option v-for="a in articles" :key="a.id" :value="a.id">{{ a.title }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template v-if="optimize.article">
+                            <!-- Health Check -->
+                            <div class="card" v-if="optimize.healthCheck">
+                                <div class="card-header">
+                                    <h2>Health Check</h2>
+                                    <div :class="'health-grade grade-'+optimize.healthCheck.grade.toLowerCase()">
+                                        {{ optimize.healthCheck.grade }}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p style="margin-bottom:1rem;font-size:.9rem;color:var(--text-secondary)">{{ optimize.healthCheck.summary }}</p>
+                                    <div v-for="(item,i) in optimize.healthCheck.items" :key="i" style="margin-bottom:.5rem">
+                                        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.88rem">
+                                            <input type="checkbox" v-model="item.keep"> <strong>KEEP</strong>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.88rem">
+                                            <input type="checkbox" v-model="item.rewrite"> <strong>REWRITE</strong>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.88rem">
+                                            <input type="checkbox" v-model="item.remove"> <strong>REMOVE</strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex;gap:.75rem;margin-bottom:1.5rem">
+                                <button class="btn btn-secondary" @click="runHealthCheck" :disabled="!optimize.selectedId">🩺 Run Health Check</button>
+                                <button class="btn btn-primary" @click="aiRebuild" :disabled="!optimize.selectedId">🤖 AI Rebuild</button>
+                                <button class="btn btn-secondary" @click="saveNewVersion" :disabled="!optimize.selectedId">💾 Save as New Version</button>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header"><h2>Article Content</h2></div>
+                                <div class="card-body">
+                                    <div v-html="optimize.article.content" style="font-size:.95rem;line-height:1.8;color:var(--text)"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- ============ DRAFTS ============ -->
+                    <template v-if="currentView==='drafts'">
+                        <div class="card">
+                            <div class="card-body">
+                                <div v-if="drafts.length===0" class="empty-state">
+                                    <div class="icon">📝</div>
+                                    <h3>No drafts</h3>
+                                    <p>All articles are reviewed or published.</p>
+                                </div>
+                                <div class="table-wrap" v-else>
+                                    <table>
+                                        <thead><tr><th>Title</th><th>Category</th><th>Updated</th><th>Actions</th></tr></thead>
+                                        <tbody>
+                                            <tr v-for="a in drafts" :key="a.id">
+                                                <td style="font-weight:500">{{ a.title }}</td>
+                                                <td>{{ a.category }}</td>
+                                                <td style="color:var(--text-muted);font-size:.82rem">{{ formatDate(a.updated_at) }}</td>
+                                                <td>
+                                                    <button class="btn btn-ghost btn-sm" @click="editArticle(a)">Continue Editing</button>
+                                                    <button class="btn btn-ghost btn-sm" style="color:var(--danger)" @click="deleteArticle(a)">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ REVIEW ============ -->
+                    <template v-if="currentView==='review'">
+                        <div v-if="reviewQueue.length===0" class="empty-state card">
+                            <div class="card-body">
+                                <div class="icon">✅</div>
+                                <h3>Review queue is empty</h3>
+                                <p>No articles waiting for review.</p>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div v-for="a in reviewQueue" :key="a.id" class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h2>{{ a.title }}</h2>
+                                        <span style="font-size:.78rem;color:var(--text-muted)">{{ a.category }} · {{ a.content_type }}</span>
+                                    </div>
+                                    <div style="display:flex;gap:.5rem">
+                                        <button class="btn btn-danger btn-sm" @click="rejectArticle(a)">Reject</button>
+                                        <button class="btn btn-primary btn-sm" @click="approveArticle(a)" :disabled="a.fact_check_status==='needs_review'">
+                                            ✓ Approve
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Meta info -->
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;padding:1rem;background:var(--bg);border-radius:var(--radius-sm)">
+                                        <div><strong style="font-size:.78rem;color:var(--text-muted)">EDITORIAL ANGLE</strong><p style="font-size:.88rem;margin-top:.2rem">{{ a.editorial_angle || '—' }}</p></div>
+                                        <div><strong style="font-size:.78rem;color:var(--text-muted)">MY VIEW</strong><p style="font-size:.88rem;margin-top:.2rem">{{ a.author_view || '—' }}</p></div>
+                                        <div><strong style="font-size:.78rem;color:var(--text-muted)">KEY POINTS</strong><p style="font-size:.88rem;margin-top:.2rem;white-space:pre-line">{{ a.key_points || '—' }}</p></div>
+                                        <div><strong style="font-size:.78rem;color:var(--text-muted)">SOURCES</strong><p style="font-size:.88rem;margin-top:.2rem">{{ (a.sources||[]).map(s=>s.source_name).join(', ') || '—' }}</p></div>
+                                    </div>
+
+                                    <!-- Fact Check -->
+                                    <div style="margin-bottom:1.5rem">
+                                        <h3 style="font-size:.95rem;font-weight:600;margin-bottom:.75rem">Fact Check</h3>
+                                        <div v-if="(a.fact_checks||[]).length===0" style="color:var(--text-muted);font-size:.85rem;margin-bottom:.75rem">
+                                            No claims to verify. Click "Add Claim" to start fact-checking.
+                                        </div>
+                                        <div v-for="(fc,fi) in a.fact_checks" :key="fi" :class="'review-item '+fc.status.replace(/ /g,'-')">
+                                            <div class="claim">{{ fc.claim }}</div>
+                                            <div class="review-actions">
+                                                <button class="btn btn-sm" :style="{background:fc.status==='VERIFIED'?'#22c55e':'#f1f5f9',color:fc.status==='VERIFIED'?'#fff':'var(--text-secondary)'}" @click="setFactCheck(a,fi,'VERIFIED')">✓ Verified</button>
+                                                <button class="btn btn-sm" :style="{background:fc.status==='NEEDS REVIEW'?'#f59e0b':'#f1f5f9',color:fc.status==='NEEDS REVIEW'?'#fff':'var(--text-secondary)'}" @click="setFactCheck(a,fi,'NEEDS REVIEW')">? Needs Review</button>
+                                                <button class="btn btn-sm" :style="{background:fc.status==='UNSUPPORTED'?'#ef4444':'#f1f5f9',color:fc.status==='UNSUPPORTED'?'#fff':'var(--text-secondary)'}" @click="setFactCheck(a,fi,'UNSUPPORTED')">✕ Unsupported</button>
+                                                <button class="btn btn-sm" :style="{background:fc.status==='POTENTIALLY INCORRECT'?'#dc2626':'#f1f5f9',color:fc.status==='POTENTIALLY INCORRECT'?'#fff':'var(--text-secondary)'}" @click="setFactCheck(a,fi,'POTENTIALLY INCORRECT')">⚠ Potentially Incorrect</button>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-ghost btn-sm" @click="addFactCheck(a)" style="margin-top:.5rem">+ Add Claim</button>
+                                    </div>
+
+                                    <!-- Content Quality -->
+                                    <div>
+                                        <h3 style="font-size:.95rem;font-weight:600;margin-bottom:.75rem">Content Quality</h3>
+                                        <div v-if="a.quality_status==='pending'" style="color:var(--text-muted);font-size:.85rem;margin-bottom:.75rem">
+                                            Run quality review to assess the article.
+                                        </div>
+                                        <div v-else style="padding:1rem;background:var(--bg);border-radius:var(--radius-sm)">
+                                            <p style="font-size:.88rem"><strong>Result:</strong> <span :style="{color:a.quality_status==='pass'?'#22c55e':a.quality_status==='high_risk'?'#ef4444':'#f59e0b'}">{{ a.quality_status.toUpperCase() }}</span></p>
+                                            <p v-if="a.quality_notes" style="font-size:.85rem;color:var(--text-secondary);margin-top:.3rem">{{ a.quality_notes }}</p>
+                                        </div>
+                                        <button class="btn btn-secondary btn-sm" @click="runQualityReview(a)" style="margin-top:.5rem">🔍 Run Quality Review</button>
+                                    </div>
+
+                                    <!-- Article content -->
+                                    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+                                        <h3 style="font-size:.95rem;font-weight:600;margin-bottom:.75rem">Article Content</h3>
+                                        <div v-html="a.content" style="font-size:.92rem;line-height:1.7;color:var(--text)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ VERSIONS ============ -->
+                    <template v-if="currentView==='versions'">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Version History</h2>
+                                <select class="filter-select" v-model="versionFilter" @change="loadVersions">
+                                    <option value="">— Select Article —</option>
+                                    <option v-for="a in articles" :key="a.id" :value="a.id">{{ a.title }}</option>
+                                </select>
+                            </div>
+                            <div class="card-body">
+                                <div v-if="!versionFilter" class="empty-state">
+                                    <div class="icon">🕐</div>
+                                    <h3>Select an article</h3>
+                                    <p>Choose an article to view its version history.</p>
+                                </div>
+                                <div v-else-if="versions.length===0" class="empty-state">
+                                    <div class="icon">📋</div>
+                                    <h3>No versions yet</h3>
+                                    <p>This article has no saved versions.</p>
+                                </div>
+                                <div v-else>
+                                    <div v-for="v in versions" :key="v.id" class="version-item" @click="viewVersion(v)">
+                                        <span class="v-num">v{{ v.version_number }}</span>
+                                        <span class="v-type">{{ v.change_type }}</span>
+                                        <span style="font-size:.85rem;color:var(--text-secondary)">{{ v.notes || 'No notes' }}</span>
+                                        <span class="v-time">{{ formatDate(v.created_at) }}</span>
+                                        <button class="btn btn-ghost btn-sm" @click.stop="restoreVersion(v)">Restore</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ============ SETTINGS ============ -->
+                    <template v-if="currentView==='settings'">
+                        <div class="card">
+                            <div class="card-header"><h2>Database Connection</h2></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label">Supabase URL</label>
+                                    <input class="form-input" v-model="dbConfig.url">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Anon Key</label>
+                                    <input class="form-input" v-model="dbConfig.key" type="password">
+                                </div>
+                                <div style="display:flex;gap:.5rem">
+                                    <button class="btn btn-primary" @click="saveDbConfig">Save & Reconnect</button>
+                                    <button class="btn btn-secondary" @click="testConnection">Test Connection</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h2>AI System Prompt</h2></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <textarea class="form-textarea" v-model="aiPrompt" rows="12" style="font-size:.82rem;font-family:monospace"></textarea>
+                                </div>
+                                <button class="btn btn-primary" @click="saveAiPrompt">Save Prompt</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h2>Data Management</h2></div>
+                            <div class="card-body">
+                                <div style="display:flex;gap:.75rem">
+                                    <button class="btn btn-secondary" @click="exportData">📤 Export All Data</button>
+                                    <button class="btn btn-secondary" @click="$refs.importInput.click()">📥 Import Data</button>
+                                    <input ref="importInput" type="file" accept=".json" style="display:none" @change="importData">
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Version diff modal -->
+        <div v-if="versionModal" class="modal-overlay" @click.self="versionModal=null">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Version {{ versionModal.version_number }} — {{ versionModal.change_type }}</h3>
+                    <button class="btn btn-ghost btn-sm" @click="versionModal=null">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div v-html="versionModal.content" style="font-size:.92rem;line-height:1.7"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @click="versionModal=null">Close</button>
+                    <button class="btn btn-primary" @click="restoreVersion(versionModal);versionModal=null">Restore This Version</button>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+<script>
+const { createApp, ref, reactive, computed, onMounted, watch, nextTick } = Vue;
+
+createApp({
+    data() {
+        return {
+            // Setup
+            initialized: false,
+            isDemo: false,
+            supabase: null,
+            dbConfig: { url: '', key: '' },
+            setup: { supabaseUrl: '', supabaseKey: '' },
+
+            // UI state
+            currentView: 'dashboard',
+            sidebarOpen: false,
+            toasts: [],
+            versionModal: null,
+
+            // Data
+            articles: [],
+            versions: [],
+            versionFilter: '',
+
+            // Editor
+            editingId: null,
+            editor: this.emptyEditor(),
+
+            // Filters
+            articleSearch: '',
+            filterStatus: '',
+            filterCategory: '',
+
+            // Categories & types
+            categories: ['personal-finance','investing','markets','banking','fintech','economy','money-management'],
+            contentTypes: ['Market News','News + Analysis','Market Analysis','Opinion','Explainer','Data Analysis','Comparison','Investment Education'],
+
+            // Optimize
+            optimize: { selectedId: '', article: null, healthCheck: null },
+
+            // AI prompt
+            aiPrompt: `You are an editorial writing assistant for Finance.helloinsights.online.
+
+Produce clear, accurate and useful financial journalism and analysis.
+Do not act as a content spinning tool or SEO article generator.
+Do not try to imitate or defeat AI detection systems.
+
+Prioritize accuracy, editorial value, original perspective, clarity, natural writing and reader usefulness before SEO.
+
+Preserve the user's Editorial Angle and My View. Do not invent opinions.
+
+Never invent financial figures, market prices, statistics, quotes, sources, company statements, government statements, dates or events. If information cannot be verified, flag it for editorial review.
+
+Do not simply rewrite or summarize an existing article. First identify useful facts, weak sections, generic filler, repetition, missing analysis and possible editorial angles. Then use KEEP / REWRITE / REMOVE / ADD.
+
+Do not use fixed article templates. Do not automatically add FAQ, Key Takeaways or formal Conclusions. Let the content determine the structure.
+
+Use natural paragraph lengths and varied sentence patterns. Avoid repetitive phrases such as "It is important to note that", "In today's rapidly changing", "The key takeaway is", "In conclusion", and similar formulaic transitions.
+
+Use headings only when useful. Do not add words or sections merely to increase length.
+
+Human edits always take priority over AI wording.`,
+
+            // Demo ID counter
+            _demoId: 100
+        };
+    },
+
+    computed: {
+        viewTitle() {
+            const titles = {
+                dashboard: 'Dashboard',
+                articles: 'Articles',
+                create: 'New Article',
+                edit: 'Edit Article',
+                optimize: 'Optimize Existing Article',
+                drafts: 'Drafts',
+                review: 'Review Queue',
+                versions: 'Version History',
+                settings: 'Settings'
+            };
+            return titles[this.currentView] || '';
+        },
+        counts() {
+            return {
+                draft: this.articles.filter(a => a.status === 'draft').length,
+                review: this.articles.filter(a => a.status === 'review').length,
+                approved: this.articles.filter(a => a.status === 'approved').length,
+                published: this.articles.filter(a => a.status === 'published').length
+            };
+        },
+        recentArticles() {
+            return [...this.articles].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5);
+        },
+        filteredArticles() {
+            let list = [...this.articles];
+            if (this.articleSearch) {
+                const q = this.articleSearch.toLowerCase();
+                list = list.filter(a => a.title.toLowerCase().includes(q));
+            }
+            if (this.filterStatus) list = list.filter(a => a.status === this.filterStatus);
+            if (this.filterCategory) list = list.filter(a => a.category === this.filterCategory);
+            return list.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        },
+        drafts() {
+            return this.articles.filter(a => a.status === 'draft').sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        },
+        reviewQueue() {
+            return this.articles.filter(a => a.status === 'review').sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        }
+    },
+
+    methods: {
+        emptyEditor() {
+            return {
+                title: '', slug: '', category: '', subcategory: '', content_type: '',
+                excerpt: '', content: '', editorial_angle: '', author_view: '',
+                key_points: '', editorial_notes: '', seo_title: '', meta_description: '',
+                primary_keyword: '', secondary_keywords: '', image_alt: '',
+                sources: [], status: 'draft'
+            };
+        },
+
+        // Toast
+        toast(message, type = 'info') {
+            const t = { message, type };
+            this.toasts.push(t);
+            setTimeout(() => { this.toasts = this.toasts.filter(x => x !== t); }, 3500);
+        },
+
+        // Navigation
+        navigate(view) {
+            this.currentView = view;
+            this.sidebarOpen = false;
+            if (view === 'create') {
+                this.editingId = null;
+                this.editor = this.emptyEditor();
+            }
+        },
+
+        // Date formatting
+        formatDate(d) {
+            if (!d) return '—';
+            const date = new Date(d);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+                   ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        },
+
+        // ===== Supabase Connection =====
+        async connectSupabase() {
+            try {
+                this.supabase = window.supabase.createClient(this.setup.supabaseUrl, this.setup.supabaseKey);
+                // Test connection
+                const { error } = await this.supabase.from('articles').select('id').limit(1);
+                if (error && error.message.includes('does not exist')) {
+                    this.toast('Tables not found. Please run the SQL schema first.', 'error');
+                    return;
+                }
+                this.dbConfig.url = this.setup.supabaseUrl;
+                this.dbConfig.key = this.setup.supabaseKey;
+                localStorage.setItem('cs_supabase', JSON.stringify(this.dbConfig));
+                this.isDemo = false;
+                this.initialized = true;
+                await this.loadArticles();
+                this.toast('Connected to Supabase successfully!', 'success');
+            } catch (e) {
+                this.toast('Connection failed: ' + e.message, 'error');
+            }
+        },
+
+        startDemo() {
+            this.isDemo = true;
+            this.initialized = true;
+            // Load demo data
+            this.articles = [
+                {
+                    id: 'demo-1', title: 'Federal Reserve Signals Potential Rate Cut in September',
+                    slug: 'fed-rate-cut-september', category: 'economy', subcategory: 'Monetary Policy',
+                    content_type: 'Market News', excerpt: 'The Federal Reserve hinted at a possible rate cut as inflation shows signs of cooling toward the 2% target.',
+                    content: '<p>The Federal Reserve held interest rates steady at its latest meeting but signaled a growing willingness to consider cuts as early as September.</p><h2>Inflation Progress</h2><p>Recent data shows the PCE price index — the Fed\'s preferred inflation gauge — has moderated to 2.5% year-over-year, down from a peak of 7% in 2022.</p><p>"The balance of risks has shifted," Chair Jerome Powell noted during the post-meeting press conference.</p><h2>Market Reaction</h2><p>Treasury yields fell sharply following the announcement, with the 10-year note dropping 12 basis points to 4.05%. Equity markets rallied, with the S&P 500 gaining 1.2%.</p>',
+                    status: 'published', editorial_angle: 'Focus on the practical impact of rate cuts on everyday consumers',
+                    author_view: 'Rate cuts are overdue but the pace matters more than the timing',
+                    key_points: 'Fed held rates steady\nInflation cooling to 2.5%\nMarkets pricing in September cut\nConsumer impact analysis',
+                    editorial_notes: 'Keep it balanced — acknowledge both bull and bear cases',
+                    seo_title: 'Federal Reserve Rate Cut 2026: What It Means for You', meta_description: 'The Fed signals a potential September rate cut. Here\'s what falling rates mean for mortgages, savings, and investments.',
+                    primary_keyword: 'fed rate cut', secondary_keywords: 'interest rates, monetary policy, inflation',
+                    image_alt: 'Federal Reserve building in Washington DC',
+                    fact_check_status: 'verified', quality_status: 'pass', human_approved: true,
+                    sources: [{ source_name: 'Federal Reserve', source_url: 'https://www.federalreserve.gov', source_type: 'official', notes: '' }],
+                    fact_checks: [{ claim: 'PCE at 2.5% year-over-year', status: 'VERIFIED' }, { claim: '10-year yield dropped to 4.05%', status: 'VERIFIED' }],
+                    quality_notes: 'Strong editorial angle, well-sourced claims, natural writing.',
+                    created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+                    updated_at: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: 'demo-2', title: 'NVIDIA Earnings Beat Expectations Amid AI Infrastructure Boom',
+                    slug: 'nvidia-earnings-ai', category: 'investing', subcategory: 'Tech Stocks',
+                    content_type: 'News + Analysis', excerpt: 'NVIDIA reported revenue of $30 billion, driven by unprecedented demand for AI training and inference chips.',
+                    content: '<p>NVIDIA delivered another blowout quarter, with revenue reaching $30.0 billion — up 122% year-over-year and well above the $28.5 billion consensus estimate.</p><p>The company\'s data center segment, which houses its AI chip business, generated $26.3 billion in revenue, more than tripling from a year ago.</p><h2>The AI Infrastructure Gold Rush</h2><p>Every major cloud provider — Microsoft, Amazon, Google — is aggressively expanding GPU clusters, and NVIDIA remains the dominant supplier with an estimated 80%+ market share in AI training chips.</p>',
+                    status: 'review', editorial_angle: 'Beyond the headline numbers: Is NVIDIA\'s moat sustainable?',
+                    author_view: 'The AI spend cycle has legs but competition is coming',
+                    key_points: 'Revenue $30B beat\nData center at $26.3B\n80%+ market share\nCompetition emerging',
+                    editorial_notes: 'Avoid cheerleading — include risks and competitive threats',
+                    seo_title: '', meta_description: '', primary_keyword: 'NVIDIA earnings', secondary_keywords: '',
+                    image_alt: 'NVIDIA GPU data center',
+                    fact_check_status: 'needs_review', quality_status: 'pending', human_approved: false,
+                    sources: [], fact_checks: [], quality_notes: '',
+                    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+                    updated_at: new Date(Date.now() - 86400000 * 2).toISOString()
+                },
+                {
+                    id: 'demo-3', title: 'Understanding Treasury Yield Curve Inversion',
+                    slug: 'treasury-yield-curve', category: 'personal-finance', subcategory: 'Bonds',
+                    content_type: 'Explainer', excerpt: 'What does an inverted yield curve actually mean for your portfolio and the broader economy?',
+                    content: '<p>The yield curve — the difference between long-term and short-term Treasury yields — has been inverted for a record stretch. But what does this actually mean?</p><h2>The Basics</h2><p>Normally, longer-term bonds pay higher yields to compensate investors for locking up their money. When short-term rates exceed long-term rates, the curve "inverts" — historically a reliable recession signal.</p>',
+                    status: 'draft', editorial_angle: 'Demystify the yield curve for everyday investors without oversimplifying',
+                    author_view: 'The yield curve is useful but not infallible',
+                    key_points: 'What inversion means\nHistorical track record\nCurrent situation\nPortfolio implications',
+                    editorial_notes: '',
+                    seo_title: '', meta_description: '', primary_keyword: '', secondary_keywords: '',
+                    image_alt: '',
+                    fact_check_status: 'pending', quality_status: 'pending', human_approved: false,
+                    sources: [], fact_checks: [], quality_notes: '',
+                    created_at: new Date(Date.now() - 86400000).toISOString(),
+                    updated_at: new Date(Date.now() - 86400000).toISOString()
+                }
+            ];
+            this.toast('Demo mode activated with sample data.', 'success');
+        },
+
+        testConnection() {
+            if (!this.supabase) { this.toast('Not connected.', 'error'); return; }
+            this.supabase.from('articles').select('id').limit(1).then(({ error }) => {
+                if (error) this.toast('Connection test failed: ' + error.message, 'error');
+                else this.toast('Connection OK!', 'success');
+            });
+        },
+
+        // ===== CRUD Operations =====
+        async loadArticles() {
+            if (this.isDemo) return;
+            try {
+                const { data, error } = await this.supabase.from('articles').select('*').order('updated_at', { ascending: false });
+                if (error) throw error;
+                // Load sources for each article
+                for (const a of (data || [])) {
+                    const { data: sources } = await this.supabase.from('article_sources').select('*').eq('article_id', a.id);
+                    a.sources = sources || [];
+                    a.fact_checks = [];
+                    a.quality_notes = '';
+                }
+                this.articles = data || [];
+            } catch (e) {
+                this.toast('Failed to load articles: ' + e.message, 'error');
+            }
+        },
+
+        async saveDraft() {
+            const article = this.buildArticleFromEditor();
+            if (!article.title) { this.toast('Title is required.', 'warning'); return; }
+            if (!article.slug) article.slug = this.slugify(article.title);
+            article.status = 'draft';
+            article.updated_at = new Date().toISOString();
+
+            if (this.isDemo) {
+                if (this.editingId) {
+                    const idx = this.articles.findIndex(a => a.id === this.editingId);
+                    if (idx >= 0) { article.id = this.editingId; this.articles[idx] = article; }
+                } else {
+                    article.id = 'demo-' + (++this._demoId);
+                    article.created_at = new Date().toISOString();
+                    this.articles.unshift(article);
+                }
+                this.toast('Draft saved!', 'success');
+                this.navigate('articles');
+                return;
+            }
+
+            try {
+                if (this.editingId) {
+                    const { error } = await this.supabase.from('articles').update(article).eq('id', this.editingId);
+                    if (error) throw error;
+                } else {
+                    article.created_at = new Date().toISOString();
+                    const { data, error } = await this.supabase.from('articles').insert(article).select().single();
+                    if (error) throw error;
+                    article.id = data.id;
+                }
+                // Save sources
+                await this.saveSources(article);
+                this.toast('Draft saved!', 'success');
+                await this.loadArticles();
+                this.navigate('articles');
+            } catch (e) {
+                this.toast('Save failed: ' + e.message, 'error');
+            }
+        },
+
+        async submitReview() {
+            const article = this.buildArticleFromEditor();
+            if (!article.title) { this.toast('Title is required.', 'warning'); return; }
+            if (!article.editorial_angle) { this.toast('Editorial Angle is required.', 'warning'); return; }
+            if (!article.slug) article.slug = this.slugify(article.title);
+            article.status = 'review';
+            article.updated_at = new Date().toISOString();
+
+            if (this.isDemo) {
+                if (this.editingId) {
+                    const idx = this.articles.findIndex(a => a.id === this.editingId);
+                    if (idx >= 0) { article.id = this.editingId; this.articles[idx] = article; }
+                } else {
+                    article.id = 'demo-' + (++this._demoId);
+                    article.created_at = new Date().toISOString();
+                    article.sources = [...this.editor.sources];
+                    article.fact_checks = [];
+                    article.quality_notes = '';
+                    this.articles.unshift(article);
+                }
+                this.toast('Submitted for review!', 'success');
+                this.navigate('review');
+                return;
+            }
+
+            try {
+                if (this.editingId) {
+                    const { error } = await this.supabase.from('articles').update(article).eq('id', this.editingId);
+                    if (error) throw error;
+                } else {
+                    article.created_at = new Date().toISOString();
+                    const { data, error } = await this.supabase.from('articles').insert(article).select().single();
+                    if (error) throw error;
+                    article.id = data.id;
+                }
+                await this.saveSources(article);
+                // Create version
+                await this.createVersion(article.id, 1, 'AI_GENERATED', 'Initial submission');
+                this.toast('Submitted for review!', 'success');
+                await this.loadArticles();
+                this.navigate('review');
+            } catch (e) {
+                this.toast('Submit failed: ' + e.message, 'error');
+            }
+        },
+
+        editArticle(a) {
+            this.editingId = a.id;
+            this.editor = {
+                title: a.title || '', slug: a.slug || '', category: a.category || '',
+                subcategory: a.subcategory || '', content_type: a.content_type || '',
+                excerpt: a.excerpt || '', content: a.content || '',
+                editorial_angle: a.editorial_angle || '', author_view: a.author_view || '',
+                key_points: a.key_points || '', editorial_notes: a.editorial_notes || '',
+                seo_title: a.seo_title || '', meta_description: a.meta_description || '',
+                primary_keyword: a.primary_keyword || '', secondary_keywords: a.secondary_keywords || '',
+                image_alt: a.image_alt || '',
+                sources: a.sources ? JSON.parse(JSON.stringify(a.sources)) : []
+            };
+            this.currentView = 'edit';
+        },
+
+        async deleteArticle(a) {
+            if (!confirm('Delete "' + a.title + '"? This cannot be undone.')) return;
+
+            if (this.isDemo) {
+                this.articles = this.articles.filter(x => x.id !== a.id);
+                this.toast('Article deleted.', 'success');
+                return;
+            }
+
+            try {
+                const { error } = await this.supabase.from('articles').delete().eq('id', a.id);
+                if (error) throw error;
+                this.toast('Article deleted.', 'success');
+                await this.loadArticles();
+            } catch (e) {
+                this.toast('Delete failed: ' + e.message, 'error');
+            }
+        },
+
+        async approveArticle(a) {
+            a.status = 'approved';
+            a.human_approved = true;
+            a.updated_at = new Date().toISOString();
+            a.published_at = new Date().toISOString();
+
+            if (this.isDemo) {
+                this.toast('Article approved! Ready to publish.', 'success');
+                return;
+            }
+
+            try {
+                const { error } = await this.supabase.from('articles').update({
+                    status: 'approved', human_approved: true, updated_at: a.updated_at, published_at: a.published_at
+                }).eq('id', a.id);
+                if (error) throw error;
+                await this.createVersion(a.id, null, 'FINAL_APPROVAL', 'Approved for publication');
+                this.toast('Article approved!', 'success');
+                await this.loadArticles();
+            } catch (e) {
+                this.toast('Approval failed: ' + e.message, 'error');
+            }
+        },
+
+        async rejectArticle(a) {
+            a.status = 'draft';
+            a.updated_at = new Date().toISOString();
+
+            if (this.isDemo) {
+                this.toast('Article sent back to drafts.', 'info');
+                return;
+            }
+
+            try {
+                const { error } = await this.supabase.from('articles').update({
+                    status: 'draft', updated_at: a.updated_at
+                }).eq('id', a.id);
+                if (error) throw error;
+                this.toast('Article sent back to drafts.', 'info');
+                await this.loadArticles();
+            } catch (e) {
+                this.toast('Failed: ' + e.message, 'error');
+            }
+        },
+
+        // ===== Helpers =====
+        buildArticleFromEditor() {
+            return {
+                title: this.editor.title,
+                slug: this.editor.slug || this.slugify(this.editor.title),
+                category: this.editor.category,
+                subcategory: this.editor.subcategory,
+                content_type: this.editor.content_type,
+                excerpt: this.editor.excerpt,
+                content: this.editor.content,
+                editorial_angle: this.editor.editorial_angle,
+                author_view: this.editor.author_view,
+                key_points: this.editor.key_points,
+                editorial_notes: this.editor.editorial_notes,
+                seo_title: this.editor.seo_title,
+                meta_description: this.editor.meta_description,
+                primary_keyword: this.editor.primary_keyword,
+                secondary_keywords: this.editor.secondary_keywords,
+                image_alt: this.editor.image_alt,
+                status: this.editor.status || 'draft',
+                fact_check_status: 'pending',
+                quality_status: 'pending',
+                human_approved: false,
+                updated_at: new Date().toISOString()
+            };
+        },
+
+        async saveSources(article) {
+            if (this.isDemo || !article.id) return;
+            // Delete old sources, re-insert
+            await this.supabase.from('article_sources').delete().eq('article_id', article.id);
+            if (this.editor.sources.length > 0) {
+                const sources = this.editor.sources.map(s => ({
+                    article_id: article.id,
+                    source_name: s.source_name,
+                    source_url: s.source_url,
+                    source_type: s.source_type || 'other'
+                }));
+                await this.supabase.from('article_sources').insert(sources);
+            }
+        },
+
+        async createVersion(articleId, num, changeType, notes) {
+            if (this.isDemo) return;
+            try {
+                // Get max version number
+                const { data: existing } = await this.supabase.from('article_versions')
+                    .select('version_number').eq('article_id', articleId).order('version_number', { ascending: false }).limit(1);
+                const versionNumber = num || ((existing && existing.length > 0 ? existing[0].version_number : 0) + 1);
+
+                const article = this.articles.find(a => a.id === articleId);
+                await this.supabase.from('article_versions').insert({
+                    article_id: articleId,
+                    version_number: versionNumber,
+                    content: article ? article.content : '',
+                    title: article ? article.title : '',
+                    change_type: changeType,
+                    changed_by: 'system',
+                    notes: notes
+                });
+            } catch (e) {
+                console.error('Version creation failed:', e);
+            }
+        },
+
+        addSource() {
+            this.editor.sources.push({ source_name: '', source_url: '', source_type: 'other', notes: '' });
+        },
+
+        slugify(text) {
+            return (text || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 80);
+        },
+
+        // Rich text editor
+        execCmd(cmd, value) {
+            document.execCommand(cmd, false, value || null);
+            this.$refs.editorEl.focus();
+        },
+
+        insertLink() {
+            const url = prompt('Enter URL:');
+            if (url) document.execCommand('createLink', false, url);
+        },
+
+        onEditorInput() {
+            this.editor.content = this.$refs.editorEl.innerHTML;
+        },
+
+        // ===== Optimize =====
+        loadOptimizeArticle() {
+            if (!this.optimize.selectedId) { this.optimize.article = null; this.optimize.healthCheck = null; return; }
+            this.optimize.article = this.articles.find(a => a.id === this.optimize.selectedId) || null;
+            this.optimize.healthCheck = null;
+        },
+
+        runHealthCheck() {
+            // Simulated AI health check
+            const article = this.optimize.article;
+            if (!article) return;
+
+            const grades = ['A', 'B', 'C', 'D'];
+            const summaries = {
+                A: 'Strong article with solid facts and clear editorial perspective. Minor optimizations recommended.',
+                B: 'Good foundation. Structure and some sections could be improved for better reader engagement.',
+                C: 'Needs significant work. Consider repositioning, merging with related content, or a targeted rewrite.',
+                D: 'Low value content. Recommend archiving or complete removal.'
+            };
+
+            // Simple heuristic analysis
+            let score = 0;
+            if (article.editorial_angle) score++;
+            if (article.author_view) score++;
+            if (article.key_points) score++;
+            if (article.sources && article.sources.length > 0) score++;
+            if (article.content && article.content.length > 500) score++;
+
+            let grade = score >= 4 ? 'A' : score >= 3 ? 'B' : score >= 2 ? 'C' : 'D';
+
+            this.optimize.healthCheck = {
+                grade: grade,
+                summary: summaries[grade],
+                items: [
+                    { label: 'Introduction', keep: true, rewrite: false, remove: false },
+                    { label: 'Main argument', keep: score >= 3, rewrite: score < 3, remove: false },
+                    { label: 'Supporting data', keep: true, rewrite: false, remove: false },
+                    { label: 'Analysis section', keep: score >= 3, rewrite: score < 3, remove: false },
+                    { label: 'Conclusion', keep: false, rewrite: true, remove: false }
+                ]
+            };
+            this.toast('Health check complete: Grade ' + grade, 'info');
+        },
+
+        aiRebuild() {
+            if (!this.optimize.article) return;
+            this.toast('AI Rebuild simulated — in production this would call the AI service.', 'info');
+            // In demo mode, just show a notification
+        },
+
+        async saveNewVersion() {
+            if (!this.optimize.selectedId) return;
+            const article = this.optimize.article;
+            if (this.isDemo) {
+                this.toast('New version saved!', 'success');
+                return;
+            }
+            try {
+                await this.createVersion(this.optimize.selectedId, null, 'AI_REWRITE', 'AI rebuild of existing article');
+                this.toast('New version saved!', 'success');
+            } catch (e) {
+                this.toast('Failed: ' + e.message, 'error');
+            }
+        },
+
+        // ===== Review =====
+        setFactCheck(article, index, status) {
+            article.fact_checks[index].status = status;
+            // Update overall fact check status
+            const statuses = article.fact_checks.map(fc => fc.status);
+            if (statuses.includes('POTENTIALLY INCORRECT')) article.fact_check_status = 'unsupported';
+            else if (statuses.includes('NEEDS REVIEW')) article.fact_check_status = 'needs_review';
+            else if (statuses.every(s => s === 'VERIFIED')) article.fact_check_status = 'verified';
+        },
+
+        addFactCheck(article) {
+            if (!article.fact_checks) article.fact_checks = [];
+            article.fact_checks.push({ claim: 'Enter a claim to verify...', status: 'NEEDS REVIEW' });
+        },
+
+        runQualityReview(article) {
+            // Simulated quality review
+            let score = 0;
+            if (article.editorial_angle) score += 2;
+            if (article.author_view) score += 2;
+            if (article.content && article.content.length > 1000) score += 2;
+            if (article.sources && article.sources.length > 0) score += 1;
+            if (!article.content.includes('In today\'s rapidly')) score += 1;
+            if (!article.content.includes('It is important to note')) score += 1;
+            if (!article.content.includes('In conclusion')) score += 1;
+
+            if (score >= 7) {
+                article.quality_status = 'pass';
+                article.quality_notes = 'Strong editorial angle, natural language, well-sourced. Meets quality standards.';
+            } else if (score >= 4) {
+                article.quality_status = 'needs_revision';
+                article.quality_notes = 'Some areas need improvement. Consider strengthening the editorial angle and adding more sources.';
+            } else {
+                article.quality_status = 'high_risk';
+                article.quality_notes = 'Significant issues detected. Article lacks editorial perspective or has template-like structure.';
+            }
+            this.toast('Quality review complete: ' + article.quality_status.toUpperCase(), 'info');
+        },
+
+        // ===== Versions =====
+        async loadVersions() {
+            if (!this.versionFilter) { this.versions = []; return; }
+            if (this.isDemo) {
+                this.versions = [
+                    { id: 'v1', version_number: 1, change_type: 'AI_GENERATED', notes: 'Initial draft', content: '<p>Demo version 1 content...</p>', created_at: new Date(Date.now() - 86400000 * 3).toISOString() },
+                    { id: 'v2', version_number: 2, change_type: 'HUMAN_EDIT', notes: 'Editorial revisions', content: '<p>Demo version 2 content...</p>', created_at: new Date(Date.now() - 86400000 * 2).toISOString() },
+                    { id: 'v3', version_number: 3, change_type: 'FACT_CHECK_REVISION', notes: 'Updated claims after fact check', content: '<p>Demo version 3 content...</p>', created_at: new Date(Date.now() - 86400000).toISOString() }
+                ];
+                return;
+            }
+            try {
+                const { data, error } = await this.supabase.from('article_versions')
+                    .select('*').eq('article_id', this.versionFilter).order('version_number', { ascending: true });
+                if (error) throw error;
+                this.versions = data || [];
+            } catch (e) {
+                this.toast('Failed to load versions: ' + e.message, 'error');
+            }
+        },
+
+        viewVersion(v) { this.versionModal = v; },
+
+        async restoreVersion(v) {
+            if (!confirm('Restore version ' + v.version_number + '? This will update the current article content.')) return;
+            const articleId = this.versionFilter || (this.optimize.article && this.optimize.article.id);
+            if (!articleId) return;
+
+            const article = this.articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            article.content = v.content;
+            article.updated_at = new Date().toISOString();
+
+            if (this.isDemo) {
+                this.toast('Version restored!', 'success');
+                return;
+            }
+
+            try {
+                const { error } = await this.supabase.from('articles').update({
+                    content: v.content, updated_at: article.updated_at
+                }).eq('id', articleId);
+                if (error) throw error;
+                this.toast('Version restored!', 'success');
+                await this.loadArticles();
+            } catch (e) {
+                this.toast('Restore failed: ' + e.message, 'error');
+            }
+        },
+
+        // ===== Settings =====
+        saveDbConfig() {
+            localStorage.setItem('cs_supabase', JSON.stringify({ url: this.dbConfig.url, key: this.dbConfig.key }));
+            this.setup.supabaseUrl = this.dbConfig.url;
+            this.setup.supabaseKey = this.dbConfig.key;
+            this.connectSupabase();
+        },
+
+        saveAiPrompt() {
+            localStorage.setItem('cs_ai_prompt', this.aiPrompt);
+            this.toast('AI prompt saved.', 'success');
+        },
+
+        exportData() {
+            const data = JSON.stringify({ articles: this.articles, versions: this.versions }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'content-studio-export.json';
+            a.click(); URL.revokeObjectURL(url);
+            this.toast('Data exported!', 'success');
+        },
+
+        importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (data.articles) this.articles = data.articles;
+                    this.toast('Data imported! ' + (data.articles || []).length + ' articles loaded.', 'success');
+                } catch (err) {
+                    this.toast('Import failed: invalid JSON.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+    },
+
+    async mounted() {
+        // Check for saved config
+        const saved = localStorage.getItem('cs_supabase');
+        if (saved) {
+            try {
+                const config = JSON.parse(saved);
+                this.setup.supabaseUrl = config.url;
+                this.setup.supabaseKey = config.key;
+                this.dbConfig = { ...config };
+            } catch (e) {}
+        }
+        const savedPrompt = localStorage.getItem('cs_ai_prompt');
+        if (savedPrompt) this.aiPrompt = savedPrompt;
+    }
+}).mount('#app');
+</script>
+</body>
+</html>
