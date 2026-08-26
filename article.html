@@ -70,6 +70,150 @@
         .article-hero img{max-height:250px;border-radius:8px;}
     }
     </style>
+<style>
+/* ===== HelloInsights Finance V6 Header ===== */
+.header,
+.site-header {
+    min-height: 76px;
+}
+
+.header > div,
+.site-header > div {
+    min-height: 76px;
+}
+
+.header .logo,
+.site-header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.header .logo svg,
+.site-header .logo svg {
+    width: 180px !important;
+    height: 58px !important;
+    max-height: none !important;
+    display: block;
+}
+
+.header nav a,
+.site-header nav a,
+.header .nav-link,
+.site-header .nav-link {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    letter-spacing: .01em;
+    white-space: nowrap;
+}
+
+.header nav,
+.site-header nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-search {
+    margin-left: auto !important;
+    flex-shrink: 0;
+}
+
+.header-search input {
+    height: 40px !important;
+    min-width: 190px;
+    font-size: 14px !important;
+    padding: 0 42px 0 14px !important;
+}
+
+.header-search button {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 16px !important;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .header > div,
+    .site-header > div {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+    }
+
+    .header nav,
+    .site-header nav {
+        flex: 1;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .header nav,
+    .site-header nav {
+        gap: 13px;
+    }
+
+    .header nav a,
+    .site-header nav a {
+        font-size: 14px !important;
+    }
+
+    .header-search input {
+        min-width: 150px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header,
+    .site-header {
+        min-height: 64px;
+    }
+
+    .header > div,
+    .site-header > div {
+        min-height: 64px;
+    }
+
+    .header .logo svg,
+    .site-header .logo svg {
+        width: 150px !important;
+        height: auto !important;
+    }
+
+    .header nav,
+    .site-header nav {
+        gap: 10px;
+    }
+
+    .header nav a,
+    .site-header nav a {
+        font-size: 14px !important;
+    }
+
+    .header-search {
+        order: 10;
+    }
+
+    .header-search input {
+        min-width: 0;
+        width: 150px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .header .logo svg,
+    .site-header .logo svg {
+        width: 135px !important;
+    }
+
+    .header-search input {
+        width: 125px;
+    }
+}
+</style>
 </head>
 <body>
     <header class="header">
