@@ -466,25 +466,28 @@
 
         // --- Explore Topics ---
         function renderExploreTopics() {
-            var grid = document.getElementById('topicsGrid');
-            var html = '';
+            var grid=document.getElementById('topicsGrid');
+            var section=grid?grid.closest('.explore-topics'):null;
+            if(!grid||!section)return;
 
-            // Count articles per category
-            var counts = {};
-            allArticles.forEach(function(a) {
-                counts[a.subcategory] = (counts[a.subcategory] || 0) + 1;
+            var counts={};
+            allArticles.forEach(function(a){
+                var t=String(a.subcategory||a.topic||a.category||'').trim().toLowerCase().replace(/&/g,'and').replace(/[\s_]+/g,'-').replace(/[^a-z0-9-]/g,'');
+                if(t)counts[t]=(counts[t]||0)+1;
             });
 
-            SITE_CONFIG.subcategories.forEach(function(sub) {
-                var isCurrent = (sub.id === currentCatId);
-                var url = SITE_CONFIG.categoryUrlMap[sub.id] || '/' + sub.id + '/';
-                html += '<a class="topic-link' + (isCurrent ? ' current' : '') + '" href="' + url + '">' +
-                    '<div class="topic-name">' + (isCurrent ? '&#10003; ' : '') + escapeHtml(sub.name) + '</div>' +
-                    '<div class="topic-count">' + (counts[sub.id] || 0) + ' articles</div>' +
-                    '</a>';
+            var html='',visible=0;
+            SITE_CONFIG.subcategories.forEach(function(sub){
+                var id=String(sub.id||'').toLowerCase();
+                var count=counts[id]||0;
+                if(id===String(currentCatId).toLowerCase()||count<=0)return;
+                var url=SITE_CONFIG.categoryUrlMap[sub.id]||'/'+sub.id+'/';
+                html+='<a class="topic-link" href="'+url+'"><div class="topic-name">'+escapeHtml(sub.name)+'</div><div class="topic-count">'+count+' '+(count===1?'article':'articles')+'</div></a>';
+                visible++;
             });
 
-            grid.innerHTML = html;
+            section.style.display=visible?'':'none';
+            grid.innerHTML=html;
         }
 
         // --- Footer Topics ---
