@@ -10,7 +10,7 @@ var SITE_CONFIG = {
     tagline: 'Finance Insights for Smarter Money Decisions',
     aboutText: 'Practical insights on money, investing, markets, banking, fintech and the economy.',
     domain: 'https://finance.helloinsights.online',
-    fallbackImage: 'https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
+    fallbackImage: 'https://images.pexels.com/photos/4197899/pexels-photo-4197899.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
     jsonFile: 'finance-index.json',
     fullArticleJson: 'articles-finance.json',
     gaId: 'G-Q4QHZKZT46',
@@ -29,15 +29,15 @@ var SITE_CONFIG = {
         { id: 'economy', name: 'Economy', desc: 'Inflation, jobs, growth, policy and macro trends — and what they actually mean for households and investors.' },
         { id: 'money-management', name: 'Money Management', desc: 'Wealth management, retirement, tax-efficient planning, insurance and the business of keeping what you earn.' }
     ],
-    // Navigation URL map — clean URLs (Cloudflare Pages _redirects maps /xxx/ → category.html?cat=xxx)
+    // Navigation URL map — GitHub Pages does not support _redirects, so use direct query-param URLs
     categoryUrlMap: {
-        'personal-finance': 'personal-finance/',
-        'investing':       'investing/',
-        'markets':         'markets/',
-        'banking':         'banking/',
-        'fintech':         'fintech/',
-        'economy':         'economy/',
-        'money-management':'money-management/'
+        'personal-finance': 'category.html?cat=personal-finance',
+        'investing':       'category.html?cat=investing',
+        'markets':         'category.html?cat=markets',
+        'banking':         'category.html?cat=banking',
+        'fintech':         'category.html?cat=fintech',
+        'economy':         'category.html?cat=economy',
+        'money-management':'category.html?cat=money-management'
     },
     // Article URL builder (single source of truth)
     articleUrl: function(id) { return 'article.html?id=' + id; },

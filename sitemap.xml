@@ -7,43 +7,43 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/personal-finance/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=personal-finance</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/investing/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=investing</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/markets/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=markets</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/banking/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=banking</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/fintech/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=fintech</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/economy/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=economy</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finance.helloinsights.online/money-management/</loc>
+    <loc>https://finance.helloinsights.online/category.html?cat=money-management</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

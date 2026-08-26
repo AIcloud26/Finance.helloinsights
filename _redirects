@@ -1,19 +1,10 @@
-# HelloInsights Finance - Clean URLs
-# Cloudflare Pages redirect rules: /category-name/ -> category.html?cat=category-name
+# Cloudflare Pages redirect rules for clean URLs
+# Each category clean URL serves category.html with the cat parameter
 
-/personal-finance/    /category.html?cat=personal-finance    200
-/investing/           /category.html?cat=investing           200
-/markets/             /category.html?cat=markets             200
-/banking/             /category.html?cat=banking             200
-/fintech/             /category.html?cat=fintech             200
-/economy/             /category.html?cat=economy             200
-/money-management/    /category.html?cat=money-management    200
-
-# Also support without trailing slash
-/personal-finance    /category.html?cat=personal-finance    200
-/investing           /category.html?cat=investing           200
-/markets             /category.html?cat=markets             200
-/banking             /category.html?cat=banking             200
-/fintech             /category.html?cat=fintech             200
-/economy             /category.html?cat=economy             200
-/money-management    /category.html?cat=money-management    200
+/personal-finance/  /category.html?cat=personal-finance  200
+/investing/         /category.html?cat=investing         200
+/markets/           /category.html?cat=markets           200
+/banking/           /category.html?cat=banking           200
+/fintech/           /category.html?cat=fintech           200
+/economy/           /category.html?cat=economy           200
+/money-management/  /category.html?cat=money-management  200
