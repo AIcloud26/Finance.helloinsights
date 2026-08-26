@@ -178,8 +178,8 @@
             <div id="editorialContent"></div>
         </section>
 
-        <!-- ===== AD: Top ===== -->
-        <div class="ad-slot" data-ad-slot="native-top"></div>
+        <!-- ===== AD: Homepage Native 1 — below Hero, above Featured ===== -->
+        <div class="ad-slot" data-ad-slot="native-home-top"></div>
 
         <!-- ===== FEATURED INSIGHTS ===== -->
         <section class="featured-section" id="featuredSection">
@@ -189,8 +189,8 @@
             </div>
         </section>
 
-        <!-- ===== AD: Mid ===== -->
-        <div class="ad-slot" data-ad-slot="banner-mid-1"></div>
+        <!-- ===== AD: Homepage Native 2 — between Featured & Latest ===== -->
+        <div class="ad-slot" data-ad-slot="native-home-mid"></div>
 
         <!-- ===== LATEST FINANCE INSIGHTS ===== -->
         <section class="latest-section" id="latest-section">
@@ -203,10 +203,8 @@
             </div>
         </section>
 
-        <!-- ===== AD: Mid 2 ===== -->
-        <div class="ad-slot" data-ad-slot="banner-mid-2"></div>
 
-        <!-- ===== 7 TOPIC SECTIONS (rendered by JS) ===== -->
+        <!-- ===== 7 TOPIC SECTIONS (rendered by JS, native-home-topic ad injected after 3rd) ===== -->
         <div id="topicSections"></div>
 
         <!-- ===== MOST READ ===== -->
@@ -215,8 +213,8 @@
             <ol class="most-read-list" id="mostReadList"></ol>
         </section>
 
-        <!-- ===== AD: Bottom ===== -->
-        <div class="ad-slot" data-ad-slot="banner-bottom"></div>
+        <!-- ===== AD: Homepage Native 4 — above Most Read ===== -->
+        <div class="ad-slot" data-ad-slot="native-home-bottom"></div>
 
         <!-- Search info bar -->
         <div class="search-info" id="searchInfo">
@@ -445,7 +443,7 @@
             html += '</div></section>';
             // Add ad slot after 3rd topic section
             if (s === 2) {
-                html += '<div class="ad-slot" data-ad-slot="banner-mid-2b"></div>';
+                html += '<div class="ad-slot" data-ad-slot="native-home-topic"></div>';
             }
         }
         container.innerHTML = html;

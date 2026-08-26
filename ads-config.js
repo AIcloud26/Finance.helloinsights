@@ -31,58 +31,117 @@
 
     // ========================================
     // 📍 Ad Slot Definitions
-    // enabled: false by default — set true after approval
     // ========================================
     var SLOTS = {
-        // --- Index Page ---
-        'native-top': {
+
+        // ──────────────────────────────────────────
+        // HOMEPAGE (index) — 4 Native Widgets
+        // ──────────────────────────────────────────
+
+        // 1. Hero 下方，Featured 上方
+        'native-home-top': {
             enabled: true,
             network: 'mgid',
             type: 'native',
-            pages: ['index', 'category'],
-            adClient: ADSENSE_CLIENT,
-            adSlot: 'XXXXXXXXXX',
-            format: 'auto',
-            label: 'Header Native Ad (728×90 / responsive)'
-        },
-        'banner-mid-1': {
-            enabled: true,
-            network: 'mgid',
-            type: 'banner',
             pages: ['index'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
-            label: 'Article Grid Banner 1 (after 3rd card)'
+            label: 'Homepage Native — below Hero, above Featured'
         },
-        'banner-mid-2': {
+        // 2. Featured 与 Latest 之间
+        'native-home-mid': {
             enabled: true,
             network: 'mgid',
-            type: 'banner',
+            type: 'native',
             pages: ['index'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
-            label: 'Article Grid Banner 2 (after 6th card)'
+            label: 'Homepage Native — between Featured & Latest'
         },
-        'banner-bottom': {
+        // 3. Topic Sections 之间（第3个topic后）
+        'native-home-topic': {
             enabled: true,
             network: 'mgid',
-            type: 'banner',
-            pages: ['index', 'category'],
+            type: 'native',
+            pages: ['index'],
             adClient: ADSENSE_CLIENT,
             adSlot: 'XXXXXXXXXX',
             format: 'auto',
-            label: 'Above Footer Banner'
+            label: 'Homepage Native — between Topic Sections'
         },
+        // 4. Most Read 上方 / footer 前
+        'native-home-bottom': {
+            enabled: true,
+            network: 'mgid',
+            type: 'native',
+            pages: ['index'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Homepage Native — above Most Read'
+        },
+
+        // ──────────────────────────────────────────
+        // CATEGORY PAGE — shares 2 slots with index
+        // ──────────────────────────────────────────
+        'native-cat-top': {
+            enabled: true,
+            network: 'mgid',
+            type: 'native',
+            pages: ['category'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Category Native — top of article list'
+        },
+        'native-cat-bottom': {
+            enabled: true,
+            network: 'mgid',
+            type: 'native',
+            pages: ['category'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Category Native — bottom of article list'
+        },
+
+        // ──────────────────────────────────────────
+        // ARTICLE PAGE — 2 Native Widgets
+        // ──────────────────────────────────────────
+
+        // 1. 文章顶部，标题上方
+        'article-native-top': {
+            enabled: true,
+            network: 'mgid',
+            type: 'native',
+            pages: ['article'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Native — above article header'
+        },
+        // 2. 正文结束后，Related Articles 之前
+        'article-native-bottom': {
+            enabled: true,
+            network: 'mgid',
+            type: 'native',
+            pages: ['article'],
+            adClient: ADSENSE_CLIENT,
+            adSlot: 'XXXXXXXXXX',
+            format: 'auto',
+            label: 'Article Native — before Related Articles'
+        },
+
+        // ──────────────────────────────────────────
+        // DISABLED — future use
+        // ──────────────────────────────────────────
         'anchor': {
             enabled: false,
             network: 'mgid',
             type: 'anchor',
-            pages: ['index', 'category'],
-            adClient: ADSENSE_CLIENT,
-            adSlot: 'XXXXXXXXXX',
-            format: 'auto',
+            pages: ['index', 'category', 'article'],
             label: 'Bottom Floating Anchor'
         },
         'interstitial': {
@@ -90,48 +149,38 @@
             network: 'mgid',
             type: 'interstitial',
             pages: ['index', 'article', 'category'],
-            adClient: ADSENSE_CLIENT,
-            adSlot: 'XXXXXXXXXX',
-            format: 'auto',
             label: 'Page Turn Interstitial'
-        },
-        // --- Article Page ---
-        'article-banner-top': {
-            enabled: true,
-            network: 'mgid',
-            type: 'banner',
-            pages: ['article'],
-            adClient: ADSENSE_CLIENT,
-            adSlot: 'XXXXXXXXXX',
-            format: 'auto',
-            label: 'Article Top Banner'
-        },
-        'article-banner-mid': {
-            enabled: true,
-            network: 'mgid',
-            type: 'banner',
-            pages: ['article'],
-            adClient: ADSENSE_CLIENT,
-            adSlot: 'XXXXXXXXXX',
-            format: 'auto',
-            label: 'Article Mid Banner'
         }
     };
 
     // ========================================
     // 🔧 MGID Widget Configuration
-    // Maps slot IDs to MGID Widget IDs
-    // Currently using one widget (2057384) for all positions.
-    // To use separate widgets per position, create more in MGID dashboard
-    // and replace the IDs below.
+    // Each slot → independent Widget ID.
+    //
+    // HOW TO GET WIDGET IDs:
+    //   1. Log in: https://dashboard.mgid.com
+    //   2. Site (ID: 1104797) → Widgets
+    //   3. Create one Native Widget per position
+    //   4. Copy numeric ID → replace placeholders below
+    //
+    // TIP: Use separate widgets per position so
+    //   MGID can optimize ad quality per placement
+    //   and you can track revenue per slot.
     // ========================================
     var MGID_WIDGETS = {
-        'native-top': '2057384',
-        'banner-mid-1': '2057384',
-        'banner-mid-2': '2057384',
-        'banner-bottom': '2057384',
-        'article-banner-top': '2057384',
-        'article-banner-mid': '2057384'
+        // Homepage (4 widgets)
+        'native-home-top':    'MGID_WIDGET_ID_01',
+        'native-home-mid':    'MGID_WIDGET_ID_02',
+        'native-home-topic':  'MGID_WIDGET_ID_03',
+        'native-home-bottom': 'MGID_WIDGET_ID_04',
+
+        // Category page (2 widgets)
+        'native-cat-top':     'MGID_WIDGET_ID_05',
+        'native-cat-bottom':  'MGID_WIDGET_ID_06',
+
+        // Article page (2 widgets)
+        'article-native-top':    'MGID_WIDGET_ID_07',
+        'article-native-bottom': 'MGID_WIDGET_ID_08'
     };
 
     // ========================================
@@ -145,7 +194,7 @@
     }
 
     // ========================================
-    // Load AdSense SDK (only if AdSense slots are used)
+    // Load AdSense SDK
     // ========================================
     var _sdkLoaded = false;
     function loadAdSenseSDK() {
@@ -173,24 +222,19 @@
                 el.style.display = 'none';
                 continue;
             }
-            // Check if slot should show on this page
             if (slot.pages.indexOf(page) === -1) {
                 el.style.display = 'none';
                 continue;
             }
-            // Check master + individual enabled
             if (!AD_ENABLED_MASTER || !slot.enabled) {
                 el.style.display = 'none';
                 el.setAttribute('data-ad-disabled', 'true');
                 continue;
             }
-            // Render based on network
             if (slot.network === 'adsense' || slot.network === 'adx') {
                 renderAdSenseSlot(el, slot);
             }
-            // MGID slots are rendered by renderMGIDWidgets() below
         }
-        // MGID widgets
         renderMGIDWidgets(page);
     }
 
@@ -206,13 +250,11 @@
         ins.setAttribute('data-ad-format', slot.format || 'auto');
         ins.setAttribute('data-full-width-responsive', 'true');
         el.appendChild(ins);
-        try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {}
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     }
 
     // ========================================
-    // Render MGID Widgets (Simple JS format)
+    // Render MGID Widgets
     // ========================================
     function renderMGIDWidgets(page) {
         if (!MGID_SITE_ID || MGID_SITE_ID.indexOf('XXXX') !== -1) return;
@@ -220,12 +262,10 @@
         var hasWidgets = false;
         for (var id in MGID_WIDGETS) {
             if (!MGID_WIDGETS.hasOwnProperty(id) || !MGID_WIDGETS[id]) continue;
-            hasWidgets = true;
-            break;
+            hasWidgets = true; break;
         }
         if (!hasWidgets) return;
 
-        // Load MGID site script once (head loader)
         if (!document.querySelector('script[src*="jsc.mgid.com"]')) {
             var s = document.createElement('script');
             s.src = 'https://jsc.mgid.com/site/' + MGID_SITE_ID + '.js';
@@ -233,36 +273,28 @@
             document.head.appendChild(s);
         }
 
-        // Render each MGID widget container
         for (var slotId in MGID_WIDGETS) {
             if (!MGID_WIDGETS.hasOwnProperty(slotId) || !MGID_WIDGETS[slotId]) continue;
-
-            // Check if this slot is enabled for current page
             var slot = SLOTS[slotId];
             if (!slot || !AD_ENABLED_MASTER || !slot.enabled) continue;
             if (slot.pages.indexOf(page) === -1) continue;
 
             var el = document.querySelector('[data-ad-slot="' + slotId + '"]');
             if (!el) continue;
-            // Reset display in case checkFill hid it before MGID loaded
             el.style.display = '';
-
-            // Skip if already rendered
             if (el.querySelector('[data-type="_mgwidget"]')) continue;
 
-            // Create MGID widget container div
             var div = document.createElement('div');
             div.setAttribute('data-type', '_mgwidget');
             div.setAttribute('data-widget-id', MGID_WIDGETS[slotId]);
             el.appendChild(div);
         }
 
-        // Trigger MGID load
         try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
     }
 
     // ========================================
-    // Fill Detection: hide unfilled, show filled
+    // Fill Detection
     // ========================================
     function checkFill() {
         var containers = document.querySelectorAll('[data-ad-slot]');
@@ -273,26 +305,18 @@
             var iframe = el.querySelector('iframe');
             var ins = el.querySelector('ins.adsbygoogle');
             var hasSize = false;
-            if (ins) {
-                var rect = ins.getBoundingClientRect();
-                hasSize = rect.height > 10;
-            }
+            if (ins) { var rect = ins.getBoundingClientRect(); hasSize = rect.height > 10; }
             var hasMGID = el.querySelector('[data-type="_mgwidget"]');
             var mgidIframe = hasMGID ? hasMGID.querySelector('iframe') : null;
 
             if (iframe || hasSize || (hasMGID && mgidIframe)) {
-                // Ad is filled — show it
                 el.classList.add('ad-visible');
                 el.classList.remove('ad-hidden');
                 el.style.display = '';
             } else if (hasMGID && !mgidIframe) {
-                // MGID widget div exists but ad hasn't loaded yet
-                // Keep container visible so MGID can render into it
                 el.style.display = '';
-                // Re-trigger MGID load in case it missed the first push
                 try { (window._mgq = window._mgq || []).push(["_mgc.load"]); } catch(e) {}
             } else {
-                // No ad content at all
                 el.style.display = 'none';
                 el.classList.add('ad-hidden');
                 el.classList.remove('ad-visible');
@@ -318,28 +342,17 @@
             var status = {};
             for (var key in SLOTS) {
                 if (!SLOTS.hasOwnProperty(key)) continue;
-                status[key] = {
-                    enabled: SLOTS[key].enabled,
-                    network: SLOTS[key].network,
-                    type: SLOTS[key].type,
-                    pages: SLOTS[key].pages,
-                    label: SLOTS[key].label
-                };
+                status[key] = { enabled: SLOTS[key].enabled, network: SLOTS[key].network, type: SLOTS[key].type, pages: SLOTS[key].pages, label: SLOTS[key].label };
             }
             status._master = AD_ENABLED_MASTER;
             return status;
         },
         enableAll: function() {
-            for (var key in SLOTS) {
-                if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = true;
-            }
-            renderAll();
-            setTimeout(checkFill, 2000);
+            for (var key in SLOTS) { if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = true; }
+            renderAll(); setTimeout(checkFill, 2000);
         },
         disableAll: function() {
-            for (var key in SLOTS) {
-                if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = false;
-            }
+            for (var key in SLOTS) { if (SLOTS.hasOwnProperty(key)) SLOTS[key].enabled = false; }
             renderAll();
         },
         renderAll: renderAll
@@ -355,7 +368,6 @@
         setTimeout(checkFill, 8000);
         setTimeout(checkFill, 15000);
     }
-
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
@@ -364,6 +376,35 @@
 
     console.log('[AdConfig] Loaded. Master: ' + (AD_ENABLED_MASTER ? 'ON' : 'OFF'));
     console.log('[AdConfig] MGID Site ID: ' + MGID_SITE_ID);
+    console.log('[AdConfig] Slots: ' + Object.keys(SLOTS).length + ' | MGID Widgets: ' + Object.keys(MGID_WIDGETS).length);
     console.log('[AdConfig] Use window.AdConfig.getStatus() to view slots');
-    console.log('[AdConfig] Use window.AdConfig.toggle("slot-id", true) to enable');
+})();
+
+
+/* ads.js */
+(function(){
+    var style=document.createElement('style');
+    style.textContent='div[data-ad-slot]{height:0;overflow:hidden;transition:height .3s ease}';
+    document.head.appendChild(style);
+    function initAds(){
+        document.querySelectorAll('div[data-ad-slot]').forEach(function(s){
+            if(s.dataset.adInit)return;
+            s.dataset.adInit='1';
+            new MutationObserver(function(){
+                if(s.querySelector('iframe')){
+                    s.style.height='auto';
+                    s.style.overflow='visible';
+                }
+            }).observe(s,{childList:true,subtree:true});
+        });
+        document.querySelectorAll('ins.adsbygoogle:not([data-pushed])').forEach(function(ins){
+            ins.setAttribute('data-pushed','1');
+            (adsbygoogle=window.adsbygoogle||[]).push({});
+        });
+    }
+    if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded',initAds);
+    }else{
+        initAds();
+    }
 })();

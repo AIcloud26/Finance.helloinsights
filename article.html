@@ -61,6 +61,7 @@
     .ad-slot{margin:1.5rem auto;text-align:center;min-height:0;overflow:hidden;max-width:800px;}
     .ad-slot.has-ad{min-height:100px;}
     .ad-slot.ad-hidden{display:none!important;}
+    .ad-slot.article-native{margin:1.8rem auto;max-width:760px;}
     @media(max-width:768px){
         .article-header h1{font-size:1.5rem;}
         .article-body{padding:1rem;}
@@ -99,16 +100,19 @@
     <nav class="breadcrumb" id="breadcrumb"></nav>
 
     <main>
-        <div class="ad-slot" data-ad-slot="article-banner-top"></div>
+        <div class="ad-slot" data-ad-slot="article-native-top"></div>
         <article class="article-body" id="articleDetail">
             <div class="loading"></div>
         </article>
-        <div class="ad-slot" data-ad-slot="article-banner-mid"></div>
+        <!-- Inline native ads (inline-1 & inline-2) are injected into article content by JS -->
+        <div class="ad-slot" data-ad-slot="article-native-before-related"></div>
 
         <section class="related-section" id="relatedSection" style="display:none;">
             <h2>Related Articles</h2>
             <div class="related-grid" id="relatedGrid"></div>
         </section>
+
+        <div class="ad-slot" data-ad-slot="article-native-bottom"></div>
 
         <div class="topics-links" id="topicsLinks"></div>
 
@@ -284,6 +288,40 @@
             '<a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href) + '" target="_blank" rel="noopener">Facebook</a>' +
             '<a class="share-btn linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(article.title) + '" target="_blank" rel="noopener">LinkedIn</a>' +
             '</div></div>';
+
+        // Inject inline native ads into article content
+        injectInlineAds();
+    }
+
+    // Inject 2 native ad slots into article body (after ~3rd and ~6th paragraphs)
+    function injectInlineAds() {
+        var contentEl = document.querySelector('.article-content');
+        if (!contentEl) return;
+        var paragraphs = contentEl.querySelectorAll('p');
+        if (paragraphs.length < 3) return; // too short for inline ads
+
+        var ad1 = document.createElement('div');
+        ad1.className = 'ad-slot article-native';
+        ad1.setAttribute('data-ad-slot', 'article-native-inline-1');
+
+        var ad2 = document.createElement('div');
+        ad2.className = 'ad-slot article-native';
+        ad2.setAttribute('data-ad-slot', 'article-native-inline-2');
+
+        // Insert after 3rd paragraph
+        var insertPos1 = Math.min(3, paragraphs.length);
+        paragraphs[insertPos1 - 1].insertAdjacentElement('afterend', ad1);
+
+        // Insert after 6th paragraph (or last if fewer)
+        var insertPos2 = Math.min(6, paragraphs.length);
+        if (insertPos2 > insertPos1) {
+            paragraphs[insertPos2 - 1].insertAdjacentElement('afterend', ad2);
+        }
+
+        // Re-trigger ad rendering for newly injected slots
+        if (window.AdConfig && window.AdConfig.renderAll) {
+            setTimeout(function() { window.AdConfig.renderAll(); }, 100);
+        }
     }
 
     function renderRelated(meta) {
