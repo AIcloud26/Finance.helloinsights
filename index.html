@@ -114,97 +114,102 @@
         .latest-card-img{width:80px;min-width:80px;height:60px;}
     }
     </style>
+
 <style>
-/* ===== HelloInsights Finance V6 Header ===== */
+
+/* ===== Finance Header Compact V6.1 ===== */
+
 .header,
 .site-header {
-    min-height: 76px;
+    min-height: 68px !important;
 }
 
 .header > div,
 .site-header > div {
-    min-height: 76px;
+    min-height: 68px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .header .logo,
 .site-header .logo {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
 }
 
 .header .logo svg,
 .site-header .logo svg {
-    width: 180px !important;
-    height: 58px !important;
-    max-height: none !important;
-    display: block;
+    width: 150px !important;
+    height: auto !important;
+    max-height: 48px !important;
+    display: block !important;
+}
+
+/* Navigation */
+.header nav,
+.site-header nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
 }
 
 .header nav a,
 .site-header nav a,
 .header .nav-link,
 .site-header .nav-link {
-    font-size: 15px !important;
+    font-size: 13px !important;
     font-weight: 600 !important;
-    letter-spacing: .01em;
-    white-space: nowrap;
+    line-height: 1 !important;
+    white-space: nowrap !important;
 }
 
-.header nav,
-.site-header nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
+/* Search stays on the SAME ROW */
 .header-search {
-    margin-left: auto !important;
-    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 0 0 auto !important;
+    flex-shrink: 0 !important;
+    height: 34px !important;
 }
 
 .header-search input {
-    height: 40px !important;
-    min-width: 190px;
-    font-size: 14px !important;
-    padding: 0 42px 0 14px !important;
+    width: 145px !important;
+    min-width: 145px !important;
+    height: 34px !important;
+    font-size: 13px !important;
+    padding: 0 34px 0 11px !important;
+    box-sizing: border-box !important;
 }
 
 .header-search button {
-    width: 40px !important;
-    height: 40px !important;
-    font-size: 16px !important;
-}
-
-/* Desktop */
-@media (min-width: 769px) {
-    .header > div,
-    .site-header > div {
-        display: flex;
-        align-items: center;
-        gap: 26px;
-    }
-
-    .header nav,
-    .site-header nav {
-        flex: 1;
-    }
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 14px !important;
 }
 
 /* Tablet */
-@media (max-width: 1024px) and (min-width: 769px) {
+@media (max-width: 1100px) and (min-width: 769px) {
+    .header .logo svg,
+    .site-header .logo svg {
+        width: 135px !important;
+    }
+
     .header nav,
     .site-header nav {
-        gap: 13px;
+        gap: 9px !important;
     }
 
     .header nav a,
     .site-header nav a {
-        font-size: 14px !important;
+        font-size: 12px !important;
     }
 
     .header-search input {
-        min-width: 150px;
+        width: 120px !important;
+        min-width: 120px !important;
     }
 }
 
@@ -212,51 +217,45 @@
 @media (max-width: 768px) {
     .header,
     .site-header {
-        min-height: 64px;
+        min-height: 62px !important;
     }
 
     .header > div,
     .site-header > div {
-        min-height: 64px;
+        min-height: 62px !important;
     }
 
-    .header .logo svg,
-    .site-header .logo svg {
-        width: 150px !important;
-        height: auto !important;
-    }
-
-    .header nav,
-    .site-header nav {
-        gap: 10px;
-    }
-
-    .header nav a,
-    .site-header nav a {
-        font-size: 14px !important;
-    }
-
-    .header-search {
-        order: 10;
-    }
-
-    .header-search input {
-        min-width: 0;
-        width: 150px;
-    }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
     .header .logo svg,
     .site-header .logo svg {
         width: 135px !important;
     }
 
+    .header nav,
+    .site-header nav {
+        gap: 8px !important;
+    }
+
+    .header nav a,
+    .site-header nav a {
+        font-size: 12px !important;
+    }
+
+    .header-search {
+        height: 32px !important;
+    }
+
     .header-search input {
-        width: 125px;
+        width: 120px !important;
+        min-width: 120px !important;
+        height: 32px !important;
+    }
+
+    .header-search button {
+        width: 32px !important;
+        height: 32px !important;
     }
 }
+
 </style>
 </head>
 <body>
