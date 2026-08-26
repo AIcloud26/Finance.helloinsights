@@ -73,30 +73,6 @@
                     <p style="color: var(--text-medium); line-height: 1.8; max-width: 700px;">We are committed to editorial integrity, factual accuracy, and providing perspectives that help our readers navigate complexity. Every article is researched, reviewed, and crafted with care.</p>
                 </div>
             </div>
-            <div style="margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid #eee;">
-                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Contact Us</h2>
-                <p style="color: var(--text-medium); margin-bottom: 1.5rem;">Have a question or feedback? Fill out the form below and our team will respond within 24-48 hours.</p>
-                <p style="text-align: center; margin-bottom: 2rem; color: var(--text-medium);">You can also reach us directly at: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6714121717081513270f020b0b080e09140e000f13144908090b0e0902">[email&#160;protected]</a></strong></p>
-                <form id="contactForm" style="max-width: 600px; margin: 0 auto;">
-                    <div style="margin-bottom: 1rem;">
-                        <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Name *</label>
-                        <input type="text" id="name" name="name" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
-                        <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label for="subject" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Subject *</label>
-                        <input type="text" id="subject" name="subject" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="message" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Message *</label>
-                        <textarea id="message" name="message" rows="6" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; resize: vertical;"></textarea>
-                    </div>
-                    <button type="submit" style="background: var(--accent-color); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%;">Send Message</button>
-                </form>
-            </div>
         </div>
         <div data-ad-slot="about-sidebar">
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -142,14 +118,6 @@
         window.addEventListener('scroll', function() {
             var btn = document.getElementById('backToTop');
             if (btn) btn.classList.toggle('visible', window.pageYOffset > 300);
-        });
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var name = document.getElementById('name').value;
-            var email = document.getElementById('email').value;
-            var subject = document.getElementById('subject').value;
-            var message = document.getElementById('message').value;
-            window.location.href = 'mailto:support@helloinsights.online?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
         });
     </script>
 </body>

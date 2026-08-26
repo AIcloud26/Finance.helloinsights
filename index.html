@@ -475,7 +475,7 @@
         renderEditorial();
     }
 
-    // ===== FEATURED (3-4 articles, with images) =====
+    // ===== FEATURED (exactly 6 articles, with images) =====
     function renderFeatured() {
         var grid = document.getElementById('featuredGrid');
         var featured = [];
@@ -484,11 +484,11 @@
             if (allArticles[i].featured && !usedArticleIds[allArticles[i].id]) {
                 featured.push(allArticles[i]);
                 usedArticleIds[allArticles[i].id] = true;
-                if (featured.length >= 4) break;
+                if (featured.length >= 6) break;
             }
         }
         // Fallback: fill with most recent if not enough featured
-        for (var i = 0; i < allArticles.length && featured.length < 4; i++) {
+        for (var i = 0; i < allArticles.length && featured.length < 6; i++) {
             if (!usedArticleIds[allArticles[i].id]) {
                 featured.push(allArticles[i]);
                 usedArticleIds[allArticles[i].id] = true;
