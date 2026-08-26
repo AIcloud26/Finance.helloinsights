@@ -64,37 +64,42 @@
         </div>
     </main>
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <div class="logo" style="margin-bottom: 1rem;">
-                    <img src="logo.svg" alt="HelloInsights" class="logo-img">
-                </div>
-                <p>Your trusted source for curated insights at the intersection of technology, finance, and modern wellness.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Categories</h4>
-                <ul>
-                    <li><a href="category.html?cat=technology">Technology</a></li>
-                    <li><a href="category.html?cat=finance">Finance</a></li>
-                    <li><a href="category.html?cat=ai-tools">AI Tools</a></li>
-                    <li><a href="category.html?cat=health-lifestyle">Health & Lifestyle</a></li>
-                </ul>
-            </div>
+    <div class="footer-content">
+
+        <div class="footer-section">
+            <h4>HelloInsights Finance</h4>
+            <p>Practical finance insights for smarter money decisions.</p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; <span id="currentYear"></span> HelloInsights. All rights reserved.</p>
+
+        <div class="footer-section">
+            <h4>Topics</h4>
+            <ul>
+                <li><a href="category.html?cat=personal-finance">Personal Finance</a></li>
+                <li><a href="category.html?cat=investing">Investing</a></li>
+                <li><a href="category.html?cat=markets">Markets</a></li>
+                <li><a href="category.html?cat=banking">Banking</a></li>
+                <li><a href="category.html?cat=fintech">Fintech</a></li>
+                <li><a href="category.html?cat=economy">Economy</a></li>
+                <li><a href="category.html?cat=money-management">Money Management</a></li>
+            </ul>
         </div>
-    </footer>
+
+        <div class="footer-section">
+            <h4>Information</h4>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; <script>document.write(new Date().getFullYear())</script> HelloInsights Finance. All rights reserved.</p>
+    </div>
+</footer>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
@@ -113,7 +118,7 @@
             var email = document.getElementById('email').value;
             var subject = document.getElementById('subject').value;
             var message = document.getElementById('message').value;
-            window.location.href = 'mailto:support@helloinsights.online?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+            window.location.href = 'mailto:finance@helloinsights.online?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
         });
     </script>
 </body>
