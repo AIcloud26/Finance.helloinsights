@@ -187,9 +187,28 @@
     // Detect Current Page
     // ========================================
     function getCurrentPage() {
-        var path = location.pathname.split('/').pop() || 'index.html';
-        if (path.indexOf('article') !== -1) return 'article';
-        if (path.indexOf('category') !== -1) return 'category';
+        var path = location.pathname.replace(/\/+$/, '');
+
+        if (path.indexOf('/article') !== -1 || path.endsWith('article.html')) {
+            return 'article';
+        }
+
+        var categoryIds = [
+            'personal-finance',
+            'investing',
+            'markets',
+            'banking',
+            'fintech',
+            'economy',
+            'money-management'
+        ];
+
+        var lastSegment = path.split('/').pop();
+
+        if (categoryIds.indexOf(lastSegment) !== -1 || lastSegment === 'category.html') {
+            return 'category';
+        }
+
         return 'index';
     }
 
