@@ -409,6 +409,14 @@
     function loadArticle() {
         var params = new URLSearchParams(window.location.search);
         var articleId = parseInt(params.get('id'));
+
+        // Legacy article ID redirect mapping
+        var legacyMap = {
+            99443: 99433
+        };
+
+        articleId = legacyMap[articleId] || articleId;
+
         if (!articleId) { showError(); return; }
 
         // Step 1: Load index for metadata + subcategory
