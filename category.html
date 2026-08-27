@@ -580,6 +580,7 @@
                 filteredArticles.sort(function(a, b) {
                     return new Date(b.date) - new Date(a.date);
                 });
+                renderExploreTopics();
 
                 if (filteredArticles.length === 0) {
                     document.getElementById('articleGrid').innerHTML =
@@ -720,7 +721,7 @@
         }
 
         // Init
-        renderExploreTopics();
+        // Init
         renderFooterTopics();
     })();
     </script>
