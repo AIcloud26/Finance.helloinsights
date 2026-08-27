@@ -397,13 +397,14 @@
         nav.innerHTML = html;
     }
     function buildFooter() {
-        document.getElementById('footerAboutText').textContent = CFG.aboutText || '';
+        var about = document.getElementById('footerAboutText');
+        if (about) { about.textContent = CFG.aboutText || ''; }
         var ul = document.getElementById('footerTopicLinks');
         var html = '<li><a href="index.html">Home</a></li>';
         for (var i = 0; i < SUBCATS.length; i++) {
             html += '<li><a href="' + (CFG.categoryUrlMap[SUBCATS[i].id] || 'category.html?cat=' + SUBCATS[i].id) + '">' + SUBCATS[i].name + '</a></li>';
         }
-        ul.innerHTML = html;
+        if (ul) { ul.innerHTML = html; }
     }
 
     function loadArticle() {
