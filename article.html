@@ -27,7 +27,7 @@
     .article-header .card-category{display:inline-block;font-size:.78rem;font-weight:600;color:#ff6b35;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem;}
     .article-header .card-category a{color:inherit;text-decoration:none;}
     .article-header h1{font-size:2rem;font-weight:800;color:#1a1a1a;line-height:1.25;margin-bottom:.8rem;}
-    .article-meta{font-size:.88rem;color:#888;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #eee;}.article-author{font-weight:600;color:#555;}.author-role{color:#999;font-weight:400;}.content-type-label{color:#ff6b35;font-weight:600;text-transform:uppercase;font-size:.78rem;letter-spacing:.3px;}.meta-sep{margin:0 .2rem;}
+    .article-meta{font-size:.88rem;color:#888;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #eee;}.content-type-label{color:#ff6b35;font-weight:600;text-transform:uppercase;font-size:.78rem;letter-spacing:.3px;}.meta-sep{margin:0 .2rem;}
     .article-content{font-size:1.05rem;line-height:1.85;color:#333;}
     .article-content p{margin-bottom:1.3rem;}
     .article-content h2{font-size:1.4rem;font-weight:700;color:#1a1a1a;margin:2rem 0 1rem;}
@@ -460,7 +460,7 @@
                 var full = (data.articles || []).find(function(a) { return a.id === articleId; });
                 if (!full) { showError(); return; }
                 currentArticle = full;
-                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: full.subcategory || '', date: full.date, image: full.image, excerpt: full.excerpt, author: full.author, authorRole: full.authorRole, contentType: full.contentType };
+                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: full.subcategory || '', date: full.date, image: full.image, excerpt: full.excerpt, contentType: full.contentType };
                 renderArticle(full, fakeMeta);
                 updateSEO(full, fakeMeta);
             })
@@ -503,7 +503,7 @@
             '<header class="article-header">' +
             '<span class="card-category"><a href="' + catUrl + '">' + escHtml(catName) + '</a></span>' +
             '<h1>' + escHtml(article.title) + '</h1>' +
-            '<div class="article-meta"><span>' + date + '</span>' + (article.author ? '<span class="meta-sep"> · </span><span class="article-author">' + escHtml(article.author) + '</span>' + (article.authorRole ? '<span class="author-role">, ' + escHtml(article.authorRole) + '</span>' : '') + '</span>' : '') + (article.contentType ? '<span class="meta-sep"> · </span><span class="content-type-label">' + escHtml(article.contentType.charAt(0).toUpperCase() + article.contentType.slice(1)) + '</span>' : '') + '</div>' +
+            '<div class="article-meta"><span>' + date + '</span>' + (article.contentType ? '<span class="meta-sep"> · </span><span class="content-type-label">' + escHtml(article.contentType.charAt(0).toUpperCase() + article.contentType.slice(1)) + '</span>' : '') + '</div>' +
             '</header>' +
             '<div class="article-content">' + content + '</div>' +
             '<div class="share-section">' +
@@ -610,11 +610,6 @@
             "image": [getImgUrl(article.image || CFG.fallbackImage, 1200, 675)],
             "datePublished": article.date || '',
             "dateModified": article.date || '',
-            "author": {
-                "@type": "Person",
-                "name": article.author || 'HelloInsights Editorial Team',
-                "jobTitle": article.authorRole || ''
-            },
             "publisher": {
                 "@type": "Organization",
                 "name": "HelloInsights",

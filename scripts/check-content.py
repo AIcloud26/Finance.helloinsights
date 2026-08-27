@@ -12,7 +12,6 @@ REQUIRED_FIELDS = [
     "title",
     "content",
     "date",
-    "author",
     "category",
     "image"
 ]

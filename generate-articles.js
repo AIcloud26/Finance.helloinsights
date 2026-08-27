@@ -12,11 +12,11 @@ const https = require('https');
 // 配置
 // ============================================
 const CONFIG = {
-  articlesPerDay: 5,
+  articlesPerRun: 2,
   useAI: false,
   openaiApiKey: process.env.OPENAI_API_KEY,
   openaiModel: 'gpt-3.5-turbo',
-  maxArticles: 500
+  maxArticles: 350
 };
 
 // ============================================
@@ -417,7 +417,7 @@ async function main() {
   console.log('\n🚀 HelloInsights Article Generator');
   console.log('================================');
   console.log('📝 Mode: ' + (CONFIG.useAI ? 'AI-powered' : 'Template-based'));
-  console.log('📊 Generating ' + CONFIG.articlesPerDay + ' new articles\n');
+  console.log('📊 Generating ' + CONFIG.articlesPerRun + ' new articles per run\n');
   var existingArticles = [];
   var existingIds = [];
   try {
@@ -443,13 +443,20 @@ async function main() {
   existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
   console.log('🖼️  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
   var newArticles = [];
-  for (var i = 0; i < CONFIG.articlesPerDay; i++) {
+  for (var i = 0; i < CONFIG.articlesPerRun; i++) {
     var article = await generateArticle(existingIds, usedImages);
     newArticles.push(article);
     existingIds.push(article.id);
     console.log('   ' + (i + 1) + '. [' + article.category + '] ' + article.title + ' (' + article.date + ')');
   }
   var allArticles = newArticles.concat(existingArticles);
+
+  // 先按日期从新到旧排序，再限制最大文章数。
+  // 超过 maxArticles 时，只淘汰最旧的文章。
+  allArticles.sort(function(a, b) {
+    return b.date.localeCompare(a.date);
+  });
+
   var finalArticles = allArticles.slice(0, CONFIG.maxArticles);
   var metadata = {
     lastUpdated: new Date().toISOString(),
@@ -457,10 +464,7 @@ async function main() {
     newToday: newArticles.length,
     generator: CONFIG.useAI ? 'AI (OpenAI)' : 'Template'
   };
-  // 修复：按日期降序排序（最新日期在前），而不是按随机ID排序
-  finalArticles.sort(function(a, b) {
-    return b.date.localeCompare(a.date);
-  });
+
   // 版本号（时间戳），用作类别文件的 cache key
   var version = Date.now();
   // ============================================
