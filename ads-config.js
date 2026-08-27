@@ -174,8 +174,10 @@
         'native-home-topic':  '',
         'native-home-bottom': '2074009',
 
-        // Category page (2 widgets)
-        'native-cat-top':     '2074103',
+        // Category page
+        // 2074103 is managed directly in category.html
+        // using MGID's official Header Widget code.
+        'native-cat-top':     '',
         'native-cat-bottom':  '',
 
         // Article page (2 widgets)

@@ -21,6 +21,7 @@
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <!-- Config -->
     <script src="site-config.js"></script>
+    <script src="https://jsc.mgid.com/site/1109003.js" async></script>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -427,8 +428,21 @@
         <p id="catDesc">Category description</p>
     </section>
 
-    <!-- Ad: native-cat-top -->
-    <div class="ad-slot" id="ad-native-top" data-ad-slot="native-cat-top"></div>
+    <!-- MGID Header Widget: 2074103 -->
+    <style>
+        div[data-widget-id="2074103"] {
+            min-height: 300px;
+        }
+    </style>
+    <div class="ad-slot" id="ad-category-header">
+        <div data-type="_mgwidget" data-widget-id="2074103"></div>
+    </div>
+    <script>
+    (function(w,q){
+        w[q]=w[q]||[];
+        w[q].push(["_mgc.load"])
+    })(window,"_mgq");
+    </script>
 
     <!-- Article Grid -->
     <div class="category-grid" id="articleGrid">
