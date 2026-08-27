@@ -27,7 +27,7 @@
     // 🔑 Ad Network Credentials
     // ========================================
     var ADSENSE_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
-    var MGID_SITE_ID = '1104797';
+    var MGID_SITE_ID = '1109003';
 
     // ========================================
     // 📍 Ad Slot Definitions
@@ -169,17 +169,17 @@
     // ========================================
     var MGID_WIDGETS = {
         // Homepage (4 widgets)
-        'native-home-top':    'MGID_WIDGET_ID_01',
-        'native-home-mid':    'MGID_WIDGET_ID_02',
+        'native-home-top':    '2074005',
+        'native-home-mid':    '2074006',
         'native-home-topic':  'MGID_WIDGET_ID_03',
-        'native-home-bottom': 'MGID_WIDGET_ID_04',
+        'native-home-bottom': '2074009',
 
         // Category page (2 widgets)
-        'native-cat-top':     'MGID_WIDGET_ID_05',
+        'native-cat-top':     '2074103',
         'native-cat-bottom':  'MGID_WIDGET_ID_06',
 
         // Article page (2 widgets)
-        'article-native-top':    'MGID_WIDGET_ID_07',
+        'article-native-top':    '2074007',
         'article-native-bottom': 'MGID_WIDGET_ID_08'
     };
 
