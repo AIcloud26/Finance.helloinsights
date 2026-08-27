@@ -17,7 +17,30 @@ var siteConfig = null;
     function gtag(){dataLayer.push(arguments);}
     window.gtag = gtag;
     gtag('js', new Date());
-    gtag('config', GA_ID);
+
+    // SUB_ID — 流量测试标识
+    var params = new URLSearchParams(window.location.search);
+    var subId = params.get('SUB_ID') || '000';
+
+    if (!/^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+        subId = '000';
+    }
+
+    window.SUB_ID = subId;
+
+    // 配置 GA4，但关闭自动 page_view
+    gtag('config', GA_ID, {
+        send_page_view: false
+    });
+
+    // 手动发送唯一一次 page_view，并携带 SUB_ID
+    gtag('event', 'page_view', {
+        page_location: window.location.href,
+        page_title: document.title,
+        sub_id: subId
+    });
+
+    console.log('[GA4] SUB_ID:', subId);
 })();
 
 // ==========================================
