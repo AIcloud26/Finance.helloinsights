@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "=== Finance Publish Check ==="
+
+python3 scripts/check-id.py
+
+if [ $? -ne 0 ]; then
+ exit 1
+fi
+
+
+python3 scripts/check-content.py
+
+if [ $? -ne 0 ]; then
+ exit 1
+fi
+
+
+python3 scripts/check-sync.py
+
+if [ $? -ne 0 ]; then
+ exit 1
+fi
+
+
+python3 generate-sitemap.py finance-index.json \
+--domain finance.helloinsights.online \
+--output sitemap.xml
+
+
+echo ""
+echo "✅ Ready to publish"

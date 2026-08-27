@@ -1,0 +1,55 @@
+name: Finance Content Check
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+
+  validate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+
+      - name: Check Article IDs
+        run: |
+          python3 scripts/check-id.py
+
+
+      - name: Check Article Content
+        run: |
+          python3 scripts/check-content.py
+
+
+      - name: Check Data Sync
+        run: |
+          python3 scripts/check-sync.py
+
+
+      - name: Generate Sitemap Test
+        run: |
+          python3 generate-sitemap.py finance-index.json \
+          --domain finance.helloinsights.online \
+          --output /tmp/test-sitemap.xml
+
+
+      - name: Sitemap Count
+        run: |
+          grep -c "article.html?id=" /tmp/test-sitemap.xml
