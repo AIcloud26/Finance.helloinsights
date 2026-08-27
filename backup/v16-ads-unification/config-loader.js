@@ -141,22 +141,8 @@ var AdManager = {
             }
             
             // Get provider config
-            var providerConfig =
-                (config.adProviders && config.adProviders[providerName]) ||
-                config[providerName] || {};
-
+            var providerConfig = config[providerName] || {};
             var slotConfig = (providerConfig.slots || {})[slotName] || {};
-
-            if (providerName === 'mgid') {
-                var mgidWidgets = providerConfig.widgets || {};
-                if (!slotConfig.widgetId && mgidWidgets[slotName]) {
-                    slotConfig.widgetId = mgidWidgets[slotName];
-                }
-                if (!slotConfig.siteId && providerConfig.siteId) {
-                    slotConfig.siteId = providerConfig.siteId;
-                }
-            }
-
             slotConfig._slotName = slotName;
             
             // Try to render with the assigned provider
@@ -251,10 +237,7 @@ AdManager.registerProvider('adsense', {
 AdManager.registerProvider('mgid', {
     render: function(el, config) {
         if (!config || !config.widgetId) return false;
-        var siteId = config.siteId ||
-    (AdManager.config && AdManager.config.adProviders &&
-     AdManager.config.adProviders.mgid &&
-     AdManager.config.adProviders.mgid.siteId);
+        var siteId = config.siteId || (AdManager.config && AdManager.config.mgid && AdManager.config.mgid.siteId);
         if (!siteId) return false;
         
         // Load MGID script if not yet loaded
