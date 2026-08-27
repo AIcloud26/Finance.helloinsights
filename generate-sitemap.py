@@ -54,7 +54,16 @@ def generate_sitemap(articles, domain, subcategories=None):
     # 3. Article pages
     for article in articles:
         url_art = SubElement(urlset, 'url')
-        SubElement(url_art, 'loc').text = f'{base}/article.html?id={article["id"]}'
+
+        subcat = article.get("subcategory")
+        slug = article.get("slug")
+
+        if subcat and slug:
+            article_url = f'{base}/{subcat}/{slug}/'
+        else:
+            article_url = f'{base}/article.html?id={article["id"]}'
+
+        SubElement(url_art, 'loc').text = article_url
         SubElement(url_art, 'lastmod').text = article.get('date', today)
         SubElement(url_art, 'changefreq').text = 'monthly'
         SubElement(url_art, 'priority').text = '0.6'
