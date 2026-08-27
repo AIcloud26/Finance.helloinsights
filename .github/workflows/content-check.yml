@@ -50,6 +50,7 @@ jobs:
           --output /tmp/test-sitemap.xml
 
 
-      - name: Sitemap Count
+      - name: Sitemap Sync Check
         run: |
-          grep -c "article.html?id=" /tmp/test-sitemap.xml
+          cp /tmp/test-sitemap.xml sitemap.xml
+          python3 scripts/check-sync.py

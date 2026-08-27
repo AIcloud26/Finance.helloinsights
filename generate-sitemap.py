@@ -106,11 +106,42 @@ def main():
     if not domain:
         domain = 'finance.helloinsights.online'
     
-    # Read index
+    # Read article content data.
+    # finance-index.json is a lightweight ID/category map and does
+    # not contain the complete article objects required for clean URLs.
     with open(index_path, 'r', encoding='utf-8') as f:
         index_data = json.load(f)
-    
-    articles = index_data.get('articles', [])
+
+    index_articles = index_data.get('articles', {})
+
+    # Current finance-index.json stores:
+    #   "articles": {"12345": "finance"}
+    # The complete article records are stored in articles-finance.json.
+    content_path = os.path.join(
+        os.path.dirname(index_path) or '.',
+        'articles-finance.json'
+    )
+
+    articles = []
+
+    if os.path.exists(content_path):
+        with open(content_path, 'r', encoding='utf-8') as f:
+            content_data = json.load(f)
+
+        content_articles = content_data.get('articles', [])
+
+        if isinstance(index_articles, dict):
+            valid_ids = set(str(x) for x in index_articles.keys())
+            articles = [
+                a for a in content_articles
+                if str(a.get('id')) in valid_ids
+            ]
+        else:
+            articles = content_articles
+
+    # Fallback: if content file is unavailable, support an article-list index.
+    if not articles and isinstance(index_articles, list):
+        articles = index_articles
     
     # Default subcategories if not provided
     if not subcategories:
