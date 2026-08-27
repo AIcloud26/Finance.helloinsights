@@ -609,7 +609,11 @@
                 var imgUrl = article.image || SITE_CONFIG.fallbackImage;
                 // Optimize image: lazy load
                 var dateFormatted = formatDate(article.date);
-                var articleUrl = 'article.html?id=' + encodeURIComponent(article.id);
+                var articleUrl = (
+    article.subcategory && article.slug
+    ? article.subcategory + '/' + article.slug + '/'
+    : 'article.html?id=' + encodeURIComponent(article.id)
+);
 
                 html += '<article class="category-card">' +
                     '<a href="' + articleUrl + '">' +
