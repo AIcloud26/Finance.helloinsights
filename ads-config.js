@@ -171,16 +171,16 @@
         // Homepage (4 widgets)
         'native-home-top':    '2074005',
         'native-home-mid':    '2074006',
-        'native-home-topic':  'MGID_WIDGET_ID_03',
+        'native-home-topic':  '',
         'native-home-bottom': '2074009',
 
         // Category page (2 widgets)
         'native-cat-top':     '2074103',
-        'native-cat-bottom':  'MGID_WIDGET_ID_06',
+        'native-cat-bottom':  '',
 
         // Article page (2 widgets)
         'article-native-top':    '2074007',
-        'article-native-bottom': 'MGID_WIDGET_ID_08'
+        'article-native-bottom': ''
     };
 
     // ========================================
