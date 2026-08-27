@@ -6,7 +6,7 @@
 */
 (function(){
     var style=document.createElement('style');
-    style.textContent='div[data-ad-slot]{height:0;overflow:hidden;transition:height .3s ease}';
+    style.textContent='div[data-ad-slot]{height:auto !important;min-height:0;overflow:visible !important;transition:none}';
     document.head.appendChild(style);
     function initAds(){
         document.querySelectorAll('div[data-ad-slot]').forEach(function(s){
