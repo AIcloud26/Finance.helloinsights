@@ -471,6 +471,17 @@
     })();
 
     // ===== NAV: Add 7 subcategory links =====
+    function buildArticleUrl(id) {
+        var url = 'article.html?id=' + encodeURIComponent(id);
+        var subId = window.SUB_ID || '000';
+
+        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+            url += '&SUB_ID=' + encodeURIComponent(subId);
+        }
+
+        return url;
+    }
+
     function buildNav() {
         var navList = document.getElementById('navList');
         if (!navList || !SUBCATS.length) return;
@@ -557,7 +568,7 @@
         for (var i = 0; i < featured.length; i++) {
             var a = featured[i];
             var img = getImgUrl(a.image, 640, 360);
-            html += '<a class="featured-card" href="article.html?id=' + a.id + '">' +
+            html += '<a class="featured-card" href="' + buildArticleUrl(a.id) + '">' +
                 '<img class="featured-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="640" height="360" loading="' + (i === 0 ? 'eager' : 'lazy') + '" decoding="async"' + (i === 0 ? ' fetchpriority="high"' : '') + ' onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
                 '<div class="featured-card-body">' +
                 '<span class="featured-card-cat">' + escHtml(subcatName(a.subcategory)) + '</span>' +
@@ -610,7 +621,7 @@
 
     function buildLatestCard(a) {
         var img = getImgUrl(a.image, 320, 180);
-        return '<a class="latest-card" href="article.html?id=' + a.id + '">' +
+        return '<a class="latest-card" href="' + buildArticleUrl(a.id) + '">' +
             '<img class="latest-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="140" height="90" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
             '<div class="latest-card-body">' +
             '<span class="latest-card-cat">' + escHtml(subcatName(a.subcategory)) + '</span>' +
@@ -634,7 +645,7 @@
             for (var i = 0; i < articles.length; i++) {
                 var a = articles[i];
                 var img = getImgUrl(a.image, 480, 270);
-                html += '<a class="topic-card" href="article.html?id=' + a.id + '">' +
+                html += '<a class="topic-card" href="' + buildArticleUrl(a.id) + '">' +
                     '<img class="topic-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
                     '<div class="topic-card-body">' +
                     '<h3 class="topic-card-title">' + escHtml(a.title) + '</h3>' +
@@ -677,7 +688,7 @@
             var a = picked[i];
             html += '<li class="most-read-item">' +
                 '<span class="most-read-rank">0' + (i + 1) + '</span>' +
-                '<div class="most-read-title"><a href="article.html?id=' + a.id + '">' + escHtml(a.title) + '</a>' +
+                '<div class="most-read-title"><a href="' + buildArticleUrl(a.id) + '">' + escHtml(a.title) + '</a>' +
                 '<div class="most-read-meta">' + formatDate(a.date) + '</div></div></li>';
         }
         list.innerHTML = html;

@@ -507,7 +507,18 @@
             'personal-finance', 'investing', 'markets', 'banking',
             'fintech', 'economy', 'money-management'
         ];
-        function detectCategory() {
+        function buildArticleUrl(id) {
+        var url = 'article.html?id=' + encodeURIComponent(id);
+        var subId = window.SUB_ID || '000';
+
+        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+            url += '&SUB_ID=' + encodeURIComponent(subId);
+        }
+
+        return url;
+    }
+
+    function detectCategory() {
             // 1) Query parameter takes priority (works on category.html?cat=xxx)
             var params = new URLSearchParams(window.location.search);
             var fromQuery = (params.get('cat') || '').trim().toLowerCase();
