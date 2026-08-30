@@ -28,6 +28,40 @@ var siteConfig = null;
 
     window.SUB_ID = subId;
 
+    // SUB_ID 持久化：首次 URL 传入后，整个站点会话持续使用同一个 SUB_ID
+    try {
+        if (params.get('SUB_ID')) {
+            sessionStorage.setItem('HELLOINSIGHTS_SUB_ID', subId);
+        } else {
+            var savedSubId = sessionStorage.getItem('HELLOINSIGHTS_SUB_ID');
+            if (savedSubId && /^[A-Za-z0-9_-]{1,32}$/.test(savedSubId)) {
+                subId = savedSubId;
+                window.SUB_ID = subId;
+            }
+        }
+    } catch (e) {}
+
+    // 自动给站内链接附加 SUB_ID，保证点击跳转后不丢失
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            var currentSubId = window.SUB_ID || '000';
+            if (currentSubId === '000') return;
+
+            document.querySelectorAll('a[href]').forEach(function(a) {
+                var href = a.getAttribute('href');
+                if (!href || href.indexOf('#') === 0) return;
+                if (/^(https?:|mailto:|tel:|javascript:)/i.test(href)) return;
+
+                try {
+                    var u = new URL(href, window.location.href);
+                    if (u.origin !== window.location.origin) return;
+                    u.searchParams.set('SUB_ID', currentSubId);
+                    a.setAttribute('href', u.pathname + u.search + u.hash);
+                } catch (e) {}
+            });
+        } catch (e) {}
+    });
+
     // 配置 GA4，但关闭自动 page_view
     gtag('config', GA_ID, {
         send_page_view: false
