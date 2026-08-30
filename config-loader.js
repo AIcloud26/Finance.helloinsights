@@ -100,8 +100,9 @@ function applyConfig(config) {
         }
     }
     
-    // Navigation - Skip rendering in subdomain mode (keep HTML initial nav)
-    if (!window.IS_SUBDOMAIN) {
+    // Navigation
+    // 子站存在 SITE_CONFIG 时，完全使用子站自己的导航，不允许主站 config.json 覆盖
+    if (!window.IS_SUBDOMAIN && typeof SITE_CONFIG === 'undefined') {
         var navUl = document.querySelector('ul.nav');
         if (navUl) {
             var first = navUl.querySelector('li:first-child a');
@@ -112,8 +113,9 @@ function applyConfig(config) {
         }
     }
     
-    // Footer - Skip rendering in subdomain mode (keep HTML initial footer)
-    if (!window.IS_SUBDOMAIN) {
+    // Footer
+    // 子站存在 SITE_CONFIG 时，完全使用子站自己的 Footer，不允许主站 config.json 覆盖
+    if (!window.IS_SUBDOMAIN && typeof SITE_CONFIG === 'undefined') {
         var sections = document.querySelectorAll('.footer-section');
         if (sections.length >= 2) {
             var h4 = sections[0].querySelector('h4'),
