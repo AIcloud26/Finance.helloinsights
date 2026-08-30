@@ -24,10 +24,21 @@ var siteConfig = null;
     // 2. 当前 URL 不带 SUB_ID → 强制使用 000
     // 3. 不从旧 sessionStorage 恢复，避免新访问继承旧 SUB_ID
     var params = new URLSearchParams(window.location.search);
-    var subId = params.get('SUB_ID') || '000';
+    var requestedSubId = params.get('SUB_ID') || '000';
+    var subId = '000';
 
-    if (!/^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
-        subId = '000';
+    // SUB_ID 必须存在于当前子站配置的白名单中
+    var validSubIds = [];
+    if (typeof SITE_CONFIG !== 'undefined' && Array.isArray(SITE_CONFIG.validSubIds)) {
+        validSubIds = SITE_CONFIG.validSubIds;
+    }
+
+    if (
+        requestedSubId !== '000' &&
+        /^[A-Za-z0-9_-]{1,32}$/.test(requestedSubId) &&
+        validSubIds.indexOf(requestedSubId) !== -1
+    ) {
+        subId = requestedSubId;
     }
 
     window.SUB_ID = subId;

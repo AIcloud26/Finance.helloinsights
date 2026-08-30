@@ -14,6 +14,8 @@ var SITE_CONFIG = {
     jsonFile: 'finance-index.json',
     fullArticleJson: 'articles-finance.json',
     gaId: 'G-Q4QHZKZT46',
+    // 仅允许后台/渠道配置过的 SUB_ID，手动输入未知 ID 无效
+    validSubIds: ['001', '002', '003'],
     // SEO
     titleSuffix: 'Finance Insights on Money, Investing, Markets & Banking | HelloInsights',
     metaDesc: 'Actionable finance insights on personal finance, investing, markets, banking, fintech, the economy and money management — for readers who want clarity, not noise.',
