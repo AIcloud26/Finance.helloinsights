@@ -19,6 +19,10 @@ var siteConfig = null;
     gtag('js', new Date());
 
     // SUB_ID — 流量测试标识
+    // 规则：
+    // 1. 当前 URL 明确带 SUB_ID → 使用该 SUB_ID
+    // 2. 当前 URL 不带 SUB_ID → 强制使用 000
+    // 3. 不从旧 sessionStorage 恢复，避免新访问继承旧 SUB_ID
     var params = new URLSearchParams(window.location.search);
     var subId = params.get('SUB_ID') || '000';
 
@@ -28,20 +32,17 @@ var siteConfig = null;
 
     window.SUB_ID = subId;
 
-    // SUB_ID 持久化：首次 URL 传入后，整个站点会话持续使用同一个 SUB_ID
+    // 当前页面进入时如果明确带 SUB_ID，则保存本次会话标识
     try {
         if (params.get('SUB_ID')) {
             sessionStorage.setItem('HELLOINSIGHTS_SUB_ID', subId);
         } else {
-            var savedSubId = sessionStorage.getItem('HELLOINSIGHTS_SUB_ID');
-            if (savedSubId && /^[A-Za-z0-9_-]{1,32}$/.test(savedSubId)) {
-                subId = savedSubId;
-                window.SUB_ID = subId;
-            }
+            sessionStorage.removeItem('HELLOINSIGHTS_SUB_ID');
         }
     } catch (e) {}
 
-    // 自动给站内链接附加 SUB_ID，保证点击跳转后不丢失
+    // 自动给所有站内链接附加当前 SUB_ID
+    // 只有当前页面确实存在有效 SUB_ID 时才添加
     document.addEventListener('DOMContentLoaded', function() {
         try {
             var currentSubId = window.SUB_ID || '000';
@@ -55,6 +56,7 @@ var siteConfig = null;
                 try {
                     var u = new URL(href, window.location.href);
                     if (u.origin !== window.location.origin) return;
+
                     u.searchParams.set('SUB_ID', currentSubId);
                     a.setAttribute('href', u.pathname + u.search + u.hash);
                 } catch (e) {}

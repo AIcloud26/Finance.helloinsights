@@ -359,6 +359,20 @@
     var currentArticle = null;
     var currentSubcat = '';
 
+    // 统一文章 URL
+    // 当前页面有 SUB_ID 才继承；000 不写入 URL
+    function buildArticleUrl(id) {
+        var url = 'article.html?id=' + encodeURIComponent(id);
+        var subId = window.SUB_ID || '000';
+
+        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+            url += '&SUB_ID=' + encodeURIComponent(subId);
+        }
+
+        return url;
+    }
+
+
 
     function getImgUrl(url, w, h) {
         if (!url) return CFG.fallbackImage || '';
@@ -564,7 +578,7 @@
         for (var i = 0; i < related.length; i++) {
             var a = related[i];
             var img = getImgUrl(a.image || CFG.fallbackImage, 480, 270);
-            html += '<a class="related-card" href="article.html?id=' + a.id + '">' +
+            html += '<a class="related-card" href="' + buildArticleUrl(a.id) + '">' +
                 '<img class="related-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
                 '<div class="related-card-body">' +
                 '<h3 class="related-card-title">' + escHtml(a.title) + '</h3>' +
