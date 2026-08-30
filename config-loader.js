@@ -43,7 +43,16 @@ var siteConfig = null;
 
     window.SUB_ID = subId;
 
-    // 当前页面进入时如果明确带 SUB_ID，则保存本次会话标识
+    // 非法/未配置 SUB_ID：立即从当前 URL 清除，防止伪造 ID 继续传播
+    if (requestedSubId !== '000' && subId === '000') {
+        try {
+            var cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('SUB_ID');
+            window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+        } catch (e) {}
+    }
+
+    // 当前页面进入时如果明确带 SUB_ID 且有效，则保存本次会话标识
     try {
         if (params.get('SUB_ID')) {
             sessionStorage.setItem('HELLOINSIGHTS_SUB_ID', subId);
