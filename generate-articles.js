@@ -526,6 +526,14 @@ async function main() {
     generator: CONFIG.useAI ? 'AI (OpenAI)' : 'Template'
   };
 
+  // No new articles: keep all generated files unchanged.
+  if (newArticles.length === 0) {
+    console.log('No new articles. Output files unchanged.');
+    console.log('   Total: ' + finalArticles.length + ' articles');
+    console.log('   New: 0');
+    return;
+  }
+
   // 版本号（时间戳），用作类别文件的 cache key
   var version = Date.now();
   // ============================================
