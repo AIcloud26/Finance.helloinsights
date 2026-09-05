@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -598,6 +598,8 @@
                 filteredArticles.sort(function(a, b) {
                     return new Date(b.date) - new Date(a.date);
                 });
+                // Performance limit: category pages only process latest 100 articles
+                filteredArticles = filteredArticles.slice(0, 100);
                 renderExploreTopics();
 
                 if (filteredArticles.length === 0) {
@@ -749,3 +751,4 @@
     </script>
 </body>
 </html>
+

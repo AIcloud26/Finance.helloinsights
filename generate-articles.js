@@ -13,12 +13,12 @@ const https = require('https');
 // 配置
 // ============================================
 const CONFIG = {
-  articlesPerRun: 2,
-  articlesPerCategoryPerWeek: 3,
-  articlesPerCategoryPerDay: 1,
-  useAI: false,
+  articlesPerRun: 5,
+  articlesPerCategoryPerWeek: 10,
+  articlesPerCategoryPerDay: 3,
+  useAI: true,
   openaiApiKey: process.env.OPENAI_API_KEY,
-  openaiModel: 'gpt-3.5-turbo',
+  openaiModel: 'gpt-4o-mini',
   maxArticles: Infinity
 };
 
@@ -136,136 +136,352 @@ const IMAGE_IDS = {
 // ============================================
 // 标题模板
 // ============================================
-const TITLE_TEMPLATES = {
-  'technology': [
-    'The Future of {topic}: Trends to Watch',
-    '{topic}: What Experts Are Saying',
-    'How {topic} Is Reshaping Industries',
-    'Breaking Down {topic}: A Comprehensive Guide',
-    '{topic}: The Next Big Thing in Tech',
-    'Understanding {topic}: Key Insights',
-    '{topic} Innovation: What You Need to Know',
-    'The Rise of {topic}: Analysis and Predictions',
-    'Why {topic} Matters More Than Ever',
-    '{topic}: Challenges and Opportunities Ahead'
-  ],
-  'finance': [
-    '{topic}: What Investors Need to Know',
-    'Market Watch: {topic} Trends to Watch',
-    'The Role of {topic} in Modern Finance',
-    'How {topic} Is Changing the Financial Landscape',
-    '{topic}: A Strategic Guide for 2026',
-    'Smart Money: Understanding {topic}',
-    'Wealth Building: The Role of {topic}',
-    '{topic}: Risks and Rewards Explained',
-    'The Impact of {topic} on Global Markets',
-    '{topic}: Expert Analysis and Forecast'
-  ],
-  'ai-tools': [
-    'Top {topic} Tools You Should Try',
-    '{topic}: Revolutionizing the Way We Work',
-    'The Best {topic} Platforms Reviewed',
-    'How {topic} Is Transforming Productivity',
-    '{topic}: A Complete Buyer\'s Guide',
-    'Comparing the Leading {topic} Solutions',
-    '{topic}: From Hype to Practical Application',
-    'Why {topic} Is a Game-Changer for Business',
-    '{topic}: Features, Pricing, and Alternatives',
-    'The Rise of {topic}: What You Need to Know'
-  ],
-  'health-lifestyle': [
-    '{topic}: Science-Backed Benefits',
-    'How {topic} Can Improve Your Life',
-    'The Ultimate Guide to {topic}',
-    '{topic}: Tips from Health Experts',
-    'Why {topic} Should Be Part of Your Routine',
-    '{topic}: Myths vs. Reality',
-    'The Connection Between {topic} and Wellness',
-    '{topic}: What the Research Shows',
-    'Simple Ways to Incorporate {topic} Daily',
-    '{topic}: A Modern Approach to Health'
-  ]
-};
-
-// ============================================
-// 摘要模板
-// ============================================
-const EXCERPT_TEMPLATES = [
-  'Everything you need to know about {topic} to stay ahead of the curve.',
-  'Expert analysis on the latest {topic} trends and their impact on everyday life.',
-  'Breaking down {topic}: insights, trends, and practical applications.',
-  'Discover how {topic} is revolutionizing the industry and what it means for you.',
-  'A deep dive into {topic}: what the data shows and why it matters.'
+const EDITORIAL_DIRECTIONS = [
+  "What changed and why it matters",
+  "Why markets reacted",
+  "What investors may be missing",
+  "A contrarian view",
+  "Risk and downside",
+  "Consumer impact",
+  "Policy impact",
+  "Company strategy",
+  "Long-term trend",
+  "What the data may be saying",
+  "What has changed versus what has not",
+  "What could happen next"
 ];
 
-// ============================================
-// 正文段落模板
-// ============================================
-const PARAGRAPH_TEMPLATES = {
-  'technology': [
-    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, regulatory changes, and evolving consumer expectations. Technology professionals and researchers are closely monitoring these developments as they reshape traditional approaches to software development and digital infrastructure. The convergence of cloud computing, artificial intelligence, and distributed systems has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep technical expertise and the ability to navigate an ever-changing competitive and regulatory environment.',
-    'Current market data reveals compelling trends in {topic} that warrant careful attention from both enterprise and startup organizations. Performance metrics across key indicators suggest a fundamental shift in how companies are evaluating technology investments and measuring return on innovation. Analyst reports from major research institutions highlight the growing importance of data-driven decision-making and quantitative analysis in navigating these markets. The integration of advanced analytics and machine learning is enabling more precise forecasting and resource optimization, giving early adopters a significant competitive advantage in identifying and capitalizing on emerging opportunities within {topic}.',
-    'For organizations and technology leaders, understanding {topic} is becoming increasingly essential for building resilient and scalable systems. The traditional boundaries between technology domains are blurring, creating both opportunities for enhanced capabilities and new sources of complexity that must be carefully managed. Technology advisors are recommending that organizations allocate strategic resources to {topic} initiatives, while maintaining appropriate risk controls and architectural flexibility. Educational resources and professional development in this area are expanding rapidly, making it more accessible for informed technology leaders to participate meaningfully in these evolving markets.',
-    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with consumer protection and systemic stability. Recent regulatory developments in major technology centers have established clearer frameworks for participation, reducing uncertainty and encouraging institutional involvement. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border technology deployment and collaboration. Industry associations and standards organizations are playing an increasingly active role in establishing best practices and ethical guidelines, contributing to the overall maturation and credibility of markets related to {topic}.',
-    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these markets more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the technology ecosystem, offering both challenges and opportunities for those prepared to navigate its complexities.'
-  ],
-  'finance': [
-    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, regulatory changes, and evolving investor expectations. Financial professionals and analysts are closely monitoring these developments as they reshape traditional approaches to wealth management and investment strategy. The convergence of technology and finance has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Market participants are increasingly recognizing that success in {topic} demands both deep domain expertise and the ability to navigate an ever-changing regulatory and economic environment.',
-    'Current market data reveals compelling trends in {topic} that warrant careful attention from both institutional and retail investors. Performance metrics across key indicators suggest a fundamental shift in how markets are pricing risk and opportunity in this segment. Analyst reports from major financial institutions highlight the growing importance of data-driven decision-making and quantitative analysis in navigating these markets. The integration of advanced analytics and artificial intelligence is enabling more precise forecasting and risk management, giving early adopters a significant competitive advantage in identifying and capitalizing on emerging opportunities within {topic}.',
-    'For individual investors and financial planners, understanding {topic} is becoming increasingly essential for building resilient and diversified portfolios. The traditional boundaries between asset classes are blurring, creating both opportunities for enhanced returns and new sources of risk that must be carefully managed. Financial advisors are recommending that clients allocate strategic portions of their portfolios to instruments and strategies related to {topic}, while maintaining appropriate risk controls and diversification. Educational resources and professional guidance in this area are expanding rapidly, making it more accessible for informed investors to participate meaningfully in these evolving markets.',
-    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with investor protection and systemic stability. Recent regulatory developments in major financial centers have established clearer frameworks for participation, reducing uncertainty and encouraging institutional involvement. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border investment and collaboration. Industry associations and self-regulatory organizations are playing an increasingly active role in establishing best practices and ethical standards, contributing to the overall maturation and credibility of markets related to {topic}.',
-    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these markets more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the financial system, offering both challenges and opportunities for those prepared to navigate its complexities.'
-  ],
-  'ai-tools': [
-    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting market dynamics, technological advances, and evolving user expectations. AI researchers and product developers are closely monitoring these developments as they reshape traditional approaches to software tools and digital productivity. The convergence of large language models, computer vision, and automation technologies has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep technical expertise and the ability to navigate an ever-changing competitive and user experience landscape.',
-    'Current market data reveals compelling trends in {topic} that warrant careful attention from both enterprise and individual users. Performance metrics across key indicators suggest a fundamental shift in how organizations are evaluating AI tool investments and measuring productivity gains. Analyst reports from major technology research institutions highlight the growing importance of data-driven decision-making and quantitative analysis in navigating these markets. The integration of advanced benchmarks and user experience research is enabling more precise tool selection and workflow optimization, giving early adopters a significant competitive advantage in identifying and capitalizing on emerging opportunities within {topic}.',
-    'For organizations and technology leaders, understanding {topic} is becoming increasingly essential for building efficient and innovative workflows. The traditional boundaries between software categories are blurring, creating both opportunities for enhanced capabilities and new sources of complexity that must be carefully managed. Technology advisors are recommending that organizations allocate strategic resources to {topic} adoption, while maintaining appropriate risk controls and change management processes. Educational resources and professional development in this area are expanding rapidly, making it more accessible for informed technology leaders to participate meaningfully in these evolving markets.',
-    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with data protection and ethical considerations. Recent regulatory developments in major technology centers have established clearer frameworks for AI tool deployment, reducing uncertainty and encouraging institutional involvement. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border technology deployment and collaboration. Industry associations and standards organizations are playing an increasingly active role in establishing best practices and ethical guidelines, contributing to the overall maturation and credibility of markets related to {topic}.',
-    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new participants and perspectives to what was previously dominated by developed market institutions. Technological innovation continues to lower barriers to entry and improve transparency, making these tools more efficient and accessible. As the global economy continues to evolve, {topic} is likely to become an increasingly important component of the technology ecosystem, offering both challenges and opportunities for those prepared to navigate its complexities.'
-  ],
-  'health-lifestyle': [
-    'The landscape of {topic} has undergone significant transformation in recent years, driven by shifting research findings, public health priorities, and evolving consumer expectations. Health professionals and researchers are closely monitoring these developments as they reshape traditional approaches to wellness and lifestyle management. The convergence of nutritional science, behavioral psychology, and digital health technologies has created new opportunities and challenges that require sophisticated understanding and adaptive strategies. Industry participants are increasingly recognizing that success in {topic} demands both deep domain expertise and the ability to navigate an ever-changing research and regulatory environment.',
-    'Current research data reveals compelling trends in {topic} that warrant careful attention from both healthcare providers and consumers. Performance metrics across key health indicators suggest a fundamental shift in how medical professionals are evaluating lifestyle interventions and preventive strategies. Research reports from major health institutions highlight the growing importance of evidence-based decision-making and quantitative analysis in navigating these areas. The integration of advanced biometrics and personalized health analytics is enabling more precise recommendations and outcome tracking, giving informed individuals a significant advantage in identifying and capitalizing on emerging opportunities within {topic}.',
-    'For individuals and health practitioners, understanding {topic} is becoming increasingly essential for achieving optimal wellness outcomes. The traditional boundaries between medical disciplines are blurring, creating both opportunities for enhanced health outcomes and new sources of complexity that must be carefully managed. Health advisors are recommending that individuals incorporate evidence-based {topic} practices into their daily routines, while maintaining appropriate medical oversight and personalized approaches. Educational resources and professional guidance in this area are expanding rapidly, making it more accessible for informed individuals to participate meaningfully in these evolving wellness practices.',
-    'The regulatory environment surrounding {topic} continues to evolve, with policymakers balancing the need for innovation with consumer protection and public health safety. Recent regulatory developments in major health markets have established clearer frameworks for health product and service evaluation, reducing uncertainty and encouraging evidence-based innovation. Compliance requirements are becoming more standardized across jurisdictions, facilitating cross-border health product distribution and collaboration. Industry associations and professional organizations are playing an increasingly active role in establishing best practices and quality standards, contributing to the overall maturation and credibility of markets related to {topic}.',
-    'The future outlook for {topic} remains broadly positive, with most experts projecting sustained growth in research investment and increasing mainstream adoption over the medium to long term. Emerging markets are beginning to play a more significant role, bringing new perspectives and traditional wellness practices to what was previously dominated by Western medical approaches. Scientific innovation continues to lower barriers to entry and improve understanding, making evidence-based wellness more efficient and accessible. As global health challenges continue to evolve, {topic} is likely to become an increasingly important component of comprehensive health strategies, offering both challenges and opportunities for those prepared to navigate its complexities.'
-  ]
+const ARTICLE_STRUCTURES = [
+  "news_to_context",
+  "market_move",
+  "contrarian",
+  "data_led",
+  "investor_focus",
+  "policy_to_market",
+  "company_to_sector",
+  "consumer_to_economy",
+  "risk_first",
+  "long_term_shift",
+  "two_sided_debate",
+  "what_changed_what_has_not"
+];
+
+const OPENING_STYLES = [
+  "Start with the most interesting development.",
+  "Open with a concrete tension or contradiction.",
+  "Start with a short observation that challenges a common assumption.",
+  "Begin with the practical question readers are likely asking.",
+  "Open with the market or business implication before explaining the background.",
+  "Start directly with what changed."
+];
+
+const CLOSING_STYLES = [
+  "End with what readers should watch next.",
+  "End with an unresolved question.",
+  "End by explaining what could prove the current view wrong.",
+  "End with the practical implication for investors or businesses.",
+  "End with a balanced assessment rather than a prediction.",
+  "End by returning to the tension introduced at the beginning."
+];
+
+const TONE_STYLES = [
+  "clear and analytical",
+  "confident but measured",
+  "conversational and informed",
+  "skeptical where the evidence warrants it",
+  "practical and reader-focused",
+  "curious and analytical"
+];
+
+const DEFAULT_EDITORIAL_INPUT = {
+  topic: "",
+  direction: "",
+  humanView: "",
+  keyPoints: [],
+  sourceNotes: []
 };
 
-// ============================================
-// 原创观点库
-// ============================================
-const ORIGINAL_INSIGHTS = {
-  'technology': [
-    '<p><strong>Our Analysis:</strong> According to a recent study by the Global Technology Institute, companies investing in {topic} are seeing an average ROI of 340% within the first 18 months. What surprised researchers was not just the financial returns, but the unexpected secondary benefits: improved employee satisfaction (up 27%), reduced operational downtime (down 43%), and faster time-to-market for new products. These findings challenge the conventional wisdom that technology investments require years to show meaningful results.</p>',
-    '<p><strong>Industry Insight:</strong> Dr. Sarah Chen, a leading researcher at MIT\'s Technology Lab, recently published findings suggesting that {topic} adoption follows a pattern similar to cloud computing\'s early days. "We\'re seeing the same inflection point," she noted in her paper. "Organizations that commit now will have a 5-7 year advantage over late adopters." Her research, based on data from 2,400 companies across 38 countries, indicates that early movers are capturing market share at twice the rate of their competitors.</p>',
-    '<p><strong>Real-World Impact:</strong> Consider the case of TechFlow Solutions, a mid-sized software company that implemented {topic} across their operations last year. Within six months, they reduced their development cycle from 14 weeks to just 4 weeks, while simultaneously improving code quality by 62%. "It wasn\'t just about efficiency," explained CEO Marcus Rodriguez. "We could finally compete with companies ten times our size. The playing field has fundamentally changed." Their success story is being replicated across industries, from healthcare startups to manufacturing giants.</p>',
-    '<p><strong>Future Projection:</strong> Based on current adoption curves and investment patterns, industry analysts at Gartner predict that by 2028, 78% of Fortune 500 companies will have fully integrated {topic} into their core operations. The remaining 22% will either be acquired or forced to pivot their business models entirely. This isn\'t speculation—it\'s based on the same metrics that predicted the smartphone revolution\'s trajectory five years before it happened. The window for hesitation is closing rapidly.</p>',
-    '<p><strong>Expert Perspective:</strong> "What we\'re witnessing with {topic} is not incremental improvement—it\'s a fundamental restructuring of how value is created and captured," argues James Liu, former CTO of a major tech conglomerate and now advisor to multiple startups. His recent white paper, downloaded over 50,000 times, makes a compelling case: organizations treating this as just another technology upgrade are missing the bigger picture. The companies winning aren\'t just adopting tools; they\'re reimagining entire business processes from the ground up.</p>'
-  ],
-  'finance': [
-    '<p><strong>Market Intelligence:</strong> A comprehensive analysis by Bloomberg Intelligence reveals that portfolios incorporating {topic} strategies have outperformed traditional benchmarks by an average of 2.3% annually over the past five years. More importantly, these portfolios showed 31% lower volatility during market downturns. "This isn\'t just about returns—it\'s about risk-adjusted performance," noted senior analyst Rachel Thompson. The data suggests that {topic} is moving from niche strategy to essential component of modern portfolio management.</p>',
-    '<p><strong>Investor Behavior:</strong> Recent surveys by the CFA Institute show a dramatic shift in how institutional investors approach {topic}. In 2023, only 23% of pension funds had meaningful exposure; today, that figure stands at 67%. The shift isn\'t gradual—it\'s accelerating. "We\'re seeing mandate changes at the fastest pace I\'ve witnessed in 25 years," commented portfolio manager David Chen. The implications for retail investors are significant: those who don\'t adapt their strategies risk being left behind as market dynamics evolve.</p>',
-    '<p><strong>Regulatory Development:</strong> The SEC\'s recent guidance on {topic} has removed a major source of uncertainty that had kept many institutional investors on the sidelines. According to legal experts at Clifford Chance, the new framework provides "the clearest path forward we\'ve seen in a decade." This regulatory clarity is expected to unleash an additional $2.3 trillion in institutional capital over the next 36 months, fundamentally altering the competitive landscape and creating both opportunities and challenges for existing market participants.</p>',
-    '<p><strong>Case Study:</strong> The Wellington Family Office, managing $4.2 billion in assets, made headlines last quarter when they disclosed their {topic} allocation strategy. Their approach—combining traditional value investing principles with modern {topic} methodologies—generated returns of 18.7% while maintaining a Sharpe ratio of 1.4. "The key was finding the intersection between proven investment wisdom and emerging opportunities," explained chief investment officer Maria Santos. Their methodology is now being studied at Harvard Business School as a model for institutional adoption.</p>',
-    '<p><strong>Economic Impact:</strong> Research from the Peterson Institute for International Economics suggests that {topic} could add 1.2% to global GDP growth over the next decade. The mechanism isn\'t just capital allocation—it\'s about improving the efficiency of resource distribution across economies. Developing nations, in particular, stand to benefit disproportionately, potentially narrowing the wealth gap between developed and emerging markets. These findings have caught the attention of the World Bank and IMF, both of which are incorporating {topic} principles into their development strategies.</p>'
-  ],
-  'ai-tools': [
-    '<p><strong>Productivity Data:</strong> A Stanford University study tracking 10,000 knowledge workers found that those using {topic} tools completed complex tasks 47% faster while maintaining 94% accuracy—compared to 89% without AI assistance. The productivity gains were most pronounced in research, analysis, and creative work. "We expected improvement, but not at this scale," admitted study lead Dr. Jennifer Walsh. The implications for workforce planning are substantial: companies not providing AI tools may find themselves at a severe competitive disadvantage in attracting and retaining talent.</p>',
-    '<p><strong>Adoption Trends:</strong> Analysis of software procurement data from 5,000 mid-market companies reveals that {topic} tool adoption has increased 340% year-over-year. What\'s striking is the shift in buyer personas: 62% of purchases are now initiated by department heads rather than IT, indicating mainstream acceptance. "This isn\'t an IT experiment anymore—it\'s a business necessity," observes industry analyst Mark Stevens. The average company now uses 4.7 different AI tools across departments, up from 1.2 just eighteen months ago.</p>',
-    '<p><strong>Quality Benchmark:</strong> Independent testing by Consumer Reports evaluated 23 leading {topic} platforms across 47 performance metrics. The results were illuminating: the top three platforms delivered results indistinguishable from human experts in 73% of use cases, while costing 80% less and operating 100x faster. "The quality gap that existed two years ago has essentially closed," noted senior tester Michael Torres. For businesses still skeptical about AI reliability, these benchmarks provide compelling evidence that the technology has reached production-ready maturity.</p>',
-    '<p><strong>User Experience:</strong> Our own testing of {topic} tools over a 90-day period revealed unexpected insights about user adoption patterns. Contrary to expectations, the biggest barrier wasn\'t technical complexity—it was change management. Teams that invested in proper training and workflow integration saw adoption rates of 89%, while those who simply deployed tools without support struggled to reach 30%. The lesson is clear: success with AI tools requires human-centered design thinking, not just technical implementation.</p>',
-    '<p><strong>Cost Analysis:</strong> A detailed total cost of ownership analysis by McKinsey compared traditional workflows with {topic}-enhanced alternatives across five industries. The findings: average cost reduction of 34% in the first year, rising to 52% by year three. But the more significant finding was qualitative—employees reported 41% higher job satisfaction when freed from repetitive tasks. "The ROI calculation changes dramatically when you factor in retention and engagement," noted McKinsey partner Lisa Park. Companies are beginning to view AI tools not as cost centers, but as strategic investments in human capital.</p>'
-  ],
-  'health-lifestyle': [
-    '<p><strong>Clinical Evidence:</strong> A landmark study published in the New England Journal of Medicine tracked 12,000 participants over five years, examining the long-term effects of {topic} practices. The results were compelling: those consistently engaging in evidence-based {topic} routines showed 38% lower rates of chronic disease, 29% better cognitive function in later years, and 2.3 years longer life expectancy on average. "These aren\'t marginal improvements—they\'re transformative," stated lead researcher Dr. Amanda Foster. The study has prompted several national health organizations to update their guidelines.</p>',
-    '<p><strong>Lifestyle Integration:</strong> Survey data from 8,500 adults across 15 countries reveals that 67% of those who successfully integrated {topic} into their daily routines did so through what researchers call "habit stacking"—linking new practices to existing habits. For example, combining morning meditation with coffee preparation, or pairing exercise with podcast listening. "The brain doesn\'t create new neural pathways easily," explained behavioral scientist Dr. Robert Kim. "By anchoring new habits to established ones, we reduce the cognitive load and increase success rates from 23% to 78%."</p>',
-    '<p><strong>Workplace Wellness:</strong> Corporations implementing comprehensive {topic} programs are seeing remarkable returns. A study of 200 companies by the WHO found that for every $1 invested in evidence-based wellness initiatives, companies received $3.80 in reduced healthcare costs and $2.70 in productivity gains. But the most successful programs weren\'t just offering gym memberships—they were creating cultural shifts. "The difference between programs that work and those that don\'t comes down to leadership participation," noted wellness consultant Sarah Martinez. When executives visibly engage in {topic} practices, participation rates triple.</p>',
-    '<p><strong>Mental Health Connection:</strong> Recent research from Johns Hopkins University has established a strong correlation between consistent {topic} practices and mental health outcomes. The study, involving 6,000 participants, found that those maintaining regular wellness routines showed 44% lower rates of anxiety and 37% lower rates of depression. The mechanism appears to involve both physiological changes (reduced cortisol levels, improved sleep architecture) and psychological factors (increased self-efficacy, better stress coping). "We\'re seeing {topic} prescribed alongside traditional therapy with excellent results," commented psychiatrist Dr. Michael Chang.</p>',
-    '<p><strong>Technology Integration:</strong> The convergence of wearable technology and {topic} is creating unprecedented opportunities for personalized health optimization. Data from 50,000 users of leading health platforms shows that those combining biometric tracking with evidence-based wellness practices achieved their goals 2.8x faster than those using either approach alone. "The feedback loop is powerful," explained digital health pioneer Dr. Lisa Wang. "When people can see immediate data on how their practices affect their physiology, adherence increases dramatically." This personalized approach is democratizing access to what was previously available only to elite athletes and executives.</p>'
-  ]
-};
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
+function pickArticleDNA() {
+  return {
+    targetWords: randomInt(680, 950),
+    paragraphCount: randomInt(8, 14),
+    h2Count: randomInt(0, 3),
+    useList: Math.random() < 0.35,
+    opening: randomItem(OPENING_STYLES),
+    structure: randomItem(ARTICLE_STRUCTURES),
+    tone: randomItem(TONE_STYLES),
+    closing: randomItem(CLOSING_STYLES)
+  };
+}
+
+function normalizeEditorialInput(input, category) {
+  var catInfo = CATEGORIES.find(function(c) { return c.id === category; });
+  input = input || {};
+
+  return {
+    topic: String(input.topic || randomItem(catInfo.topics)),
+    direction: String(input.direction || randomItem(EDITORIAL_DIRECTIONS)),
+    humanView: String(input.humanView || ""),
+    keyPoints: Array.isArray(input.keyPoints) ? input.keyPoints : [],
+    sourceNotes: Array.isArray(input.sourceNotes) ? input.sourceNotes : []
+  };
+}
+
+function stripCodeFence(text) {
+  return String(text || "")
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+}
+
+function sanitizeGeneratedHtml(html) {
+  return String(html || "")
+    .replace(/```html/gi, "")
+    .replace(/```/g, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .trim();
+}
+
+function countWords(text) {
+  return String(text || "")
+    .replace(/<[^>]+>/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .length;
+}
+
+function validateArticle(article) {
+  if (!article || typeof article !== "object") return false;
+  if (!article.title || !article.excerpt || !article.content) return false;
+
+  var words = countWords(article.content);
+
+  if (words < 600) return false;
+  if (article.title.length < 20 || article.title.length > 120) return false;
+  if (article.excerpt.length < 60) return false;
+
+  return true;
+}
+
+function buildEditorialPrompt(category, editorialInput, dna) {
+  var catInfo = CATEGORIES.find(function(c) { return c.id === category; });
+
+  var humanSection = editorialInput.humanView
+    ? "Human editorial view:\n" + editorialInput.humanView
+    : "No human opinion was supplied. Develop an independent analysis.";
+
+  var pointsSection = editorialInput.keyPoints.length
+    ? "Human focus points:\n- " + editorialInput.keyPoints.join("\n- ")
+    : "No fixed focus points. Decide which aspects deserve attention.";
+
+  var sourcesSection = editorialInput.sourceNotes.length
+    ? "Source notes supplied by the editor:\n- " + editorialInput.sourceNotes.join("\n- ")
+    : "No source notes were supplied. Do not invent sources or factual claims.";
+
+  return [
+    "Write an original English finance article for HelloInsights.",
+    "",
+    "CATEGORY: " + catInfo.name,
+    "TOPIC: " + editorialInput.topic,
+    "EDITORIAL DIRECTION: " + editorialInput.direction,
+    "",
+    humanSection,
+    "",
+    pointsSection,
+    "",
+    sourcesSection,
+    "",
+    "You are not required to agree with the human view.",
+    "First reason independently about the topic.",
+    "Identify what supports the human view, what challenges it, what may be missing, and where uncertainty remains.",
+    "Then synthesize the strongest parts of both perspectives into one coherent editorial article.",
+    "",
+    "ARTICLE DNA:",
+    "Target length: approximately " + dna.targetWords + " words, never below 600 words.",
+    "Approximate paragraphs: " + dna.paragraphCount,
+    "H2 headings: " + dna.h2Count,
+    "Use a list: " + (dna.useList ? "yes, only if genuinely useful" : "no"),
+    "Opening approach: " + dna.opening,
+    "Structure: " + dna.structure,
+    "Tone: " + dna.tone,
+    "Ending: " + dna.closing,
+    "",
+    "STYLE RULES:",
+    "- Write like an experienced financial journalist or analyst, not an academic textbook.",
+    "- Vary sentence length and paragraph length naturally.",
+    "- Do not force a standard introduction/body/conclusion structure.",
+    "- Do not use generic AI phrases such as 'in today's rapidly changing landscape', 'it is important to note', 'experts believe', 'in conclusion', or 'key takeaway'.",
+    "- Avoid repetitive transitions and formulaic section headings.",
+    "- Use concrete reasoning and explain why developments matter.",
+    "- Do not manufacture statistics, quotations, studies, companies, institutions, analyst comments, forecasts or case studies.",
+    "- If a specific fact is not supported by the supplied source notes, keep the wording general rather than inventing evidence.",
+    "- Do not pretend to have conducted research that was not supplied.",
+    "- The article should contain real analysis, trade-offs and uncertainty where appropriate.",
+    "",
+    "OUTPUT:",
+    "Return ONLY valid JSON.",
+    "The JSON must contain exactly these fields:",
+    '{"title":"...","excerpt":"...","content":"<p>...</p>"}',
+    "",
+    "The content must be valid HTML using only p, h2, ul, ol, li and strong tags."
+  ].join("\n");
+}
+
+function generateFallbackContent(category, topic, editorialInput) {
+  var direction = editorialInput.direction || "What changed and why it matters";
+  var humanView = editorialInput.humanView;
+
+  var paragraphs = [
+    "The interesting part of " + topic + " is not simply that it is attracting attention. The more useful question is why the issue matters now, and whether the reaction around it matches the underlying change.",
+    "That distinction matters because financial markets rarely move for one reason. Prices reflect expectations about growth, policy, liquidity, risk and investor positioning at the same time. A development that looks positive in isolation can therefore produce a very different result once those expectations are already reflected in valuations.",
+    "The editorial angle for this article is " + direction.toLowerCase() + ". That means the discussion should go beyond describing the headline. It should examine what changed, what may already be priced in, and which assumptions could prove too optimistic or too pessimistic.",
+    humanView
+      ? "The human editorial view adds another useful layer: " + humanView
+      : "There is no fixed human conclusion here, which leaves room to test several interpretations rather than forcing the story toward a predetermined answer.",
+    "One reason the subject deserves a closer look is that the immediate market reaction and the longer-term economic effect are not necessarily the same thing. Investors can respond quickly to new information, while businesses and consumers may take months or years to adjust their decisions.",
+    "There is also a risk in treating a broad trend as a single trade or investment signal. Different companies, sectors and households can experience the same economic change in very different ways. What helps one group can create pressure somewhere else, particularly when borrowing costs, demand or regulation are changing at the same time.",
+    "The other side of the argument deserves equal attention. A market can appear overly confident without being completely wrong. Expectations sometimes adjust before the underlying evidence becomes obvious, and a cautious reading of the available information does not automatically mean the consensus is incorrect.",
+    "For investors, the practical issue is therefore less about predicting one exact outcome and more about identifying which assumptions matter most. If growth changes, if policy stays tighter for longer, or if demand weakens, the valuation of the story can change quickly.",
+    "The same logic applies to businesses and consumers. Financial conditions influence spending, financing decisions and risk tolerance, while companies have to decide whether a change is temporary or structural before committing capital.",
+    "What happens next will depend on evidence rather than headlines. The most useful signals are likely to be the ones that test the assumptions behind the current narrative rather than simply confirming it.",
+    "That leaves a reasonable amount of uncertainty. And in finance, uncertainty is not necessarily a reason to ignore a story. It is often the reason to examine it more carefully."
+  ];
+
+  return paragraphs.map(function(p) { return "<p>" + p + "</p>"; }).join("\n");
+}
+
+function generateFromTemplate(category, editorialInput) {
+  editorialInput = normalizeEditorialInput(editorialInput, category);
+
+  var title = editorialInput.topic;
+  var direction = editorialInput.direction;
+
+  if (direction === "Why markets reacted") {
+    title = editorialInput.topic + ": Why Markets Are Paying Attention";
+  } else if (direction === "What investors may be missing") {
+    title = editorialInput.topic + ": What Investors May Be Missing";
+  } else if (direction === "Risk and downside") {
+    title = editorialInput.topic + ": The Risks Behind the Story";
+  } else if (direction === "Consumer impact") {
+    title = editorialInput.topic + ": What It Means for Consumers";
+  } else if (direction === "Policy impact") {
+    title = editorialInput.topic + ": The Policy Question";
+  } else {
+    title = editorialInput.topic + ": What Matters Now";
+  }
+
+  var content = generateFallbackContent(
+    category,
+    editorialInput.topic,
+    editorialInput
+  );
+
+  return {
+    title: title.substring(0, 120),
+    excerpt: ("A closer look at " + editorialInput.topic + " and the assumptions shaping the current debate.").substring(0, 200),
+    topic: editorialInput.topic,
+    content: content
+  };
+}
+
+async function generateWithAI(category, editorialInput) {
+  if (!CONFIG.openaiApiKey) return generateFromTemplate(category, editorialInput);
+
+  editorialInput = normalizeEditorialInput(editorialInput, category);
+
+  var dna = pickArticleDNA();
+  var prompt = buildEditorialPrompt(category, editorialInput, dna);
+
+  return new Promise(function(resolve) {
+    var data = JSON.stringify({
+      model: CONFIG.openaiModel || "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are an experienced financial editor. Think independently, challenge weak assumptions, synthesize human editorial input with your own analysis, and write natural contemporary English. Return only valid JSON."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.9,
+      max_tokens: 2600
+    });
+
+    var options = {
+      hostname: "api.openai.com",
+      path: "/v1/chat/completions",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + CONFIG.openaiApiKey
+      }
+    };
+
+    var req = https.request(options, function(res) {
+      var body = "";
+
+      res.on("data", function(chunk) {
+        body += chunk;
+      });
+
+      res.on("end", function() {
+        try {
+          if (res.statusCode < 200 || res.statusCode >= 300) {
+            throw new Error("OpenAI HTTP " + res.statusCode);
+          }
+
+          var resp = JSON.parse(body);
+
+          if (!resp.choices || !resp.choices[0] || !resp.choices[0].message) {
+            throw new Error("Invalid OpenAI response");
+          }
+
+          var raw = stripCodeFence(resp.choices[0].message.content);
+          var parsed = JSON.parse(raw);
+
+          parsed.title = String(parsed.title || "").substring(0, 120);
+          parsed.excerpt = String(parsed.excerpt || "").substring(0, 200);
+          parsed.content = sanitizeGeneratedHtml(parsed.content);
+
+          if (!validateArticle(parsed)) {
+            throw new Error("Generated article failed validation: " + countWords(parsed.content) + " words");
+          }
+
+          resolve({
+            title: parsed.title,
+            excerpt: parsed.excerpt,
+            topic: editorialInput.topic,
+            content: parsed.content
+          });
+        } catch (e) {
+          console.warn("   AI generation failed, using fallback: " + e.message);
+          resolve(generateFromTemplate(category, editorialInput));
+        }
+      });
+    });
+
+    req.on("error", function(err) {
+      console.warn("   AI request failed, using fallback: " + err.message);
+      resolve(generateFromTemplate(category, editorialInput));
+    });
+
+    req.setTimeout(45000, function() {
+      req.destroy();
+      console.warn("   AI request timed out, using fallback.");
+      resolve(generateFromTemplate(category, editorialInput));
+    });
+
+    req.write(data);
+    req.end();
+  });
+}
 // ============================================
 // Date Generation - 修复：新文章使用当前日期
 // 不再随机生成历史日期，而是使用当前日期
@@ -307,100 +523,21 @@ function getImageUrl(category, usedImages) {
 // ============================================
 // 内容生成
 // ============================================
-function generateArticleContent(category, topic) {
-  var paragraphs = [];
-  var count = randomInt(4, 5);
-  var indices = [];
-  while (indices.length < count) {
-    var idx = randomInt(0, 4);
-    if (indices.indexOf(idx) === -1) indices.push(idx);
-  }
-  indices.sort(function(a, b) { return a - b; });
-  for (var i = 0; i < indices.length; i++) {
-    var tpl = PARAGRAPH_TEMPLATES[category][indices[i]];
-    paragraphs.push('<p>' + tpl.replace(/\{topic\}/g, topic) + '</p>');
-  }
-  var insights = ORIGINAL_INSIGHTS[category] || ORIGINAL_INSIGHTS['technology'];
-  var insightCount = randomInt(1, 2);
-  var insightIndices = [];
-  while (insightIndices.length < insightCount) {
-    var idx = randomInt(0, insights.length - 1);
-    if (insightIndices.indexOf(idx) === -1) insightIndices.push(idx);
-  }
-  for (var j = 0; j < insightIndices.length; j++) {
-    var insightTpl = insights[insightIndices[j]];
-    var insertPos = randomInt(1, paragraphs.length - 1);
-    var insightHtml = '<p>' + insightTpl.replace(/\{topic\}/g, topic) + '</p>';
-    paragraphs.splice(insertPos, 0, insightHtml);
-  }
-  return paragraphs.join('\n');
-}
-
-function generateFromTemplate(category) {
-  var catInfo = CATEGORIES.find(function(c) { return c.id === category; });
-  var topic = randomChoice(catInfo.topics);
-  var titles = TITLE_TEMPLATES[category] || TITLE_TEMPLATES['technology'];
-  var title = randomChoice(titles).replace('{topic}', topic);
-  var excerpt = randomChoice(EXCERPT_TEMPLATES).replace('{topic}', topic.toLowerCase());
-  var content = generateArticleContent(category, topic);
-  return { title: title, excerpt: excerpt, topic: topic, content: content };
-}
-
 // ============================================
 // AI 生成
 // ============================================
-async function generateWithAI(category) {
-  if (!CONFIG.openaiApiKey) return generateFromTemplate(category);
-  var catInfo = CATEGORIES.find(function(c) { return c.id === category; });
-  var topic = randomChoice(catInfo.topics);
-  var prompt = 'Generate a blog article (500-800 words) about ' + topic + ' in the ' + catInfo.name + ' category.\n\nReturn ONLY valid JSON:\n{"title": "...", "excerpt": "...", "content": "<p>...</p><p>...</p>"}';
-  return new Promise(function(resolve) {
-    var data = JSON.stringify({
-      model: CONFIG.openaiModel,
-      messages: [
-        { role: 'system', content: 'You are a professional writer. Return ONLY valid JSON, no markdown.' },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.8,
-      max_tokens: 1200
-    });
-    var options = {
-      hostname: 'api.openai.com',
-      path: '/v1/chat/completions',
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CONFIG.openaiApiKey }
-    };
-    var req = https.request(options, function(res) {
-      var body = '';
-      res.on('data', function(chunk) { body += chunk; });
-      res.on('end', function() {
-        try {
-          var resp = JSON.parse(body);
-          var content = resp.choices[0].message.content.trim().replace(/^```json\s*/i, '').replace(/\s*```$/i, '').replace(/^```/i, '').replace(/\s*```$/i, '');
-          var parsed = JSON.parse(content);
-          resolve({ title: parsed.title.substring(0, 100), excerpt: parsed.excerpt.substring(0, 200), topic: topic, content: parsed.content });
-        } catch(e) { resolve(generateFromTemplate(category)); }
-      });
-    });
-    req.on('error', function() { resolve(generateFromTemplate(category)); });
-    req.setTimeout(30000, function() { req.destroy(); resolve(generateFromTemplate(category)); });
-    req.write(data);
-    req.end();
-  });
-}
-
 // ============================================
 // 生成文章
 // ============================================
-async function generateArticle(existingIds, usedImages, category) {
+async function generateArticle(existingIds, usedImages, category, editorialInput) {
   if (!category) category = randomChoice(CATEGORIES);
   var id;
   do { id = randomInt(100, 99999); } while (existingIds.indexOf(id) !== -1);
   var generated;
   if (CONFIG.useAI && CONFIG.openaiApiKey) {
-    generated = await generateWithAI(category.id);
+    generated = await generateWithAI(category.id, editorialInput);
   } else {
-    generated = generateFromTemplate(category.id);
+    generated = generateFromTemplate(category.id, editorialInput);
   }
   return {
     id: id,
@@ -416,6 +553,65 @@ async function generateArticle(existingIds, usedImages, category) {
 // ============================================
 // 主程序
 // ============================================
+/* ============================================
+   V19 Editorial Queue
+   ============================================ */
+function loadEditorialQueue() {
+  var queuePath = 'editorial-queue.json';
+
+  if (!fs.existsSync(queuePath)) {
+    return [];
+  }
+
+  try {
+    var raw = fs.readFileSync(queuePath, 'utf8').replace(/^\uFEFF/, '');
+    var queue = JSON.parse(raw);
+
+    if (!Array.isArray(queue)) {
+      console.warn('Warning: editorial-queue.json must contain an array.');
+      return [];
+    }
+
+    return queue.filter(function(item) {
+      return item && typeof item === 'object';
+    });
+  } catch (e) {
+    console.warn('Warning: unable to read editorial-queue.json: ' + e.message);
+    return [];
+  }
+}
+
+function saveEditorialQueue(queue) {
+  fs.writeFileSync(
+    'editorial-queue.json',
+    JSON.stringify(queue, null, 2) + '\n',
+    'utf8'
+  );
+}
+
+function findEditorialItem(queue, categoryId) {
+  for (var i = 0; i < queue.length; i++) {
+    var item = queue[i];
+
+    if (!item.category || item.category === categoryId) {
+      return {
+        index: i,
+        item: item
+      };
+    }
+  }
+
+  return null;
+}
+
+function describeEditorialInput(editorialInput) {
+  if (!editorialInput) return 'automatic topic';
+
+  return [
+    editorialInput.topic || 'no topic',
+    editorialInput.direction || 'no direction'
+  ].join(' | ');
+}
 async function main() {
   console.log('\n🚀 HelloInsights Article Generator');
   console.log('================================');
@@ -451,6 +647,8 @@ async function main() {
   existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
   console.log('🖼️  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
   var newArticles = [];
+  var editorialQueue = loadEditorialQueue();
+  console.log('✍️ Editorial queue: ' + editorialQueue.length + ' item(s)');
   var today = generateArticleDate();
 
   function getWeekStart(dateString) {
@@ -499,9 +697,64 @@ async function main() {
       return (weeklyCounts[a.id] || 0) - (weeklyCounts[b.id] || 0);
     });
 
-    var category = eligibleCategories[0];
-    var article = await generateArticle(existingIds, usedImages, category);
+    // V19: prioritize queued human editorial input when its category is eligible.
+    var selectedQueue = null;
+
+    for (var q = 0; q < editorialQueue.length; q++) {
+      var queueItem = editorialQueue[q];
+
+      if (queueItem.category) {
+        var queuedCategory = eligibleCategories.find(function(cat) {
+          return cat.id === queueItem.category;
+        });
+
+        if (queuedCategory) {
+          selectedQueue = {
+            index: q,
+            item: queueItem,
+            category: queuedCategory
+          };
+          break;
+        }
+      } else {
+        selectedQueue = {
+          index: q,
+          item: queueItem,
+          category: eligibleCategories[0]
+        };
+        break;
+      }
+    }
+
+    var category = selectedQueue
+      ? selectedQueue.category
+      : eligibleCategories[0];
+
+    var editorialInput = selectedQueue
+      ? selectedQueue.item
+      : null;
+
+    if (editorialInput) {
+      console.log('Editorial: ' + describeEditorialInput(editorialInput));
+    } else {
+      console.log('Editorial: automatic topic');
+    }
+
+    var article = await generateArticle(
+      existingIds,
+      usedImages,
+      category,
+      editorialInput
+    );
+
     newArticles.push(article);
+
+    // Consume the queue item only after article generation succeeds.
+    if (selectedQueue) {
+      editorialQueue.splice(selectedQueue.index, 1);
+      saveEditorialQueue(editorialQueue);
+      console.log('Editorial queue remaining: ' + editorialQueue.length);
+    }
     existingIds.push(article.id);
     weeklyCounts[category.id] = (weeklyCounts[category.id] || 0) + 1;
     dailyCounts[category.id] = (dailyCounts[category.id] || 0) + 1;
@@ -594,6 +847,17 @@ main().catch(function(error) {
   console.error('❌ Error:', error.message);
   process.exit(1);
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,24 @@
 {
   "articles": [
     {
+      "id": 66466,
+      "category": "finance",
+      "title": "US interest rates: What Investors May Be Missing",
+      "excerpt": "A closer look at US interest rates and the assumptions shaping the current debate.",
+      "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=450&fit=crop&fm=webp&q=80&t=1788623181161&r=lultae",
+      "date": "2026-09-05",
+      "content": "<p>The interesting part of US interest rates is not simply that it is attracting attention. The more useful question is why the issue matters now, and whether the reaction around it matches the underlying change.</p>\n<p>That distinction matters because financial markets rarely move for one reason. Prices reflect expectations about growth, policy, liquidity, risk and investor positioning at the same time. A development that looks positive in isolation can therefore produce a very different result once those expectations are already reflected in valuations.</p>\n<p>The editorial angle for this article is what investors may be missing. That means the discussion should go beyond describing the headline. It should examine what changed, what may already be priced in, and which assumptions could prove too optimistic or too pessimistic.</p>\n<p>The human editorial view adds another useful layer: Investors may be pricing rate cuts too aggressively.</p>\n<p>One reason the subject deserves a closer look is that the immediate market reaction and the longer-term economic effect are not necessarily the same thing. Investors can respond quickly to new information, while businesses and consumers may take months or years to adjust their decisions.</p>\n<p>There is also a risk in treating a broad trend as a single trade or investment signal. Different companies, sectors and households can experience the same economic change in very different ways. What helps one group can create pressure somewhere else, particularly when borrowing costs, demand or regulation are changing at the same time.</p>\n<p>The other side of the argument deserves equal attention. A market can appear overly confident without being completely wrong. Expectations sometimes adjust before the underlying evidence becomes obvious, and a cautious reading of the available information does not automatically mean the consensus is incorrect.</p>\n<p>For investors, the practical issue is therefore less about predicting one exact outcome and more about identifying which assumptions matter most. If growth changes, if policy stays tighter for longer, or if demand weakens, the valuation of the story can change quickly.</p>\n<p>The same logic applies to businesses and consumers. Financial conditions influence spending, financing decisions and risk tolerance, while companies have to decide whether a change is temporary or structural before committing capital.</p>\n<p>What happens next will depend on evidence rather than headlines. The most useful signals are likely to be the ones that test the assumptions behind the current narrative rather than simply confirming it.</p>\n<p>That leaves a reasonable amount of uncertainty. And in finance, uncertainty is not necessarily a reason to ignore a story. It is often the reason to examine it more carefully.</p>"
+    },
+    {
+      "id": 47228,
+      "category": "finance",
+      "title": "Fintech Innovation: The Policy Question",
+      "excerpt": "A closer look at Fintech Innovation and the assumptions shaping the current debate.",
+      "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=450&fit=crop&fm=webp&q=80&t=1788623181168&r=4yt6jf",
+      "date": "2026-09-05",
+      "content": "<p>The interesting part of Fintech Innovation is not simply that it is attracting attention. The more useful question is why the issue matters now, and whether the reaction around it matches the underlying change.</p>\n<p>That distinction matters because financial markets rarely move for one reason. Prices reflect expectations about growth, policy, liquidity, risk and investor positioning at the same time. A development that looks positive in isolation can therefore produce a very different result once those expectations are already reflected in valuations.</p>\n<p>The editorial angle for this article is policy impact. That means the discussion should go beyond describing the headline. It should examine what changed, what may already be priced in, and which assumptions could prove too optimistic or too pessimistic.</p>\n<p>There is no fixed human conclusion here, which leaves room to test several interpretations rather than forcing the story toward a predetermined answer.</p>\n<p>One reason the subject deserves a closer look is that the immediate market reaction and the longer-term economic effect are not necessarily the same thing. Investors can respond quickly to new information, while businesses and consumers may take months or years to adjust their decisions.</p>\n<p>There is also a risk in treating a broad trend as a single trade or investment signal. Different companies, sectors and households can experience the same economic change in very different ways. What helps one group can create pressure somewhere else, particularly when borrowing costs, demand or regulation are changing at the same time.</p>\n<p>The other side of the argument deserves equal attention. A market can appear overly confident without being completely wrong. Expectations sometimes adjust before the underlying evidence becomes obvious, and a cautious reading of the available information does not automatically mean the consensus is incorrect.</p>\n<p>For investors, the practical issue is therefore less about predicting one exact outcome and more about identifying which assumptions matter most. If growth changes, if policy stays tighter for longer, or if demand weakens, the valuation of the story can change quickly.</p>\n<p>The same logic applies to businesses and consumers. Financial conditions influence spending, financing decisions and risk tolerance, while companies have to decide whether a change is temporary or structural before committing capital.</p>\n<p>What happens next will depend on evidence rather than headlines. The most useful signals are likely to be the ones that test the assumptions behind the current narrative rather than simply confirming it.</p>\n<p>That leaves a reasonable amount of uncertainty. And in finance, uncertainty is not necessarily a reason to ignore a story. It is often the reason to examine it more carefully.</p>"
+    },
+    {
       "id": 48761,
       "category": "finance",
       "title": "The Role of Cryptocurrency and DeFi in Modern Finance",
@@ -479,9 +497,9 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2026-09-05T14:10:39.717Z",
-    "totalArticles": 370,
-    "newToday": 2,
-    "generator": "Template"
+    "lastUpdated": "2026-09-05T15:46:21.204Z",
+    "totalArticles": 375,
+    "newToday": 5,
+    "generator": "AI (OpenAI)"
   }
 }

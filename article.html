@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -355,7 +355,6 @@
     var CFG = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG : {};
     var SUBCATS = CFG.subcategories || [];
     var allIndexArticles = [];
-    var allFullArticles = [];
     var currentArticle = null;
     var currentSubcat = '';
 
@@ -436,24 +435,29 @@
 
         if (!articleId) { showError(); return; }
 
-        // Step 1: Load index for metadata + subcategory
+        // Step 1: Load lightweight index for metadata + subcategory
         fetch(CFG.jsonFile || 'finance-index.json', { cache: 'no-cache' })
-            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
+            })
             .then(function(data) {
                 allIndexArticles = data.articles || [];
                 var meta = allIndexArticles.find(function(a) { return a.id === articleId; });
                 if (!meta) throw new Error('Article not in index');
+
                 currentSubcat = meta.subcategory || '';
-                // Step 2: Load full articles for content
-                return fetch(CFG.fullArticleJson || 'articles-finance.json', { cache: 'no-cache' });
+
+                // Step 2: Load only this article's full content
+                return fetch('article-data/' + articleId + '.json', { cache: 'no-cache' });
             })
-            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-            .then(function(data) {
-                allFullArticles = data.articles || [];
-                var full = allFullArticles.find(function(a) { return a.id === articleId; });
-                if (!full) throw new Error('Article content not found');
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
+            })
+            .then(function(full) {
                 currentArticle = full;
-                // Find index meta for this article
+
                 var meta = allIndexArticles.find(function(a) { return a.id === articleId; });
                 renderArticle(full, meta);
                 renderRelated(meta);
@@ -462,25 +466,38 @@
             })
             .catch(function(e) {
                 console.error('Load article failed:', e);
-                // Fallback: try loading full articles directly
                 fallbackLoad(articleId);
             });
     }
 
     function fallbackLoad(articleId) {
-        fetch(CFG.fullArticleJson || 'articles-finance.json', { cache: 'no-cache' })
-            .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-            .then(function(data) {
-                var full = (data.articles || []).find(function(a) { return a.id === articleId; });
-                if (!full) { showError(); return; }
-                currentArticle = full;
-                var fakeMeta = { id: full.id, title: full.title, category: 'Finance', subcategory: full.subcategory || '', date: full.date, image: full.image, excerpt: full.excerpt, contentType: full.contentType };
-                renderArticle(full, fakeMeta);
-                updateSEO(full, fakeMeta);
+        fetch('article-data/' + articleId + '.json', { cache: 'no-cache' })
+            .then(function(r) {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
             })
-            .catch(function(e) { console.error('Fallback failed:', e); showError(); });
-    }
+            .then(function(full) {
+                currentArticle = full;
 
+                var meta = allIndexArticles.find(function(a) { return a.id === articleId; }) || {
+                    id: full.id,
+                    title: full.title,
+                    category: 'Finance',
+                    subcategory: full.subcategory || '',
+                    date: full.date,
+                    image: full.image,
+                    excerpt: full.excerpt,
+                    contentType: full.contentType
+                };
+
+                renderArticle(full, meta);
+                updateSEO(full, meta);
+            })
+            .catch(function(e) {
+                console.error('Fallback failed:', e);
+                showError();
+            });
+    }
     function renderArticle(article, meta) {
         var container = document.getElementById('articleDetail');
         var subcatId = meta ? (meta.subcategory || '') : '';
@@ -671,3 +688,5 @@
     </script>
 </body>
 </html>
+
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -517,7 +517,7 @@
             .then(function(data) {
                 allArticles = (data.articles || []).sort(function(a, b) {
                     return (b.date || '').localeCompare(a.date || '');
-                });
+                }).slice(0, 50);
                 renderAll();
             })
             .catch(function(e) {
@@ -805,3 +805,4 @@
     </script>
 </body>
 </html>
+
