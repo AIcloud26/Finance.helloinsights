@@ -1,3 +1,4 @@
+﻿var path = require('path');
 // ============================================
 // HelloInsights - 修复版 generate-articles.js
 // 修复内容：
@@ -13,10 +14,12 @@ const https = require('https');
 // ============================================
 const CONFIG = {
   articlesPerRun: 2,
+  articlesPerCategoryPerWeek: 3,
+  articlesPerCategoryPerDay: 1,
   useAI: false,
   openaiApiKey: process.env.OPENAI_API_KEY,
   openaiModel: 'gpt-3.5-turbo',
-  maxArticles: 350
+  maxArticles: Infinity
 };
 
 // ============================================
@@ -389,8 +392,8 @@ async function generateWithAI(category) {
 // ============================================
 // 生成文章
 // ============================================
-async function generateArticle(existingIds, usedImages) {
-  var category = randomChoice(CATEGORIES);
+async function generateArticle(existingIds, usedImages, category) {
+  if (!category) category = randomChoice(CATEGORIES);
   var id;
   do { id = randomInt(100, 99999); } while (existingIds.indexOf(id) !== -1);
   var generated;
@@ -420,34 +423,91 @@ async function main() {
   console.log('📊 Generating ' + CONFIG.articlesPerRun + ' new articles per run\n');
   var existingArticles = [];
   var existingIds = [];
-  try {
-    CATEGORIES.forEach(function(cat) {
-      var catFile = 'articles-' + cat.id + '.json';
-      if (fs.existsSync(catFile)) {
-        var data = fs.readFileSync(catFile, 'utf8');
-        var json = JSON.parse(data);
-        var arts = json.articles || [];
-        arts.forEach(function(a) {
-          existingArticles.push(a);
-          existingIds.push(a.id);
-        });
-      }
-    });
-    console.log('📁 Found ' + existingArticles.length + ' existing articles\n');
-  } catch(e) {
-    console.log('📝 No existing articles, starting fresh\n');
+
+  // V18 archive source: article-data is the permanent source of truth.
+  // Never rebuild the generator pool from truncated category files.
+  var archiveDir = 'article-data';
+  if (fs.existsSync(archiveDir)) {
+    fs.readdirSync(archiveDir)
+      .filter(function(name) { return /\.json$/i.test(name); })
+      .forEach(function(name) {
+        try {
+          var fullPath = path.join(archiveDir, name);
+          var article = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+          if (article && article.id) {
+            existingArticles.push(article);
+            existingIds.push(article.id);
+          }
+        } catch (e) {
+          console.warn('   Warning: unable to read archive file ' + name);
+        }
+      });
   }
+
+  console.log('📦 Found ' + existingArticles.length + ' archived articles\n');
   console.log('✨ Generating new articles...\n');
   // 图片去重：收集已有文章使用过的图片 URL
   var usedImages = {};
   existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
   console.log('🖼️  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
   var newArticles = [];
+  var today = generateArticleDate();
+
+  function getWeekStart(dateString) {
+    var d = new Date(dateString + 'T00:00:00Z');
+    var day = d.getUTCDay();
+    var diff = day === 0 ? -6 : 1 - day;
+    d.setUTCDate(d.getUTCDate() + diff);
+    return d.toISOString().split('T')[0];
+  }
+
+  var currentWeekStart = getWeekStart(today);
+  var weeklyCounts = {};
+  var dailyCounts = {};
+
+  CATEGORIES.forEach(function(cat) {
+    weeklyCounts[cat.id] = 0;
+    dailyCounts[cat.id] = 0;
+  });
+
+  existingArticles.forEach(function(a) {
+    if (!a.date || !a.category) return;
+    if (getWeekStart(a.date) === currentWeekStart) {
+      weeklyCounts[a.category] = (weeklyCounts[a.category] || 0) + 1;
+    }
+    if (a.date === today) {
+      dailyCounts[a.category] = (dailyCounts[a.category] || 0) + 1;
+    }
+  });
+
+  console.log('📅 Current week: ' + currentWeekStart + ' to Sunday');
+  console.log('📊 Weekly category quota: max ' + CONFIG.articlesPerCategoryPerWeek + ' / category');
+  console.log('📊 Daily category quota: max ' + CONFIG.articlesPerCategoryPerDay + ' / category');
+
   for (var i = 0; i < CONFIG.articlesPerRun; i++) {
-    var article = await generateArticle(existingIds, usedImages);
+    var eligibleCategories = CATEGORIES.filter(function(cat) {
+      return (weeklyCounts[cat.id] || 0) < CONFIG.articlesPerCategoryPerWeek &&
+             (dailyCounts[cat.id] || 0) < CONFIG.articlesPerCategoryPerDay;
+    });
+
+    if (eligibleCategories.length === 0) {
+      console.log('⏸️ All category quotas are currently reached; no more articles generated.');
+      break;
+    }
+
+    eligibleCategories.sort(function(a, b) {
+      return (weeklyCounts[a.id] || 0) - (weeklyCounts[b.id] || 0);
+    });
+
+    var category = eligibleCategories[0];
+    var article = await generateArticle(existingIds, usedImages, category);
     newArticles.push(article);
     existingIds.push(article.id);
+    weeklyCounts[category.id] = (weeklyCounts[category.id] || 0) + 1;
+    dailyCounts[category.id] = (dailyCounts[category.id] || 0) + 1;
+
     console.log('   ' + (i + 1) + '. [' + article.category + '] ' + article.title + ' (' + article.date + ')');
+    console.log('      Weekly quota: ' + weeklyCounts[category.id] + '/' + CONFIG.articlesPerCategoryPerWeek);
   }
   var allArticles = newArticles.concat(existingArticles);
 
@@ -457,7 +517,8 @@ async function main() {
     return b.date.localeCompare(a.date);
   });
 
-  var finalArticles = allArticles.slice(0, CONFIG.maxArticles);
+  // Archive mode: never delete old articles; keep the complete article pool.
+  var finalArticles = allArticles;
   var metadata = {
     lastUpdated: new Date().toISOString(),
     totalArticles: finalArticles.length,
@@ -480,6 +541,14 @@ async function main() {
   };
   fs.writeFileSync('articles-index.json', JSON.stringify(indexOutput, null, 2));
   console.log('\n✅ articles-index.json written (v=' + version + ', ' + finalArticles.length + ' articles)');
+  // V18 archive write: persist every article as an individual full JSON file.
+  // article-data is the permanent source of truth for future generator runs.
+  if (!fs.existsSync('article-data')) fs.mkdirSync('article-data', { recursive: true });
+  finalArticles.forEach(function(a) {
+    fs.writeFileSync(path.join('article-data', String(a.id) + '.json'), JSON.stringify(a, null, 2));
+  });
+  console.log('✅ article-data archive written (' + finalArticles.length + ' articles)');
+
   // ============================================
   // 2. 写入 4 个类别文件
   //    每个: { articles: [完整文章对象], metadata }
@@ -517,3 +586,9 @@ main().catch(function(error) {
   console.error('❌ Error:', error.message);
   process.exit(1);
 });
+
+
+
+
+
+
