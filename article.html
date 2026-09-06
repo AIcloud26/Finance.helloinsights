@@ -605,30 +605,76 @@ document.head.appendChild(script);
         }
     }
 
-    function renderRelated(meta) {
-        if (!meta || !meta.subcategory) return;
-        var related = allIndexArticles.filter(function(a) {
-            return a.subcategory === meta.subcategory && a.id !== meta.id;
-        }).slice(0, 3);
-        if (!related.length) return;
+function renderRelated(meta) {
+    if (!meta) return;
 
-        // Also try to get full article data for better info
-        var section = document.getElementById('relatedSection');
-        section.style.display = '';
-        var grid = document.getElementById('relatedGrid');
-        var html = '';
-        for (var i = 0; i < related.length; i++) {
-            var a = related[i];
-            var img = getImgUrl(a.image || CFG.fallbackImage, 480, 270);
-            html += '<a class="related-card" href="' + buildArticleUrl(a.id) + '">' +
-                '<img class="related-card-img" src="' + img + '" alt="' + escHtml(a.title) + '" width="480" height="270" loading="lazy" decoding="async" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
-                '<div class="related-card-body">' +
-                '<h3 class="related-card-title">' + escHtml(a.title) + '</h3>' +
-                '<div class="related-card-meta">' + formatDate(a.date) + '</div>' +
-                '</div></a>';
+    var related = allIndexArticles.filter(function(a) {
+
+        if (a.id === meta.id) return false;
+
+        // 优先同subcategory
+        if (meta.subcategory && a.subcategory === meta.subcategory) {
+            return true;
         }
-        grid.innerHTML = html;
+
+        // 其次同category
+        if (a.category && meta.category && a.category === meta.category) {
+            return true;
+        }
+
+        return false;
+
+    }).slice(0, 3);
+
+
+    if (!related.length) return;
+
+
+    var section = document.getElementById('relatedSection');
+    if (!section) return;
+
+    section.style.display = '';
+
+    var grid = document.getElementById('relatedGrid');
+    if (!grid) return;
+
+
+    var html = '';
+
+    for (var i = 0; i < related.length; i++) {
+
+        var a = related[i];
+
+        var img = getImgUrl(
+            a.image || CFG.fallbackImage,
+            480,
+            270
+        );
+
+
+        html +=
+        '<a class="related-card" href="' + buildArticleUrl(a.id) + '">' +
+
+        '<img class="related-card-img" src="' + img +
+        '" alt="' + escHtml(a.title) +
+        '" width="480" height="270" loading="lazy">' +
+
+        '<div class="related-card-body">' +
+
+        '<h3 class="related-card-title">' +
+        escHtml(a.title) +
+        '</h3>' +
+
+        '<div class="related-card-meta">' +
+        formatDate(a.date) +
+        '</div>' +
+
+        '</div></a>';
     }
+
+
+    grid.innerHTML = html;
+}
 
     function renderTopicsLinks() {
         var el = document.getElementById('topicsLinks');
