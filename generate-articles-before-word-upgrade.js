@@ -209,7 +209,7 @@ function pickArticleDNA() {
   return {
     targetWords: randomInt(680, 950),
     paragraphCount: randomInt(8, 14),
-    h2Count: randomInt(2, 4),
+    h2Count: randomInt(0, 3),
     useList: Math.random() < 0.35,
     opening: randomItem(OPENING_STYLES),
     structure: randomItem(ARTICLE_STRUCTURES),
@@ -302,9 +302,9 @@ function buildEditorialPrompt(category, editorialInput, dna) {
     "Then synthesize the strongest parts of both perspectives into one coherent editorial article.",
     "",
     "ARTICLE DNA:",
-    "Target length: approximately " + dna.targetWords + " words, minimum 700 words. Longer articles are acceptable when deeper analysis is useful.",
+    "Target length: approximately " + dna.targetWords + " words, never below 600 words.",
+    "Approximate paragraphs: " + dna.paragraphCount,
     "H2 headings: " + dna.h2Count,
-    "Every article must include meaningful H2 headings for SEO structure. Use H2 headings naturally to separate major sections.",
     "Use a list: " + (dna.useList ? "yes, only if genuinely useful" : "no"),
     "Opening approach: " + dna.opening,
     "Structure: " + dna.structure,
@@ -338,81 +338,52 @@ function generateFallbackContent(category, topic, editorialInput) {
 
   var blocks = [
 
-    "The conversation around " + topic + " has moved beyond short-term market reactions. While headlines often focus on immediate changes, the deeper impact usually depends on economic conditions, business decisions, investor expectations and how different groups respond over time.",
+    "The conversation around " + topic + " has become increasingly relevant as financial markets continue to adjust to changing economic conditions. While headlines often focus on immediate reactions, the deeper impact usually depends on business fundamentals, investor expectations and how different participants respond over time.",
 
-    "Understanding " + topic + " requires looking beyond the surface. Financial markets rarely move because of one single factor. Interest rates, consumer behavior, company strategies, regulation and global economic conditions can all influence how investors interpret the same development.",
 
-    "For investors, the main challenge is separating temporary market sentiment from longer-term structural changes. A trend may attract significant attention, but popularity alone does not determine whether it creates sustainable value.",
+    "Understanding " + topic + " requires looking beyond the surface. Market movements are often influenced by multiple factors rather than a single event. Economic conditions, company decisions, consumer behavior and policy changes can all shape the direction of future developments.",
 
-    "A closer examination shows that opportunities and risks often develop together. Companies and investors that benefit from changing conditions may also face new challenges, including competition, higher costs, uncertainty and changing expectations.",
 
-    "From a business perspective, decisions related to " + topic + " require balancing immediate performance with future positioning. Management teams must consider whether current changes represent a short-term adjustment or a deeper transformation.",
+    "For investors, the main challenge is identifying which assumptions behind the current market view are reliable and which ones may change. Strong interest in a financial trend does not automatically guarantee long-term success, and negative reactions do not always mean an opportunity has disappeared.",
 
-    "Consumers may experience the effects differently depending on their financial situation and personal priorities. Changes in markets and business models can influence spending decisions, saving behavior and expectations about future opportunities.",
 
-    "One important factor is timing. Financial markets often react quickly because investors continuously update their expectations. However, the real economic impact may take much longer to appear as companies and consumers gradually adjust.",
+    "A closer examination shows that opportunities and risks often exist together. Companies that benefit from changing conditions may also face new challenges, including higher costs, stronger competition or shifting customer expectations.",
 
-    "Another consideration is valuation and risk management. Investors who focus only on potential upside may underestimate possible downside factors. A balanced approach requires examining both the opportunity and the assumptions behind the current market view.",
 
-    "Different outcomes remain possible. A positive scenario could develop if businesses successfully adapt and demand remains strong. A more difficult environment could emerge if expectations become disconnected from actual results.",
+    "From a business perspective, decisions related to " + topic + " usually involve balancing short-term performance with long-term strategy. Management teams need to evaluate whether current changes represent temporary market conditions or a structural transformation that requires deeper adjustments.",
 
-    "The role of information is increasingly important. Investors have access to more data than ever before, but not all information provides meaningful insight. Understanding which signals matter is often more valuable than simply following market discussions.",
 
-    "The competitive environment also deserves attention. Companies operating in changing markets need to improve efficiency, respond to customer needs and make strategic decisions that support long-term growth.",
+    "Consumers may experience the impact differently depending on their financial situation and priorities. Changes in markets, technology, regulation or business models can influence spending decisions, savings behavior and expectations about the future.",
 
-    "Another key question is whether current developments create temporary excitement or represent a lasting shift. History shows that many financial trends experience periods of optimism followed by reassessment.",
 
-    "From an investment perspective, uncertainty does not necessarily mean avoiding opportunities. Instead, uncertainty highlights the importance of evaluating assumptions, considering multiple scenarios and maintaining realistic expectations.",
+    "One important factor is timing. Financial markets often react quickly because investors are constantly adjusting expectations. However, the real economic impact may appear much later as companies and consumers gradually change their behavior.",
 
-    "The broader economic environment will continue to influence how " + topic + " develops. Factors such as policy decisions, consumer confidence and market conditions may determine whether current expectations are eventually confirmed.",
+
+    "Another consideration is valuation and risk management. Investors who focus only on potential upside may overlook factors that could reduce future returns. A balanced analysis requires examining both the opportunities created by the trend and the possible limitations.",
+
+
+    "Different scenarios remain possible depending on how economic conditions develop. A positive outcome may occur if companies successfully adapt and demand continues to grow. A more challenging environment could appear if expectations become disconnected from real-world results.",
+
+
+    "The role of information is also important. Financial decisions are often influenced by available data, market sentiment and public discussion. However, useful analysis requires separating meaningful signals from short-term noise.",
+
+
+    "Looking ahead, the most important indicators will be evidence showing whether current expectations are being supported. Investors and businesses should continue monitoring changes in demand, profitability, regulation and broader market conditions.",
+
 
     humanView
-      ? "Editorial perspective: " + humanView + " This viewpoint adds another layer to the discussion by showing why different participants may interpret the same development in different ways."
-      : "Different market participants may reach different conclusions because they have different objectives, time horizons and levels of exposure.",
-
-    "Looking ahead, the most useful indicators will be real-world evidence showing whether current assumptions are supported. Investors and businesses should monitor changes in demand, profitability, competition and broader economic conditions.",
-
-    "The future path of " + topic + " will likely not follow a simple direction. Positive developments may create new opportunities, while unexpected challenges may change market expectations.",
-
-    "The most valuable analysis comes from understanding both sides of the discussion. Recognizing potential benefits while remaining aware of limitations can help create a more balanced view.",
-
-    "Market participants also need to consider how different economic cycles may influence the outcome. A strategy that works under one set of conditions may perform differently when interest rates, consumer demand or business confidence changes.",
+      ? "Editorial perspective: " + humanView + " This additional viewpoint highlights why different participants may interpret the same financial development in different ways."
+      : "The broader lesson is that financial trends rarely follow a simple path. Careful analysis, flexibility and attention to changing conditions remain important when evaluating future possibilities.",
 
 
-    "Another important issue is adaptation. Companies that recognize changing conditions early often have more time to adjust their operations, while those that delay decisions may face greater pressure later.",
-
-
-    "For long-term investors, the focus should remain on understanding business quality, competitive advantages and sustainable growth potential rather than reacting only to short-term market movements.",
-
-
-    "As the discussion around " + topic + " continues, the most reliable conclusions will come from observing actual results instead of relying only on expectations or market sentiment.",
-
-    "Ultimately, the importance of " + topic + " depends on how current developments translate into real economic outcomes. Careful observation, flexibility and thoughtful analysis remain essential as conditions continue to evolve.",
-
-   "Investors and businesses should continue reviewing new evidence as conditions change. The ability to adjust assumptions, recognize new risks and identify emerging opportunities will remain an important advantage in an uncertain market environment."
+    "The next stage of development will depend on how real-world results compare with current expectations. While uncertainty cannot be removed completely, understanding the underlying drivers can help investors, companies and consumers make more informed decisions."
 
   ];
 
 
-   var html = "";
-
-  blocks.forEach(function(text, index){
-
-    if (index === 3 || index === 7 || index === 10) {
-      html += "<h2>" + 
-        [
-          "Understanding the Bigger Picture",
-          "What Investors Should Consider",
-          "What Could Happen Next"
-        ][index === 3 ? 0 : index === 7 ? 1 : 2]
-        + "</h2>\n";
-    }
-
-    html += "<p>" + text + "</p>\n";
-
-  });
-
-  return html.trim();
+  return blocks.map(function(text){
+    return "<p>" + text + "</p>";
+  }).join("\n");
 
 }
 
@@ -422,18 +393,19 @@ function generateFromTemplate(category, editorialInput) {
   var title = editorialInput.topic;
   var direction = editorialInput.direction;
 
-var titlePatterns = [
-  editorialInput.topic + ": What Investors Need to Understand",
-  editorialInput.topic + ": The Shift Behind the Headlines",
-  editorialInput.topic + ": Why This Trend Is Becoming Important",
-  editorialInput.topic + ": The Forces Changing the Market",
-  editorialInput.topic + ": Opportunities, Risks and What Comes Next",
-  editorialInput.topic + ": The Bigger Picture Behind the Trend",
-  editorialInput.topic + ": What Could Shape the Next Stage",
-  editorialInput.topic + ": Why Businesses and Investors Are Paying Attention"
-];
-
-title = randomChoice(titlePatterns);
+  if (direction === "Why markets reacted") {
+    title = editorialInput.topic + ": Why Markets Are Paying Attention";
+  } else if (direction === "What investors may be missing") {
+    title = editorialInput.topic + ": What Investors May Be Missing";
+  } else if (direction === "Risk and downside") {
+    title = editorialInput.topic + ": The Risks Behind the Story";
+  } else if (direction === "Consumer impact") {
+    title = editorialInput.topic + ": What It Means for Consumers";
+  } else if (direction === "Policy impact") {
+    title = editorialInput.topic + ": The Policy Question";
+  } else {
+    title = editorialInput.topic + ": What Matters Now";
+  }
 
   var content = generateFallbackContent(
     category,
@@ -554,31 +526,6 @@ function generateArticleDate() {
 // ============================================
 // 辅助函数
 // ============================================
-function createSlug(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-function calculateReadingTime(content) {
-  var words = content
-    .replace(/<[^>]+>/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .length;
-
-  return Math.max(1, Math.ceil(words / 200)) + " min read";
-}
-
-function generateKeywords(category, title) {
-  return [
-    category,
-    title.split(' ').slice(0,3).join(' '),
-    "market analysis",
-    "business insights"
-  ];
-}
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -669,40 +616,14 @@ async function generateArticle(existingIds, usedImages, category, editorialInput
   } else {
     generated = generateFromTemplate(category.id, editorialInput);
   }
-var articleDate = generateArticleDate();
-var articleImage = getImageUrl(category.id, usedImages);
   return {
-  id: id,
-
-  category: category.id,
-
-  title: generated.title,
-
-  slug: createSlug(generated.title),
-
-  metaTitle: generated.title + " | HelloInsights",
-
-  metaDescription: generated.excerpt,
-
-  keywords: generateKeywords(category.id, generated.title),
-
-  excerpt: generated.excerpt,
-
-  content: cleanArticleContent(generated.content),
-
-  image: articleImage,
-
-  readingTime: calculateReadingTime(generated.content),
-
-  date: articleDate,
-
-schema: {
-  type: "Article",
-  headline: generated.title,
-  datePublished: articleDate,
-  publisher: "HelloInsights",
-  image: articleImage
-    }
+    id: id,
+    category: category.id,
+    title: generated.title,
+    excerpt: generated.excerpt,
+    content: cleanArticleContent(generated.content),
+    image: getImageUrl(category.id, usedImages),
+    date: generateArticleDate()  // 修复：使用当天日期
   };
 }
 
@@ -972,49 +893,27 @@ async function main() {
   //    文章已按日期降序排列
   // ============================================
   CATEGORIES.forEach(function(cat) {
-
-  var catArticles = finalArticles.filter(function(a) {
-    return a.category === cat.id;
-  });
-
-  catArticles.sort(function(a,b){
-    return b.date.localeCompare(a.date);
-  });
-
-
- var catOutput = {
-  articles: catArticles.map(function(a) {
-
-    return {
-      id: a.id,
-      category: a.category,
-      title: a.title,
-      slug: a.slug,
-      metaTitle: a.metaTitle,
-      metaDescription: a.metaDescription,
-      keywords: a.keywords,
-      excerpt: a.excerpt,
-      image: a.image,
-      author: a.author,
-      readingTime: a.readingTime,
-      date: a.date,
-      content: a.content,
-      schema: a.schema
+    var catArticles = finalArticles.filter(function(a) { return a.category === cat.id; });
+    // 每个分类内部也按日期降序排序
+    catArticles.sort(function(a, b) { return b.date.localeCompare(a.date); });
+    var catOutput = {
+      articles: catArticles.map(function(a) {
+        return {
+          id: a.id,
+          category: a.category,
+          title: a.title,
+          excerpt: a.excerpt,
+          image: a.image,
+          date: a.date,
+          content: a.content
+        };
+      }),
+      metadata: metadata
     };
-
-  }),
-  metadata: metadata
-};
-
-
-  var filename = 'articles-' + cat.id + '.json';
-
-  fs.writeFileSync(
-    filename,
-    JSON.stringify(catOutput,null,2)
-  );
-
-});
+    var filename = 'articles-' + cat.id + '.json';
+    fs.writeFileSync(filename, JSON.stringify(catOutput, null, 2));
+    console.log('? ' + filename + ' written (' + catArticles.length + ' articles)');
+  });
   console.log('\n? Done!');
   console.log('   New: ' + newArticles.length + ' articles');
   console.log('   Total: ' + finalArticles.length + ' articles');
@@ -1025,10 +924,6 @@ main().catch(function(error) {
   console.error('? Error:', error.message);
   process.exit(1);
 });
-
-
-
-
 
 
 

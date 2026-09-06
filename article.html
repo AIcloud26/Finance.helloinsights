@@ -458,6 +458,8 @@
             .then(function(full) {
                 currentArticle = full;
 
+                injectArticleSchema(full);
+
                 var meta = allIndexArticles.find(function(a) { return a.id === articleId; });
                 renderArticle(full, meta);
                 renderRelated(meta);
@@ -469,7 +471,30 @@
                 fallbackLoad(articleId);
             });
     }
+    function injectArticleSchema(article) {
 
+if (!article || !article.schema) return;
+
+var schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.schema.headline,
+    "datePublished": article.schema.datePublished,
+    "publisher": {
+        "@type": "Organization",
+        "name": article.schema.publisher
+    },
+    "image": [
+        article.schema.image
+    ]
+};
+
+var script = document.createElement("script");
+script.type = "application/ld+json";
+script.textContent = JSON.stringify(schema);
+
+document.head.appendChild(script);
+}
     function fallbackLoad(articleId) {
         fetch('article-data/' + articleId + '.json', { cache: 'no-cache' })
             .then(function(r) {

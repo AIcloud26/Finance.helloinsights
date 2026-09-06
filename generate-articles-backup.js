@@ -554,31 +554,6 @@ function generateArticleDate() {
 // ============================================
 // 辅助函数
 // ============================================
-function createSlug(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-function calculateReadingTime(content) {
-  var words = content
-    .replace(/<[^>]+>/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .length;
-
-  return Math.max(1, Math.ceil(words / 200)) + " min read";
-}
-
-function generateKeywords(category, title) {
-  return [
-    category,
-    title.split(' ').slice(0,3).join(' '),
-    "market analysis",
-    "business insights"
-  ];
-}
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -669,40 +644,14 @@ async function generateArticle(existingIds, usedImages, category, editorialInput
   } else {
     generated = generateFromTemplate(category.id, editorialInput);
   }
-var articleDate = generateArticleDate();
-var articleImage = getImageUrl(category.id, usedImages);
   return {
-  id: id,
-
-  category: category.id,
-
-  title: generated.title,
-
-  slug: createSlug(generated.title),
-
-  metaTitle: generated.title + " | HelloInsights",
-
-  metaDescription: generated.excerpt,
-
-  keywords: generateKeywords(category.id, generated.title),
-
-  excerpt: generated.excerpt,
-
-  content: cleanArticleContent(generated.content),
-
-  image: articleImage,
-
-  readingTime: calculateReadingTime(generated.content),
-
-  date: articleDate,
-
-schema: {
-  type: "Article",
-  headline: generated.title,
-  datePublished: articleDate,
-  publisher: "HelloInsights",
-  image: articleImage
-    }
+    id: id,
+    category: category.id,
+    title: generated.title,
+    excerpt: generated.excerpt,
+    content: cleanArticleContent(generated.content),
+    image: getImageUrl(category.id, usedImages),
+    date: generateArticleDate()  // 修复：使用当天日期
   };
 }
 
@@ -982,29 +931,22 @@ async function main() {
   });
 
 
- var catOutput = {
-  articles: catArticles.map(function(a) {
+  var catOutput = {
+    articles: catArticles.map(function(a){
 
-    return {
-      id: a.id,
-      category: a.category,
-      title: a.title,
-      slug: a.slug,
-      metaTitle: a.metaTitle,
-      metaDescription: a.metaDescription,
-      keywords: a.keywords,
-      excerpt: a.excerpt,
-      image: a.image,
-      author: a.author,
-      readingTime: a.readingTime,
-      date: a.date,
-      content: a.content,
-      schema: a.schema
-    };
+      return {
+        id: a.id,
+        category: a.category,
+        title: a.title,
+        excerpt: a.excerpt,
+        image: a.image,
+        date: a.date,
+        content: a.content
+      };
 
-  }),
-  metadata: metadata
-};
+    }),
+    metadata: metadata
+  };
 
 
   var filename = 'articles-' + cat.id + '.json';

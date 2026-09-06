@@ -1,21 +1,21 @@
-var path = require('path');
+ï»¿var path = require('path');
 // ============================================
-// HelloInsights - ĞŞ¸´°æ generate-articles.js
-// ĞŞ¸´ÄÚÈİ£º
-// 1. ĞÂÎÄÕÂÊ¹ÓÃµ±Ç°ÈÕÆÚ£¬²»ÔÙËæ»ú·ÖÅäÀúÊ·ÈÕÆÚ
-// 2. ÅÅĞò¸ÄÎª°´ÈÕÆÚ½µĞò£¨×îĞÂÔÚÇ°£©£¬¶ø²»ÊÇ°´Ëæ»úIDÅÅĞò
-// 3. ÈÕÆÚ¸ñÊ½Í³Ò»Îª YYYY-MM-DD
+// HelloInsights - ä¿®å¤ç‰ˆ generate-articles.js
+// ä¿®å¤å†…å®¹ï¼š
+// 1. æ–°æ–‡ç« ä½¿ç”¨å½“å‰æ—¥æœŸï¼Œä¸å†éšæœºåˆ†é…å†å²æ—¥æœŸ
+// 2. æ’åºæ”¹ä¸ºæŒ‰æ—¥æœŸé™åºï¼ˆæœ€æ–°åœ¨å‰ï¼‰ï¼Œè€Œä¸æ˜¯æŒ‰éšæœºIDæ’åº
+// 3. æ—¥æœŸæ ¼å¼ç»Ÿä¸€ä¸º YYYY-MM-DD
 // ============================================
 const fs = require('fs');
 const https = require('https');
 
 // ============================================
-// ÅäÖÃ
+// é…ç½®
 // ============================================
 const CONFIG = {
   articlesPerRun: 5,
-  articlesPerCategoryPerWeek: 100,
-  articlesPerCategoryPerDay: 100,
+  articlesPerCategoryPerWeek: 10,
+  articlesPerCategoryPerDay: 10,
   useAI: true,
   openaiApiKey: process.env.OPENAI_API_KEY,
   openaiModel: 'gpt-4o-mini',
@@ -23,7 +23,7 @@ const CONFIG = {
 };
 
 // ============================================
-// ·ÖÀàºÍÖ÷Ìâ
+// åˆ†ç±»å’Œä¸»é¢˜
 // ============================================
 const CATEGORIES = [
   {
@@ -45,7 +45,7 @@ const CATEGORIES = [
 ];
 
 // ============================================
-// Í¼Æ¬
+// å›¾ç‰‡
 // ============================================
 const IMAGE_IDS = {
     'technology': [
@@ -134,7 +134,7 @@ const IMAGE_IDS = {
 };
 
 // ============================================
-// ±êÌâÄ£°å
+// æ ‡é¢˜æ¨¡æ¿
 // ============================================
 const EDITORIAL_DIRECTIONS = [
   "What changed and why it matters",
@@ -209,7 +209,7 @@ function pickArticleDNA() {
   return {
     targetWords: randomInt(680, 950),
     paragraphCount: randomInt(8, 14),
-    h2Count: randomInt(2, 4),
+    h2Count: randomInt(0, 3),
     useList: Math.random() < 0.35,
     opening: randomItem(OPENING_STYLES),
     structure: randomItem(ARTICLE_STRUCTURES),
@@ -302,9 +302,9 @@ function buildEditorialPrompt(category, editorialInput, dna) {
     "Then synthesize the strongest parts of both perspectives into one coherent editorial article.",
     "",
     "ARTICLE DNA:",
-    "Target length: approximately " + dna.targetWords + " words, minimum 700 words. Longer articles are acceptable when deeper analysis is useful.",
+    "Target length: approximately " + dna.targetWords + " words, never below 600 words.",
+    "Approximate paragraphs: " + dna.paragraphCount,
     "H2 headings: " + dna.h2Count,
-    "Every article must include meaningful H2 headings for SEO structure. Use H2 headings naturally to separate major sections.",
     "Use a list: " + (dna.useList ? "yes, only if genuinely useful" : "no"),
     "Opening approach: " + dna.opening,
     "Structure: " + dna.structure,
@@ -338,81 +338,52 @@ function generateFallbackContent(category, topic, editorialInput) {
 
   var blocks = [
 
-    "The conversation around " + topic + " has moved beyond short-term market reactions. While headlines often focus on immediate changes, the deeper impact usually depends on economic conditions, business decisions, investor expectations and how different groups respond over time.",
+    "The conversation around " + topic + " has become increasingly relevant as financial markets continue to adjust to changing economic conditions. While headlines often focus on immediate reactions, the deeper impact usually depends on business fundamentals, investor expectations and how different participants respond over time.",
 
-    "Understanding " + topic + " requires looking beyond the surface. Financial markets rarely move because of one single factor. Interest rates, consumer behavior, company strategies, regulation and global economic conditions can all influence how investors interpret the same development.",
 
-    "For investors, the main challenge is separating temporary market sentiment from longer-term structural changes. A trend may attract significant attention, but popularity alone does not determine whether it creates sustainable value.",
+    "Understanding " + topic + " requires looking beyond the surface. Market movements are often influenced by multiple factors rather than a single event. Economic conditions, company decisions, consumer behavior and policy changes can all shape the direction of future developments.",
 
-    "A closer examination shows that opportunities and risks often develop together. Companies and investors that benefit from changing conditions may also face new challenges, including competition, higher costs, uncertainty and changing expectations.",
 
-    "From a business perspective, decisions related to " + topic + " require balancing immediate performance with future positioning. Management teams must consider whether current changes represent a short-term adjustment or a deeper transformation.",
+    "For investors, the main challenge is identifying which assumptions behind the current market view are reliable and which ones may change. Strong interest in a financial trend does not automatically guarantee long-term success, and negative reactions do not always mean an opportunity has disappeared.",
 
-    "Consumers may experience the effects differently depending on their financial situation and personal priorities. Changes in markets and business models can influence spending decisions, saving behavior and expectations about future opportunities.",
 
-    "One important factor is timing. Financial markets often react quickly because investors continuously update their expectations. However, the real economic impact may take much longer to appear as companies and consumers gradually adjust.",
+    "A closer examination shows that opportunities and risks often exist together. Companies that benefit from changing conditions may also face new challenges, including higher costs, stronger competition or shifting customer expectations.",
 
-    "Another consideration is valuation and risk management. Investors who focus only on potential upside may underestimate possible downside factors. A balanced approach requires examining both the opportunity and the assumptions behind the current market view.",
 
-    "Different outcomes remain possible. A positive scenario could develop if businesses successfully adapt and demand remains strong. A more difficult environment could emerge if expectations become disconnected from actual results.",
+    "From a business perspective, decisions related to " + topic + " usually involve balancing short-term performance with long-term strategy. Management teams need to evaluate whether current changes represent temporary market conditions or a structural transformation that requires deeper adjustments.",
 
-    "The role of information is increasingly important. Investors have access to more data than ever before, but not all information provides meaningful insight. Understanding which signals matter is often more valuable than simply following market discussions.",
 
-    "The competitive environment also deserves attention. Companies operating in changing markets need to improve efficiency, respond to customer needs and make strategic decisions that support long-term growth.",
+    "Consumers may experience the impact differently depending on their financial situation and priorities. Changes in markets, technology, regulation or business models can influence spending decisions, savings behavior and expectations about the future.",
 
-    "Another key question is whether current developments create temporary excitement or represent a lasting shift. History shows that many financial trends experience periods of optimism followed by reassessment.",
 
-    "From an investment perspective, uncertainty does not necessarily mean avoiding opportunities. Instead, uncertainty highlights the importance of evaluating assumptions, considering multiple scenarios and maintaining realistic expectations.",
+    "One important factor is timing. Financial markets often react quickly because investors are constantly adjusting expectations. However, the real economic impact may appear much later as companies and consumers gradually change their behavior.",
 
-    "The broader economic environment will continue to influence how " + topic + " develops. Factors such as policy decisions, consumer confidence and market conditions may determine whether current expectations are eventually confirmed.",
+
+    "Another consideration is valuation and risk management. Investors who focus only on potential upside may overlook factors that could reduce future returns. A balanced analysis requires examining both the opportunities created by the trend and the possible limitations.",
+
+
+    "Different scenarios remain possible depending on how economic conditions develop. A positive outcome may occur if companies successfully adapt and demand continues to grow. A more challenging environment could appear if expectations become disconnected from real-world results.",
+
+
+    "The role of information is also important. Financial decisions are often influenced by available data, market sentiment and public discussion. However, useful analysis requires separating meaningful signals from short-term noise.",
+
+
+    "Looking ahead, the most important indicators will be evidence showing whether current expectations are being supported. Investors and businesses should continue monitoring changes in demand, profitability, regulation and broader market conditions.",
+
 
     humanView
-      ? "Editorial perspective: " + humanView + " This viewpoint adds another layer to the discussion by showing why different participants may interpret the same development in different ways."
-      : "Different market participants may reach different conclusions because they have different objectives, time horizons and levels of exposure.",
-
-    "Looking ahead, the most useful indicators will be real-world evidence showing whether current assumptions are supported. Investors and businesses should monitor changes in demand, profitability, competition and broader economic conditions.",
-
-    "The future path of " + topic + " will likely not follow a simple direction. Positive developments may create new opportunities, while unexpected challenges may change market expectations.",
-
-    "The most valuable analysis comes from understanding both sides of the discussion. Recognizing potential benefits while remaining aware of limitations can help create a more balanced view.",
-
-    "Market participants also need to consider how different economic cycles may influence the outcome. A strategy that works under one set of conditions may perform differently when interest rates, consumer demand or business confidence changes.",
+      ? "Editorial perspective: " + humanView + " This additional viewpoint highlights why different participants may interpret the same financial development in different ways."
+      : "The broader lesson is that financial trends rarely follow a simple path. Careful analysis, flexibility and attention to changing conditions remain important when evaluating future possibilities.",
 
 
-    "Another important issue is adaptation. Companies that recognize changing conditions early often have more time to adjust their operations, while those that delay decisions may face greater pressure later.",
-
-
-    "For long-term investors, the focus should remain on understanding business quality, competitive advantages and sustainable growth potential rather than reacting only to short-term market movements.",
-
-
-    "As the discussion around " + topic + " continues, the most reliable conclusions will come from observing actual results instead of relying only on expectations or market sentiment.",
-
-    "Ultimately, the importance of " + topic + " depends on how current developments translate into real economic outcomes. Careful observation, flexibility and thoughtful analysis remain essential as conditions continue to evolve.",
-
-   "Investors and businesses should continue reviewing new evidence as conditions change. The ability to adjust assumptions, recognize new risks and identify emerging opportunities will remain an important advantage in an uncertain market environment."
+    "The next stage of development will depend on how real-world results compare with current expectations. While uncertainty cannot be removed completely, understanding the underlying drivers can help investors, companies and consumers make more informed decisions."
 
   ];
 
 
-   var html = "";
-
-  blocks.forEach(function(text, index){
-
-    if (index === 3 || index === 7 || index === 10) {
-      html += "<h2>" + 
-        [
-          "Understanding the Bigger Picture",
-          "What Investors Should Consider",
-          "What Could Happen Next"
-        ][index === 3 ? 0 : index === 7 ? 1 : 2]
-        + "</h2>\n";
-    }
-
-    html += "<p>" + text + "</p>\n";
-
-  });
-
-  return html.trim();
+  return blocks.map(function(text){
+    return "<p>" + text + "</p>";
+  }).join("\n");
 
 }
 
@@ -422,18 +393,19 @@ function generateFromTemplate(category, editorialInput) {
   var title = editorialInput.topic;
   var direction = editorialInput.direction;
 
-var titlePatterns = [
-  editorialInput.topic + ": What Investors Need to Understand",
-  editorialInput.topic + ": The Shift Behind the Headlines",
-  editorialInput.topic + ": Why This Trend Is Becoming Important",
-  editorialInput.topic + ": The Forces Changing the Market",
-  editorialInput.topic + ": Opportunities, Risks and What Comes Next",
-  editorialInput.topic + ": The Bigger Picture Behind the Trend",
-  editorialInput.topic + ": What Could Shape the Next Stage",
-  editorialInput.topic + ": Why Businesses and Investors Are Paying Attention"
-];
-
-title = randomChoice(titlePatterns);
+  if (direction === "Why markets reacted") {
+    title = editorialInput.topic + ": Why Markets Are Paying Attention";
+  } else if (direction === "What investors may be missing") {
+    title = editorialInput.topic + ": What Investors May Be Missing";
+  } else if (direction === "Risk and downside") {
+    title = editorialInput.topic + ": The Risks Behind the Story";
+  } else if (direction === "Consumer impact") {
+    title = editorialInput.topic + ": What It Means for Consumers";
+  } else if (direction === "Policy impact") {
+    title = editorialInput.topic + ": The Policy Question";
+  } else {
+    title = editorialInput.topic + ": What Matters Now";
+  }
 
   var content = generateFallbackContent(
     category,
@@ -543,42 +515,17 @@ async function generateWithAI(category, editorialInput) {
   });
 }
 // ============================================
-// Date Generation - ĞŞ¸´£ºĞÂÎÄÕÂÊ¹ÓÃµ±Ç°ÈÕÆÚ
-// ²»ÔÙËæ»úÉú³ÉÀúÊ·ÈÕÆÚ£¬¶øÊÇÊ¹ÓÃµ±Ç°ÈÕÆÚ
+// Date Generation - ä¿®å¤ï¼šæ–°æ–‡ç« ä½¿ç”¨å½“å‰æ—¥æœŸ
+// ä¸å†éšæœºç”Ÿæˆå†å²æ—¥æœŸï¼Œè€Œæ˜¯ä½¿ç”¨å½“å‰æ—¥æœŸ
 // ============================================
 function generateArticleDate() {
   var now = new Date();
-  return now.toISOString().split('T')[0]; // YYYY-MM-DD ¸ñÊ½£¬µ±ÌìÈÕÆÚ
+  return now.toISOString().split('T')[0]; // YYYY-MM-DD æ ¼å¼ï¼Œå½“å¤©æ—¥æœŸ
 }
 
 // ============================================
-// ¸¨Öúº¯Êı
+// è¾…åŠ©å‡½æ•°
 // ============================================
-function createSlug(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-function calculateReadingTime(content) {
-  var words = content
-    .replace(/<[^>]+>/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .length;
-
-  return Math.max(1, Math.ceil(words / 200)) + " min read";
-}
-
-function generateKeywords(category, title) {
-  return [
-    category,
-    title.split(' ').slice(0,3).join(' '),
-    "market analysis",
-    "business insights"
-  ];
-}
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -598,7 +545,7 @@ function getImageUrl(category, usedImages) {
     }
     attempt++;
   }
-  // All base images used ¡ª generate unique variant with random suffix
+  // All base images used â€” generate unique variant with random suffix
   var fallbackId = ids[attempt % ids.length];
   var uniqueUrl = 'https://images.unsplash.com/' + fallbackId + '?w=800&h=450&fit=crop&fm=webp&q=80&t=' + Date.now() + '&r=' + Math.random().toString(36).substr(2, 6);
   usedImages[uniqueUrl] = true;
@@ -606,13 +553,13 @@ function getImageUrl(category, usedImages) {
 }
 
 // ============================================
-// ÄÚÈİÉú³É
+// å†…å®¹ç”Ÿæˆ
 // ============================================
 // ============================================
-// AI Éú³É
+// AI ç”Ÿæˆ
 // ============================================
 // ============================================
-// Éú³ÉÎÄÕÂ
+// ç”Ÿæˆæ–‡ç« 
 // ============================================
 // ============================================
 // V20 Content Cleaner
@@ -669,45 +616,19 @@ async function generateArticle(existingIds, usedImages, category, editorialInput
   } else {
     generated = generateFromTemplate(category.id, editorialInput);
   }
-var articleDate = generateArticleDate();
-var articleImage = getImageUrl(category.id, usedImages);
   return {
-  id: id,
-
-  category: category.id,
-
-  title: generated.title,
-
-  slug: createSlug(generated.title),
-
-  metaTitle: generated.title + " | HelloInsights",
-
-  metaDescription: generated.excerpt,
-
-  keywords: generateKeywords(category.id, generated.title),
-
-  excerpt: generated.excerpt,
-
-  content: cleanArticleContent(generated.content),
-
-  image: articleImage,
-
-  readingTime: calculateReadingTime(generated.content),
-
-  date: articleDate,
-
-schema: {
-  type: "Article",
-  headline: generated.title,
-  datePublished: articleDate,
-  publisher: "HelloInsights",
-  image: articleImage
-    }
+    id: id,
+    category: category.id,
+    title: generated.title,
+    excerpt: generated.excerpt,
+    content: cleanArticleContent(generated.content),
+    image: getImageUrl(category.id, usedImages),
+    date: generateArticleDate()  // ä¿®å¤ï¼šä½¿ç”¨å½“å¤©æ—¥æœŸ
   };
 }
 
 // ============================================
-// Ö÷³ÌĞò
+// ä¸»ç¨‹åº
 // ============================================
 /* ============================================
    V19 Editorial Queue
@@ -769,10 +690,10 @@ function describeEditorialInput(editorialInput) {
   ].join(' | ');
 }
 async function main() {
-  console.log('\n?? HelloInsights Article Generator');
+  console.log('\nğŸš€ HelloInsights Article Generator');
   console.log('================================');
-  console.log('?? Mode: ' + (CONFIG.useAI ? 'AI-powered' : 'Template-based'));
-  console.log('?? Generating ' + CONFIG.articlesPerRun + ' new articles per run\n');
+  console.log('ğŸ“ Mode: ' + (CONFIG.useAI ? 'AI-powered' : 'Template-based'));
+  console.log('ğŸ“Š Generating ' + CONFIG.articlesPerRun + ' new articles per run\n');
   var existingArticles = [];
   var existingIds = [];
 
@@ -796,15 +717,15 @@ async function main() {
       });
   }
 
-  console.log('?? Found ' + existingArticles.length + ' archived articles\n');
-  console.log('? Generating new articles...\n');
-  // Í¼Æ¬È¥ÖØ£ºÊÕ¼¯ÒÑÓĞÎÄÕÂÊ¹ÓÃ¹ıµÄÍ¼Æ¬ URL
+  console.log('ğŸ“¦ Found ' + existingArticles.length + ' archived articles\n');
+  console.log('âœ¨ Generating new articles...\n');
+  // å›¾ç‰‡å»é‡ï¼šæ”¶é›†å·²æœ‰æ–‡ç« ä½¿ç”¨è¿‡çš„å›¾ç‰‡ URL
   var usedImages = {};
   existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
-  console.log('???  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
+  console.log('ğŸ–¼ï¸  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
   var newArticles = [];
   var editorialQueue = loadEditorialQueue();
-  console.log('?? Editorial queue: ' + editorialQueue.length + ' item(s)');
+  console.log('âœï¸ Editorial queue: ' + editorialQueue.length + ' item(s)');
   var today = generateArticleDate();
 
   function getWeekStart(dateString) {
@@ -834,9 +755,9 @@ async function main() {
     }
   });
 
-  console.log('?? Current week: ' + currentWeekStart + ' to Sunday');
-  console.log('?? Weekly category quota: max ' + CONFIG.articlesPerCategoryPerWeek + ' / category');
-  console.log('?? Daily category quota: max ' + CONFIG.articlesPerCategoryPerDay + ' / category');
+  console.log('ğŸ“… Current week: ' + currentWeekStart + ' to Sunday');
+  console.log('ğŸ“Š Weekly category quota: max ' + CONFIG.articlesPerCategoryPerWeek + ' / category');
+  console.log('ğŸ“Š Daily category quota: max ' + CONFIG.articlesPerCategoryPerDay + ' / category');
 
   for (var i = 0; i < CONFIG.articlesPerRun; i++) {
     var eligibleCategories = CATEGORIES.filter(function(cat) {
@@ -845,7 +766,7 @@ async function main() {
     });
 
     if (eligibleCategories.length === 0) {
-      console.log('?? All category quotas are currently reached; no more articles generated.');
+      console.log('â¸ï¸ All category quotas are currently reached; no more articles generated.');
       break;
     }
 
@@ -920,8 +841,8 @@ async function main() {
   }
   var allArticles = newArticles.concat(existingArticles);
 
-  // ÏÈ°´ÈÕÆÚ´ÓĞÂµ½¾ÉÅÅĞò£¬ÔÙÏŞÖÆ×î´óÎÄÕÂÊı¡£
-  // ³¬¹ı maxArticles Ê±£¬Ö»ÌÔÌ­×î¾ÉµÄÎÄÕÂ¡£
+  // å…ˆæŒ‰æ—¥æœŸä»æ–°åˆ°æ—§æ’åºï¼Œå†é™åˆ¶æœ€å¤§æ–‡ç« æ•°ã€‚
+  // è¶…è¿‡ maxArticles æ—¶ï¼Œåªæ·˜æ±°æœ€æ—§çš„æ–‡ç« ã€‚
   allArticles.sort(function(a, b) {
     return b.date.localeCompare(a.date);
   });
@@ -943,11 +864,11 @@ async function main() {
     return;
   }
 
-  // °æ±¾ºÅ£¨Ê±¼ä´Á£©£¬ÓÃ×÷Àà±ğÎÄ¼şµÄ cache key
+  // ç‰ˆæœ¬å·ï¼ˆæ—¶é—´æˆ³ï¼‰ï¼Œç”¨ä½œç±»åˆ«æ–‡ä»¶çš„ cache key
   var version = Date.now();
   // ============================================
-  // 1. Ğ´Èë articles-index.json
-  //    ½á¹¹: { v, articles: {id: category}, ids: [°´ÈÕÆÚ½µĞòÅÅÁĞ] }
+  // 1. å†™å…¥ articles-index.json
+  //    ç»“æ„: { v, articles: {id: category}, ids: [æŒ‰æ—¥æœŸé™åºæ’åˆ—] }
   // ============================================
   var articlesMap = {};
   finalArticles.forEach(function(a) { articlesMap[String(a.id)] = a.category; });
@@ -957,79 +878,52 @@ async function main() {
     ids: finalArticles.map(function(a) { return a.id; })
   };
   fs.writeFileSync('articles-index.json', JSON.stringify(indexOutput, null, 2));
-  console.log('\n? articles-index.json written (v=' + version + ', ' + finalArticles.length + ' articles)');
+  console.log('\nâœ… articles-index.json written (v=' + version + ', ' + finalArticles.length + ' articles)');
   // V18 archive write: persist every article as an individual full JSON file.
   // article-data is the permanent source of truth for future generator runs.
   if (!fs.existsSync('article-data')) fs.mkdirSync('article-data', { recursive: true });
   finalArticles.forEach(function(a) {
     fs.writeFileSync(path.join('article-data', String(a.id) + '.json'), JSON.stringify(a, null, 2));
   });
-  console.log('? article-data archive written (' + finalArticles.length + ' articles)');
+  console.log('âœ… article-data archive written (' + finalArticles.length + ' articles)');
 
   // ============================================
-  // 2. Ğ´Èë 4 ¸öÀà±ğÎÄ¼ş
-  //    Ã¿¸ö: { articles: [ÍêÕûÎÄÕÂ¶ÔÏó], metadata }
-  //    ÎÄÕÂÒÑ°´ÈÕÆÚ½µĞòÅÅÁĞ
+  // 2. å†™å…¥ 4 ä¸ªç±»åˆ«æ–‡ä»¶
+  //    æ¯ä¸ª: { articles: [å®Œæ•´æ–‡ç« å¯¹è±¡], metadata }
+  //    æ–‡ç« å·²æŒ‰æ—¥æœŸé™åºæ’åˆ—
   // ============================================
   CATEGORIES.forEach(function(cat) {
-
-  var catArticles = finalArticles.filter(function(a) {
-    return a.category === cat.id;
-  });
-
-  catArticles.sort(function(a,b){
-    return b.date.localeCompare(a.date);
-  });
-
-
- var catOutput = {
-  articles: catArticles.map(function(a) {
-
-    return {
-      id: a.id,
-      category: a.category,
-      title: a.title,
-      slug: a.slug,
-      metaTitle: a.metaTitle,
-      metaDescription: a.metaDescription,
-      keywords: a.keywords,
-      excerpt: a.excerpt,
-      image: a.image,
-      author: a.author,
-      readingTime: a.readingTime,
-      date: a.date,
-      content: a.content,
-      schema: a.schema
+    var catArticles = finalArticles.filter(function(a) { return a.category === cat.id; });
+    // æ¯ä¸ªåˆ†ç±»å†…éƒ¨ä¹ŸæŒ‰æ—¥æœŸé™åºæ’åº
+    catArticles.sort(function(a, b) { return b.date.localeCompare(a.date); });
+    var catOutput = {
+      articles: catArticles.map(function(a) {
+        return {
+          id: a.id,
+          category: a.category,
+          title: a.title,
+          excerpt: a.excerpt,
+          image: a.image,
+          date: a.date,
+          content: a.content
+        };
+      }),
+      metadata: metadata
     };
-
-  }),
-  metadata: metadata
-};
-
-
-  var filename = 'articles-' + cat.id + '.json';
-
-  fs.writeFileSync(
-    filename,
-    JSON.stringify(catOutput,null,2)
-  );
-
-});
-  console.log('\n? Done!');
+    var filename = 'articles-' + cat.id + '.json';
+    fs.writeFileSync(filename, JSON.stringify(catOutput, null, 2));
+    console.log('âœ… ' + filename + ' written (' + catArticles.length + ' articles)');
+  });
+  console.log('\nâœ… Done!');
   console.log('   New: ' + newArticles.length + ' articles');
   console.log('   Total: ' + finalArticles.length + ' articles');
   console.log('   Sort: by date descending (newest first)');
   console.log('   Output: articles-index.json + 4 category files\n');
 }
 main().catch(function(error) {
-  console.error('? Error:', error.message);
+  console.error('âŒ Error:', error.message);
   process.exit(1);
 });
-
-
-
-
-
 
 
 
