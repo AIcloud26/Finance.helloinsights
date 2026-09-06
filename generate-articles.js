@@ -1,16 +1,16 @@
 var path = require('path');
 // ============================================
-// HelloInsights - ÐÞ¸´°æ generate-articles.js
-// ÐÞ¸´ÄÚÈÝ£º
-// 1. ÐÂÎÄÕÂÊ¹ÓÃµ±Ç°ÈÕÆÚ£¬²»ÔÙËæ»ú·ÖÅäÀúÊ·ÈÕÆÚ
-// 2. ÅÅÐò¸ÄÎª°´ÈÕÆÚ½µÐò£¨×îÐÂÔÚÇ°£©£¬¶ø²»ÊÇ°´Ëæ»úIDÅÅÐò
-// 3. ÈÕÆÚ¸ñÊ½Í³Ò»Îª YYYY-MM-DD
+// HelloInsights - ï¿½Þ¸ï¿½ï¿½ï¿½ generate-articles.js
+// ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ý£ï¿½
+// 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½Ç°ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½
+// 2. ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½
+// 3. ï¿½ï¿½ï¿½Ú¸ï¿½Ê½Í³Ò»Îª YYYY-MM-DD
 // ============================================
 const fs = require('fs');
 const https = require('https');
 
 // ============================================
-// ÅäÖÃ
+// ï¿½ï¿½ï¿½ï¿½
 // ============================================
 const CONFIG = {
   articlesPerRun: 5,
@@ -23,7 +23,7 @@ const CONFIG = {
 };
 
 // ============================================
-// ·ÖÀàºÍÖ÷Ìâ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // ============================================
 const CATEGORIES = [
   {
@@ -134,7 +134,7 @@ const IMAGE_IDS = {
 };
 
 // ============================================
-// ±êÌâÄ£°å
+// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
 // ============================================
 const EDITORIAL_DIRECTIONS = [
   "What changed and why it matters",
@@ -283,12 +283,25 @@ function buildEditorialPrompt(category, editorialInput, dna) {
     ? "Source notes supplied by the editor:\n- " + editorialInput.sourceNotes.join("\n- ")
     : "No source notes were supplied. Do not invent sources or factual claims.";
 
-  return [
+    return [
+      "Editorial writing rules:",
+      "",
+      "- Write like a professional financial journalist.",
+      "- Avoid AI-generated style and generic introductions.",
+      "- Do not use phrases such as:",
+      "\"In today's rapidly changing world\"",
+      "\"A comprehensive look at\"",
+      "\"It is important to note\"",
+      "\"In conclusion\"",
+      "- Start with specific market events, companies, data, trends or real-world context.",
+      "- Provide analysis, implications and practical insights.",
+      "- Avoid repetitive summaries.",
+      "",
     "Write an original English finance article for HelloInsights.",
     "",
     "CATEGORY: " + catInfo.name,
-    "TOPIC: " + editorialInput.topic,
-    "EDITORIAL DIRECTION: " + editorialInput.direction,
+    "TOPIC: " + (editorialInput.topic || "Develop an independent finance topic"),
+"EDITORIAL DIRECTION: " + (editorialInput.direction || "Independent editorial analysis"),
     "",
     humanSection,
     "",
@@ -543,16 +556,16 @@ async function generateWithAI(category, editorialInput) {
   });
 }
 // ============================================
-// Date Generation - ÐÞ¸´£ºÐÂÎÄÕÂÊ¹ÓÃµ±Ç°ÈÕÆÚ
-// ²»ÔÙËæ»úÉú³ÉÀúÊ·ÈÕÆÚ£¬¶øÊÇÊ¹ÓÃµ±Ç°ÈÕÆÚ
+// Date Generation - ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½Ç°ï¿½ï¿½ï¿½ï¿½
 // ============================================
 function generateArticleDate() {
   var now = new Date();
-  return now.toISOString().split('T')[0]; // YYYY-MM-DD ¸ñÊ½£¬µ±ÌìÈÕÆÚ
+  return now.toISOString().split('T')[0]; // YYYY-MM-DD ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 // ============================================
-// ¸¨Öúº¯Êý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // ============================================
 function createSlug(text) {
   return text
@@ -598,7 +611,7 @@ function getImageUrl(category, usedImages) {
     }
     attempt++;
   }
-  // All base images used ¡ª generate unique variant with random suffix
+  // All base images used ï¿½ï¿½ generate unique variant with random suffix
   var fallbackId = ids[attempt % ids.length];
   var uniqueUrl = 'https://images.unsplash.com/' + fallbackId + '?w=800&h=450&fit=crop&fm=webp&q=80&t=' + Date.now() + '&r=' + Math.random().toString(36).substr(2, 6);
   usedImages[uniqueUrl] = true;
@@ -606,13 +619,13 @@ function getImageUrl(category, usedImages) {
 }
 
 // ============================================
-// ÄÚÈÝÉú³É
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // ============================================
 // ============================================
-// AI Éú³É
+// AI ï¿½ï¿½ï¿½ï¿½
 // ============================================
 // ============================================
-// Éú³ÉÎÄÕÂ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // ============================================
 // ============================================
 // V20 Content Cleaner
@@ -707,7 +720,7 @@ schema: {
 }
 
 // ============================================
-// Ö÷³ÌÐò
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // ============================================
 /* ============================================
    V19 Editorial Queue
@@ -798,7 +811,7 @@ async function main() {
 
   console.log('?? Found ' + existingArticles.length + ' archived articles\n');
   console.log('? Generating new articles...\n');
-  // Í¼Æ¬È¥ÖØ£ºÊÕ¼¯ÒÑÓÐÎÄÕÂÊ¹ÓÃ¹ýµÄÍ¼Æ¬ URL
+  // Í¼Æ¬È¥ï¿½Ø£ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¹ï¿½ï¿½ï¿½Í¼Æ¬ URL
   var usedImages = {};
   existingArticles.forEach(function(a) { if (a.image) usedImages[a.image] = true; });
   console.log('???  Found ' + Object.keys(usedImages).length + ' existing images to avoid\n');
@@ -920,8 +933,8 @@ async function main() {
   }
   var allArticles = newArticles.concat(existingArticles);
 
-  // ÏÈ°´ÈÕÆÚ´ÓÐÂµ½¾ÉÅÅÐò£¬ÔÙÏÞÖÆ×î´óÎÄÕÂÊý¡£
-  // ³¬¹ý maxArticles Ê±£¬Ö»ÌÔÌ­×î¾ÉµÄÎÄÕÂ¡£
+  // ï¿½È°ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  // ï¿½ï¿½ï¿½ï¿½ maxArticles Ê±ï¿½ï¿½Ö»ï¿½ï¿½Ì­ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½Â¡ï¿½
   allArticles.sort(function(a, b) {
     return b.date.localeCompare(a.date);
   });
@@ -943,11 +956,11 @@ async function main() {
     return;
   }
 
-  // °æ±¾ºÅ£¨Ê±¼ä´Á£©£¬ÓÃ×÷Àà±ðÎÄ¼þµÄ cache key
+  // ï¿½æ±¾ï¿½Å£ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ cache key
   var version = Date.now();
   // ============================================
-  // 1. Ð´Èë articles-index.json
-  //    ½á¹¹: { v, articles: {id: category}, ids: [°´ÈÕÆÚ½µÐòÅÅÁÐ] }
+  // 1. Ð´ï¿½ï¿½ articles-index.json
+  //    ï¿½á¹¹: { v, articles: {id: category}, ids: [ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½] }
   // ============================================
   var articlesMap = {};
   finalArticles.forEach(function(a) { articlesMap[String(a.id)] = a.category; });
@@ -967,9 +980,9 @@ async function main() {
   console.log('? article-data archive written (' + finalArticles.length + ' articles)');
 
   // ============================================
-  // 2. Ð´Èë 4 ¸öÀà±ðÎÄ¼þ
-  //    Ã¿¸ö: { articles: [ÍêÕûÎÄÕÂ¶ÔÏó], metadata }
-  //    ÎÄÕÂÒÑ°´ÈÕÆÚ½µÐòÅÅÁÐ
+  // 2. Ð´ï¿½ï¿½ 4 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+  //    Ã¿ï¿½ï¿½: { articles: [ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½], metadata }
+  //    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   // ============================================
   CATEGORIES.forEach(function(cat) {
 
