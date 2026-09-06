@@ -337,18 +337,18 @@ function generateFallbackContent(category, topic, editorialInput) {
   var humanView = editorialInput.humanView;
 
   var paragraphs = [
-    "The interesting part of " + topic + " is not simply that it is attracting attention. The more useful question is why the issue matters now, and whether the reaction around it matches the underlying change.",
-    "That distinction matters because financial markets rarely move for one reason. Prices reflect expectations about growth, policy, liquidity, risk and investor positioning at the same time. A development that looks positive in isolation can therefore produce a very different result once those expectations are already reflected in valuations.",
-    "The editorial angle for this article is " + direction.toLowerCase() + ". That means the discussion should go beyond describing the headline. It should examine what changed, what may already be priced in, and which assumptions could prove too optimistic or too pessimistic.",
+    "Recent developments in " + topic + " have created new questions for investors, businesses and consumers. The important issue is understanding what has changed and why it matters now.",
+    "Several factors are shaping this trend, including economic conditions, market expectations and changing user behavior. These factors do not always point in the same direction, which makes the topic worth examining carefully.",
+    "A closer look suggests that the biggest opportunities and risks are often found beyond the obvious headlines. Understanding these less visible factors can help readers make better decisions.",
     humanView
       ? "The human editorial view adds another useful layer: " + humanView
-      : "There is no fixed human conclusion here, which leaves room to test several interpretations rather than forcing the story toward a predetermined answer.",
-    "One reason the subject deserves a closer look is that the immediate market reaction and the longer-term economic effect are not necessarily the same thing. Investors can respond quickly to new information, while businesses and consumers may take months or years to adjust their decisions.",
-    "There is also a risk in treating a broad trend as a single trade or investment signal. Different companies, sectors and households can experience the same economic change in very different ways. What helps one group can create pressure somewhere else, particularly when borrowing costs, demand or regulation are changing at the same time.",
+      : "The outcome is not determined by one factor alone. Different scenarios could produce different results, depending on how markets, companies and consumers respond.",
+    "Short-term reactions can sometimes hide longer-term changes. Markets may adjust quickly, while businesses and consumers often need more time to adapt their decisions.",
+    "A broad trend does not affect every participant equally. Companies, sectors and households may experience different benefits and challenges depending on their position and circumstances.",
     "The other side of the argument deserves equal attention. A market can appear overly confident without being completely wrong. Expectations sometimes adjust before the underlying evidence becomes obvious, and a cautious reading of the available information does not automatically mean the consensus is incorrect.",
-    "For investors, the practical issue is therefore less about predicting one exact outcome and more about identifying which assumptions matter most. If growth changes, if policy stays tighter for longer, or if demand weakens, the valuation of the story can change quickly.",
-    "The same logic applies to businesses and consumers. Financial conditions influence spending, financing decisions and risk tolerance, while companies have to decide whether a change is temporary or structural before committing capital.",
-    "What happens next will depend on evidence rather than headlines. The most useful signals are likely to be the ones that test the assumptions behind the current narrative rather than simply confirming it.",
+    "The key question is which assumptions will prove accurate. Changes in growth, policy or demand can quickly reshape how investors evaluate opportunities and risks.",
+    "Businesses and consumers face similar decisions. Financial conditions influence spending, financing choices and long-term planning, especially when uncertainty remains high.",
+    "Future developments will depend on how the underlying data changes. The most useful indicators are those that challenge assumptions rather than simply reinforce existing views.",
     "That leaves a reasonable amount of uncertainty. And in finance, uncertainty is not necessarily a reason to ignore a story. It is often the reason to examine it more carefully."
   ];
 
@@ -529,6 +529,51 @@ function getImageUrl(category, usedImages) {
 // ============================================
 // 生成文章
 // ============================================
+// ============================================
+// V20 Content Cleaner
+// Remove repetitive AI patterns
+// ============================================
+function cleanArticleContent(content) {
+  if (!content) return '';
+
+  return content    .replace(
+      /The interesting part of .*? is not simply that .*?\./gi,
+      ''
+    )
+    .replace(
+      /That distinction matters because .*?\./gi,
+      ''
+    )
+    .replace(
+      /The editorial angle for this article is .*?\./gi,
+      ''
+    )
+    .replace(
+      /One reason the subject deserves a closer look is .*?\./gi,
+      ''
+    )
+    .replace(/<p><p>/g, '<p>')
+    .replace(/<\/p><\/p>/g, '</p>')
+    .replace(
+      /The practical question is not whether one financial rule works for everyone, but whether the decision fits[^.]*\./gi,
+      ''
+    )
+    .replace(
+      /The broader lesson is straightforward:[^.]*\./gi,
+      ''
+    )
+    .replace(
+      /There is also a behavioral side to the decision\./gi,
+      ''
+    )
+    .replace(
+      /It is important to note that/gi,
+      ''
+    )
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 async function generateArticle(existingIds, usedImages, category, editorialInput) {
   if (!category) category = randomChoice(CATEGORIES);
   var id;
@@ -544,7 +589,7 @@ async function generateArticle(existingIds, usedImages, category, editorialInput
     category: category.id,
     title: generated.title,
     excerpt: generated.excerpt,
-    content: generated.content,
+    content: cleanArticleContent(generated.content),
     image: getImageUrl(category.id, usedImages),
     date: generateArticleDate()  // 修复：使用当天日期
   };
@@ -847,6 +892,14 @@ main().catch(function(error) {
   console.error('❌ Error:', error.message);
   process.exit(1);
 });
+
+
+
+
+
+
+
+
 
 
 
