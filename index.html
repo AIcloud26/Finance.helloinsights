@@ -473,10 +473,14 @@
     // ===== NAV: Add 7 subcategory links =====
     function buildArticleUrl(id) {
         var url = 'article.html?id=' + encodeURIComponent(id);
-        var subId = window.SUB_ID || '000';
 
-        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
-            url += '&SUB_ID=' + encodeURIComponent(subId);
+        // Read SUB_ID directly from the current URL.
+        // This works even before config-loader.js finishes loading.
+        var params = new URLSearchParams(window.location.search);
+        var subId = (params.get('sub_id') || params.get('SUB_ID') || '').trim();
+
+        if (/^[A-Za-z0-9_-]{1,32}$/.test(subId) && subId !== '000') {
+            url += '&sub_id=' + encodeURIComponent(subId);
         }
 
         return url;
