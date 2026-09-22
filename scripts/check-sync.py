@@ -66,7 +66,6 @@ content_articles = load_content_articles()
 sitemap_urls = extract_sitemap_urls()
 
 
-# Historical URLs that should remain available.
 historical_urls = {
     url
     for url in (article_url(a) for a in index_articles)
@@ -74,7 +73,6 @@ historical_urls = {
 }
 
 
-# All current Finance article URLs.
 content_url_map = {}
 
 for article in content_articles:
@@ -87,24 +85,29 @@ for article in content_articles:
 content_urls = set(content_url_map.keys())
 
 
-# The sitemap must contain every current article.
 missing_current = content_urls - sitemap_urls
 
-
-# Historical URLs are also expected to remain in sitemap.
 missing_historical = historical_urls - sitemap_urls
 
 
-# Detect sitemap article URLs that don't correspond to current
-# content or historical content.
-known_article_urls = historical_urls | content_urls
+# Only treat actual article URLs as article sitemap entries.
+# Category pages such as /category/banking/ are intentionally excluded.
+sitemap_article_urls = set()
 
-sitemap_article_urls = {
-    url
-    for url in sitemap_urls
-    if "/article.html?id=" in url
-    or re.search(r"/[^/]+/[^/]+/$", url)
-}
+for url in sitemap_urls:
+
+    if re.search(r"/article\.html\?id=\d+$", url):
+        sitemap_article_urls.add(url)
+        continue
+
+    if "/category/" in url:
+        continue
+
+    if re.search(r"/[^/]+/[^/]+/$", url):
+        sitemap_article_urls.add(url)
+
+
+known_article_urls = historical_urls | content_urls
 
 stale_urls = sitemap_article_urls - known_article_urls
 
