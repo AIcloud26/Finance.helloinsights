@@ -1,4 +1,4 @@
-// HelloInsights — Unified Config & Ad Manager v4
+﻿// HelloInsights — Unified Config & Ad Manager v4
 // Supports: AdSense / MGID / ADX multi-provider ad system
 // All ad positions/sizes controlled by config.json — no HTML code changes needed
 var siteConfig = null;
@@ -20,69 +20,85 @@ var siteConfig = null;
 
     // SUB_ID — 流量测试标识
     // 规则：
-    // 1. 当前 URL 明确带 SUB_ID → 使用该 SUB_ID
-    // 2. 当前 URL 不带 SUB_ID → 强制使用 000
-    // 3. 不从旧 sessionStorage 恢复，避免新访问继承旧 SUB_ID
+    // 1. URL 有有效 SUB_ID（001-999）→ 使用当前 SUB_ID
+    // 2. URL 没有 SUB_ID → NULL
+    // 3. 不读取、不写入 localStorage，避免历史测试流量污染正常访问
+    // 4. 保留其他 URL 参数
+    // 5. 当前页面存在有效 SUB_ID 时，站内链接继续携带 SUB_ID
+
     var params = new URLSearchParams(window.location.search);
-    var requestedSubId = params.get('SUB_ID') || '000';
-    var subId = '000';
+    var requestedSubId = params.get('sub_id') || params.get('SUB_ID') || '';
+    var subId = null;
 
-    // SUB_ID 必须存在于当前子站配置的白名单中
-    var validSubIds = [];
-    if (typeof SITE_CONFIG !== 'undefined' && Array.isArray(SITE_CONFIG.validSubIds)) {
-        validSubIds = SITE_CONFIG.validSubIds;
+    function normalizeSubId(value) {
+        if (value === null || value === undefined) return null;
+
+        value = String(value).trim();
+
+        if (!/^\d{3}$/.test(value)) return null;
+
+        var n = Number(value);
+        if (n < 1 || n > 999) return null;
+
+        return value;
     }
 
-    if (
-        requestedSubId !== '000' &&
-        /^[A-Za-z0-9_-]{1,32}$/.test(requestedSubId) &&
-        validSubIds.indexOf(requestedSubId) !== -1
-    ) {
-        subId = requestedSubId;
-    }
+    // 只从当前 URL 获取 SUB_ID
+    subId = normalizeSubId(requestedSubId);
 
     window.SUB_ID = subId;
 
-    // 非法/未配置 SUB_ID：立即从当前 URL 清除，防止伪造 ID 继续传播
-    if (requestedSubId !== '000' && subId === '000') {
+    // 如果 URL 中存在非法 SUB_ID，只删除 SUB_ID 本身，
+    // 其他 URL 参数全部保留
+    if (requestedSubId && !subId) {
         try {
             var cleanUrl = new URL(window.location.href);
+
+            cleanUrl.searchParams.delete('sub_id');
             cleanUrl.searchParams.delete('SUB_ID');
-            window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+
+            window.history.replaceState(
+                {},
+                document.title,
+                cleanUrl.pathname + cleanUrl.search + cleanUrl.hash
+            );
+        } catch (e) {}
+    }
+    function appendSubIdToLink(a) {
+        try {
+            if (!subId) return;
+
+            var href = a.getAttribute('href');
+            if (!href || href.indexOf('#') === 0) return;
+            if (/^(https?:|mailto:|tel:|javascript:)/i.test(href)) return;
+
+            var u = new URL(href, window.location.href);
+            if (u.origin !== window.location.origin) return;
+
+            u.searchParams.set('sub_id', subId);
+            u.searchParams.delete('SUB_ID');
+
+            a.setAttribute(
+                'href',
+                u.pathname + u.search + u.hash
+            );
         } catch (e) {}
     }
 
-    // 当前页面进入时如果明确带 SUB_ID 且有效，则保存本次会话标识
-    try {
-        if (params.get('SUB_ID')) {
-            sessionStorage.setItem('HELLOINSIGHTS_SUB_ID', subId);
-        } else {
-            sessionStorage.removeItem('HELLOINSIGHTS_SUB_ID');
-        }
-    } catch (e) {}
-
-    // 自动给所有站内链接附加当前 SUB_ID
-    // 只有当前页面确实存在有效 SUB_ID 时才添加
+    // 页面已有站内链接
     document.addEventListener('DOMContentLoaded', function() {
         try {
-            var currentSubId = window.SUB_ID || '000';
-            if (currentSubId === '000') return;
-
-            document.querySelectorAll('a[href]').forEach(function(a) {
-                var href = a.getAttribute('href');
-                if (!href || href.indexOf('#') === 0) return;
-                if (/^(https?:|mailto:|tel:|javascript:)/i.test(href)) return;
-
-                try {
-                    var u = new URL(href, window.location.href);
-                    if (u.origin !== window.location.origin) return;
-
-                    u.searchParams.set('SUB_ID', currentSubId);
-                    a.setAttribute('href', u.pathname + u.search + u.hash);
-                } catch (e) {}
-            });
+            document.querySelectorAll('a[href]').forEach(appendSubIdToLink);
         } catch (e) {}
     });
+
+    // 动态生成的站内链接也在点击时补 SUB_ID
+    document.addEventListener('click', function(event) {
+        try {
+            var a = event.target.closest && event.target.closest('a[href]');
+            if (a) appendSubIdToLink(a);
+        } catch (e) {}
+    }, true);
 
     // 配置 GA4，但关闭自动 page_view
     gtag('config', GA_ID, {
@@ -93,11 +109,10 @@ var siteConfig = null;
     gtag('event', 'page_view', {
         page_location: window.location.href,
         page_title: document.title,
-        sub_id: subId
+        sub_id: subId || null
     });
 
-    console.log('[GA4] SUB_ID:', subId);
-})();
+    console.log('[GA4] SUB_ID:', subId || 'NULL');})();
 
 // ==========================================
 // 1. Site Config (logo / nav / footer / seo)
@@ -397,3 +412,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
