@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import json
 import re
@@ -13,32 +13,42 @@ DOMAIN = "https://finance.helloinsights.online"
 
 
 def load_json(file):
-    with open(file, "r", encoding="utf-8") as f:
+    with open(file, "r", encoding="utf-8-sig") as f:
         return json.load(f)
+
+
+def normalize_articles(value):
+    if isinstance(value, list):
+        return [x for x in value if isinstance(x, dict)]
+
+    if isinstance(value, dict):
+        return [x for x in value.values() if isinstance(x, dict)]
+
+    return []
+
+
+def load_index_articles():
+    data = load_json(INDEX_FILE)
+    return normalize_articles(data.get("articles", []))
 
 
 def load_content_articles():
     data = load_json(CONTENT_FILE)
-    return data.get("articles", [])
+    return normalize_articles(data.get("articles", []))
 
 
-def load_index_ids():
-    data = load_json(INDEX_FILE)
+def article_url(article):
+    article_id = article.get("id")
+    subcat = article.get("subcategory")
+    slug = article.get("slug")
 
-    articles = data.get("articles", {})
+    if subcat and slug:
+        return f"{DOMAIN}/{subcat}/{slug}/"
 
-    # 当前 finance-index.json:
-    # "articles": {
-    #   "12345": "finance"
-    # }
-    if isinstance(articles, dict):
-        return set(str(x) for x in articles.keys())
+    if article_id is not None:
+        return f"{DOMAIN}/article.html?id={article_id}"
 
-    # 兼容旧版数组结构
-    if isinstance(articles, list):
-        return set(str(x["id"]) for x in articles if "id" in x)
-
-    return set()
+    return None
 
 
 def extract_sitemap_urls():
@@ -51,97 +61,96 @@ def extract_sitemap_urls():
     )
 
 
-def build_content_url_map(articles):
-    """
-    建立文章 URL -> article ID 映射。
-
-    当前 SEO URL:
-      /subcategory/slug/
-
-    旧兼容 URL:
-      /article.html?id=12345
-    """
-
-    url_map = {}
-
-    for article in articles:
-        aid = str(article["id"])
-
-        subcat = article.get("subcategory")
-        slug = article.get("slug")
-
-        if subcat and slug:
-            url = f"{DOMAIN}/{subcat}/{slug}/"
-            url_map[url] = aid
-        else:
-            url = f"{DOMAIN}/article.html?id={aid}"
-            url_map[url] = aid
-
-    return url_map
-
-
-index_ids = load_index_ids()
+index_articles = load_index_articles()
 content_articles = load_content_articles()
-content_ids = set(str(x["id"]) for x in content_articles)
-
 sitemap_urls = extract_sitemap_urls()
 
-content_url_map = build_content_url_map(content_articles)
 
-# 只统计真正属于文章的 Sitemap URL
-sitemap_article_ids = set()
+# Historical URLs that should remain available.
+historical_urls = {
+    url
+    for url in (article_url(a) for a in index_articles)
+    if url
+}
 
-for url in sitemap_urls:
-    if url in content_url_map:
-        sitemap_article_ids.add(content_url_map[url])
 
-# 兼容旧 article.html?id= URL
-for url in sitemap_urls:
-    match = re.search(r"/article\.html\?id=(\d+)$", url)
-    if match:
-        sitemap_article_ids.add(match.group(1))
+# All current Finance article URLs.
+content_url_map = {}
+
+for article in content_articles:
+    url = article_url(article)
+
+    if url:
+        content_url_map[url] = str(article.get("id"))
+
+
+content_urls = set(content_url_map.keys())
+
+
+# The sitemap must contain every current article.
+missing_current = content_urls - sitemap_urls
+
+
+# Historical URLs are also expected to remain in sitemap.
+missing_historical = historical_urls - sitemap_urls
+
+
+# Detect sitemap article URLs that don't correspond to current
+# content or historical content.
+known_article_urls = historical_urls | content_urls
+
+sitemap_article_urls = {
+    url
+    for url in sitemap_urls
+    if "/article.html?id=" in url
+    or re.search(r"/[^/]+/[^/]+/$", url)
+}
+
+stale_urls = sitemap_article_urls - known_article_urls
 
 
 print("Finance Article Sync Check")
 print("--------------------------")
+print(f"Historical articles : {len(index_articles)}")
+print(f"Current articles    : {len(content_articles)}")
+print(f"Historical URLs     : {len(historical_urls)}")
+print(f"Current article URLs: {len(content_urls)}")
+print(f"Sitemap URLs        : {len(sitemap_urls)}")
+print()
 
-print("Index articles :", len(index_ids))
-print("Content articles:", len(content_ids))
-print("Sitemap articles:", len(sitemap_article_ids))
+
+if missing_current:
+    print("Missing current articles:")
+    for url in sorted(missing_current):
+        print("  ", url)
+else:
+    print("Current articles: OK")
+
+
+if missing_historical:
+    print()
+    print("Missing historical URLs:")
+    for url in sorted(missing_historical):
+        print("  ", url)
+else:
+    print("Historical URLs: OK")
+
+
+if stale_urls:
+    print()
+    print("Stale sitemap article URLs:")
+    for url in sorted(stale_urls):
+        print("  ", url)
+else:
+    print("Stale sitemap URLs: OK")
+
 
 print()
 
-missing_content = index_ids - content_ids
-missing_index = content_ids - index_ids
-missing_sitemap = index_ids - sitemap_article_ids
-stale_sitemap = sitemap_article_ids - index_ids
-
-print("Index missing content:")
-print(sorted(missing_content))
-
-print()
-
-print("Content missing index:")
-print(sorted(missing_index))
-
-print()
-
-print("Sitemap missing index:")
-print(sorted(missing_sitemap))
-
-print()
-
-print("Sitemap stale articles:")
-print(sorted(stale_sitemap))
-
-print()
-
-if (
-    index_ids == content_ids
-    and sitemap_article_ids == index_ids
-):
-    print("✅ All synced correctly")
+if not missing_current and not missing_historical and not stale_urls:
+    print("All sitemap/content checks passed")
     sys.exit(0)
 
-print("❌ Sync problem detected")
+
+print("Sync problem detected")
 sys.exit(1)

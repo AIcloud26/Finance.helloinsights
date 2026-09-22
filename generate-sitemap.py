@@ -1,173 +1,164 @@
-#!/usr/bin/env python3
-"""
-HelloInsights — Sitemap Generator
+﻿#!/usr/bin/env python3
 
-Generates a complete sitemap.xml including:
-- Homepage
-- Category pages (clean URLs)
-- All article pages
-
-Usage:
-    python generate-sitemap.py <index_json> <site_config_json> <output_sitemap_xml>
-
-Arguments:
-    index_json        — Path to the lightweight index JSON (e.g. finance-index.json)
-    site_config_json  — Path to site config as JSON (or use --domain flag)
-    output_xml        — Output path for sitemap.xml
-
-Alternatively, for simple use:
-    python generate-sitemap.py <index_json> --domain <domain> --output <sitemap.xml>
-"""
-
+import argparse
 import json
-import sys
 import os
-from datetime import datetime
-from xml.etree.ElementTree import Element, SubElement, tostring
-from xml.dom import minidom
+import sys
+from datetime import datetime, timezone
+from xml.sax.saxutils import escape
 
 
-def generate_sitemap(articles, domain, subcategories=None):
-    """Generate sitemap XML string."""
-    urlset = Element('urlset')
-    urlset.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
-    
-    base = f'https://{domain}'
-    today = datetime.now().strftime('%Y-%m-%d')
-    
-    # 1. Homepage
-    url_home = SubElement(urlset, 'url')
-    SubElement(url_home, 'loc').text = f'{base}/'
-    SubElement(url_home, 'lastmod').text = today
-    SubElement(url_home, 'changefreq').text = 'daily'
-    SubElement(url_home, 'priority').text = '1.0'
-    
-    # 2. Category pages
-    if subcategories:
-        for subcat in subcategories:
-            url_cat = SubElement(urlset, 'url')
-            SubElement(url_cat, 'loc').text = f'{base}/{subcat["id"]}/'
-            SubElement(url_cat, 'lastmod').text = today
-            SubElement(url_cat, 'changefreq').text = 'daily'
-            SubElement(url_cat, 'priority').text = '0.8'
-    
-    # 3. Article pages
-    for article in articles:
-        url_art = SubElement(urlset, 'url')
+DOMAIN_DEFAULT = "https://finance.helloinsights.online"
 
-        subcat = article.get("subcategory")
-        slug = article.get("slug")
 
-        if subcat and slug:
-            article_url = f'{base}/{subcat}/{slug}/'
-        else:
-            article_url = f'{base}/article.html?id={article["id"]}'
+def load_json(path):
+    with open(path, "r", encoding="utf-8-sig") as f:
+        return json.load(f)
 
-        SubElement(url_art, 'loc').text = article_url
-        SubElement(url_art, 'lastmod').text = article.get('date', today)
-        SubElement(url_art, 'changefreq').text = 'monthly'
-        SubElement(url_art, 'priority').text = '0.6'
-    
-    # Pretty print
-    rough = tostring(urlset, encoding='unicode')
-    parsed = minidom.parseString(rough)
-    return parsed.toprettyxml(indent='  ')
+
+def normalize_articles(value):
+    """
+    Supports historical finance-index.json formats:
+    - {"articles": [ {...}, {...} ]}
+    - {"articles": {"0": {...}, "1": {...}}}
+    """
+    if isinstance(value, list):
+        return [x for x in value if isinstance(x, dict)]
+
+    if isinstance(value, dict):
+        return [x for x in value.values() if isinstance(x, dict)]
+
+    return []
+
+
+def article_url(article, domain):
+    article_id = article.get("id")
+    subcategory = article.get("subcategory")
+    slug = article.get("slug")
+
+    if subcategory and slug:
+        return f"{domain}/{subcategory}/{slug}/"
+
+    if article_id is not None:
+        return f"{domain}/article.html?id={article_id}"
+
+    return None
+
+
+def load_historical_articles(index_file):
+    if not os.path.exists(index_file):
+        return []
+
+    data = load_json(index_file)
+    return normalize_articles(data.get("articles", []))
+
+
+def load_current_articles(content_file):
+    if not os.path.exists(content_file):
+        return []
+
+    data = load_json(content_file)
+    return normalize_articles(data.get("articles", []))
+
+
+def build_sitemap(index_file, content_file, domain):
+    historical_articles = load_historical_articles(index_file)
+    current_articles = load_current_articles(content_file)
+
+    urls = {}
+
+    # ---------------------------------------------------------
+    # 1. Historical URLs
+    # Keep every historical URL that can still be reconstructed.
+    # This protects URLs that may already be indexed by Google.
+    # ---------------------------------------------------------
+    for article in historical_articles:
+        url = article_url(article, domain)
+        if url:
+            urls[url] = article
+
+    # ---------------------------------------------------------
+    # 2. Current/new Finance articles
+    # New content is driven by articles-finance.json.
+    # It does NOT need to exist in finance-index.json.
+    # ---------------------------------------------------------
+    for article in current_articles:
+        url = article_url(article, domain)
+        if url:
+            urls[url] = article
+
+    # ---------------------------------------------------------
+    # 3. Category pages
+    # ---------------------------------------------------------
+    category_urls = {
+        f"{domain}/",
+        f"{domain}/category.html",
+        f"{domain}/category/banking/",
+        f"{domain}/category/economy/",
+        f"{domain}/category/fintech/",
+        f"{domain}/category/personal-finance/",
+        f"{domain}/category/investing/",
+    }
+
+    for url in category_urls:
+        urls.setdefault(url, None)
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+
+    for url in sorted(urls):
+        lines.append("  <url>")
+        lines.append(f"    <loc>{escape(url)}</loc>")
+        lines.append(f"    <lastmod>{now}</lastmod>")
+        lines.append("  </url>")
+
+    lines.append("</urlset>")
+
+    return "\n".join(lines) + "\n", historical_articles, current_articles, urls
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage:")
-        print("  python generate-sitemap.py <index_json> --domain <domain> --output <sitemap.xml>")
-        print("  python generate-sitemap.py <index_json> <site_config_json> <output_xml>")
-        sys.exit(1)
-    
-    index_path = sys.argv[1]
-    
-    # Parse args
-    domain = None
-    output_path = 'sitemap.xml'
-    subcategories = None
-    
-    if '--domain' in sys.argv:
-        idx = sys.argv.index('--domain')
-        domain = sys.argv[idx + 1] if idx + 1 < len(sys.argv) else 'finance.helloinsights.online'
-    if '--output' in sys.argv:
-        idx = sys.argv.index('--output')
-        output_path = sys.argv[idx + 1] if idx + 1 < len(sys.argv) else 'sitemap.xml'
-    elif len(sys.argv) >= 4 and '--domain' not in sys.argv:
-        # Legacy positional args
-        site_config_path = sys.argv[2]
-        output_path = sys.argv[3] if len(sys.argv) > 3 else 'sitemap.xml'
-        with open(site_config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-        domain = config.get('domain', 'finance.helloinsights.online')
-        subcategories = config.get('subcategories')
-    
-    if not domain:
-        domain = 'finance.helloinsights.online'
-    
-    # Read article content data.
-    # finance-index.json is a lightweight ID/category map and does
-    # not contain the complete article objects required for clean URLs.
-    with open(index_path, 'r', encoding='utf-8') as f:
-        index_data = json.load(f)
-
-    index_articles = index_data.get('articles', {})
-
-    # Current finance-index.json stores:
-    #   "articles": {"12345": "finance"}
-    # The complete article records are stored in articles-finance.json.
-    content_path = os.path.join(
-        os.path.dirname(index_path) or '.',
-        'articles-finance.json'
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "index_file",
+        nargs="?",
+        default="finance-index.json"
+    )
+    parser.add_argument(
+        "--domain",
+        default=DOMAIN_DEFAULT
+    )
+    parser.add_argument(
+        "--output",
+        default="sitemap.xml"
+    )
+    parser.add_argument(
+        "--content",
+        default="articles-finance.json"
     )
 
-    articles = []
+    args = parser.parse_args()
 
-    if os.path.exists(content_path):
-        with open(content_path, 'r', encoding='utf-8') as f:
-            content_data = json.load(f)
+    sitemap, historical, current, urls = build_sitemap(
+        args.index_file,
+        args.content,
+        args.domain.rstrip("/")
+    )
 
-        content_articles = content_data.get('articles', [])
+    with open(args.output, "w", encoding="utf-8") as f:
+        f.write(sitemap)
 
-        if isinstance(index_articles, dict):
-            valid_ids = set(str(x) for x in index_articles.keys())
-            articles = [
-                a for a in content_articles
-                if str(a.get('id')) in valid_ids
-            ]
-        else:
-            articles = content_articles
-
-    # Fallback: if content file is unavailable, support an article-list index.
-    if not articles and isinstance(index_articles, list):
-        articles = index_articles
-    
-    # Default subcategories if not provided
-    if not subcategories:
-        subcategories = [
-            {"id": "personal-finance", "name": "Personal Finance"},
-            {"id": "investing", "name": "Investing"},
-            {"id": "markets", "name": "Markets"},
-            {"id": "banking", "name": "Banking"},
-            {"id": "fintech", "name": "Fintech"},
-            {"id": "economy", "name": "Economy"},
-            {"id": "money-management", "name": "Money Management"}
-        ]
-    
-    # Generate
-    xml_content = generate_sitemap(articles, domain, subcategories)
-    
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(xml_content)
-    
-    cat_count = len(subcategories) if subcategories else 0
-    print(f"Sitemap generated: {output_path}")
-    print(f"  Homepage: 1")
-    print(f"  Category pages: {cat_count}")
-    print(f"  Article pages: {len(articles)}")
-    print(f"  Total URLs: {1 + cat_count + len(articles)}")
+    print("Finance Sitemap Generated")
+    print("-------------------------")
+    print(f"Historical articles : {len(historical)}")
+    print(f"Current articles    : {len(current)}")
+    print(f"Total sitemap URLs  : {len(urls)}")
+    print(f"Output              : {args.output}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
