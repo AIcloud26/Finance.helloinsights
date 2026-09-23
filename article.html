@@ -304,7 +304,6 @@
 
         <div class="topics-links" id="topicsLinks"></div>
 
-        <div class="ad-slot" data-ad-slot="article-native-top"></div>
 
         <div class="back-to-finance">
             <a href="index.html">&larr; Back to Finance</a>
@@ -557,6 +556,7 @@ document.head.appendChild(script);
         document.head.appendChild(bcScript);
 
         container.innerHTML =
+            '<div class="ad-slot" data-ad-slot="article-native-top"></div>' +
             '<div class="article-hero">' +
             '<img src="' + heroImg + '" alt="' + escHtml(article.title) + '" width="1200" height="675" loading="eager" fetchpriority="high" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
             '</div>' +
