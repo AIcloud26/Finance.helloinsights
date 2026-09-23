@@ -473,14 +473,10 @@
     // ===== NAV: Add 7 subcategory links =====
     function buildArticleUrl(id) {
         var url = 'article.html?id=' + encodeURIComponent(id);
+        var subId = window.SUB_ID || '000';
 
-        // Read SUB_ID directly from the current URL.
-        // This works even before config-loader.js finishes loading.
-        var params = new URLSearchParams(window.location.search);
-        var subId = (params.get('sub_id') || params.get('SUB_ID') || '').trim();
-
-        if (/^[A-Za-z0-9_-]{1,32}$/.test(subId) && subId !== '000') {
-            url += '&sub_id=' + encodeURIComponent(subId);
+        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+            url += '&SUB_ID=' + encodeURIComponent(subId);
         }
 
         return url;
@@ -510,38 +506,22 @@
         document.getElementById('footerAboutText').textContent = CFG.aboutText || '';
     }
 
-        // ===== DATA LOADING =====
+    // ===== DATA LOADING =====
     function loadFinanceIndex() {
-        var jsonFile = 'articles-finance.json';
-
+        var jsonFile = CFG.jsonFile || 'finance-index.json';
         fetch(jsonFile, { cache: 'no-cache' })
             .then(function(r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
             .then(function(data) {
-                var articles = Array.isArray(data)
-                    ? data
-                    : (Array.isArray(data.articles) ? data.articles : []);
-
-                allArticles = articles
-                    .filter(function(a) {
-                        return a && a.id && a.title;
-                    })
-                    .sort(function(a, b) {
-                        return (b.date || '').localeCompare(a.date || '');
-                    });
-
-                console.log('Finance articles loaded:', allArticles.length);
-
-                if (!allArticles.length) {
-                    throw new Error('No finance articles found');
-                }
-
+                allArticles = (data.articles || []).sort(function(a, b) {
+                    return (b.date || '').localeCompare(a.date || '');
+                }).slice(0, 50);
                 renderAll();
             })
             .catch(function(e) {
-                console.error('Failed to load finance articles:', e);
+                console.error('Failed to load finance index:', e);
                 showFallbackMessage();
             });
     }
@@ -825,6 +805,5 @@
     </script>
 </body>
 </html>
-
 
 
