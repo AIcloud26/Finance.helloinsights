@@ -113,10 +113,7 @@
         .latest-card{gap:.7rem;}
         .latest-card-img{width:80px;min-width:80px;height:60px;}
     }
-    .topic-sections-disabled {
-    display: none !important;
-}
-</style>
+    </style>
 
 <style>
 
@@ -259,9 +256,6 @@
     }
 }
 
-.topic-sections-disabled {
-    display: none !important;
-}
 </style>
 
 <style id="helloinsights-unified-logo">
@@ -305,9 +299,6 @@
         height: 32px !important;
         max-height: 32px !important;
     }
-}
-.topic-sections-disabled {
-    display: none !important;
 }
 </style>
 
@@ -402,7 +393,7 @@
 
 
         <!-- ===== 7 TOPIC SECTIONS (rendered by JS, native-home-topic ad injected after 3rd) ===== -->
-        <div id="topicSections" class="topic-sections-disabled"></div>
+        <div id="topicSections" style="display:none !important;"></div>
 
         <!-- ===== MOST READ ===== -->
         <section class="most-read-section" id="mostReadSection">
@@ -692,19 +683,16 @@
 
     function getSubcategoryArticles(subcatId, count) {
         var result = [];
-        var target = String(subcatId || '').trim().toLowerCase();
-
         for (var i = 0; i < allArticles.length && result.length < count; i++) {
             var a = allArticles[i];
-            var articleSubcat = String(a.subcategory || '').trim().toLowerCase();
-
-            if (articleSubcat === target) {
+            if (a.subcategory === subcatId && !usedArticleIds[a.id]) {
                 result.push(a);
+                usedArticleIds[a.id] = true;
             }
         }
-
         return result;
     }
+
     // ===== MOST READ (5, text-only numbered list) =====
     function renderMostRead() {
         var list = document.getElementById('mostReadList');
@@ -837,8 +825,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 
