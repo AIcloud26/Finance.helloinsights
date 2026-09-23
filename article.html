@@ -288,7 +288,7 @@
     <nav class="breadcrumb" id="breadcrumb"></nav>
 
     <main>
-
+        <div class="ad-slot" data-ad-slot="article-native-top"></div>
         <article class="article-body" id="articleDetail">
             <div class="loading"></div>
         </article>
@@ -556,7 +556,6 @@ document.head.appendChild(script);
         document.head.appendChild(bcScript);
 
         container.innerHTML =
-            '<div class="ad-slot" data-ad-slot="article-native-top"></div>' +
             '<div class="article-hero">' +
             '<img src="' + heroImg + '" alt="' + escHtml(article.title) + '" width="1200" height="675" loading="eager" fetchpriority="high" onerror="this.src=\'' + (CFG.fallbackImage || '') + '\'">' +
             '</div>' +
