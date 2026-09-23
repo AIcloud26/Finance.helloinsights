@@ -26,34 +26,118 @@
     <style>
         /* Category Hero */
         .category-hero {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #fff;
-            padding: 80px 20px 60px;
-            text-align: center;
+            background: #f7f7fa;
+            color: #1a1a2e;
+            padding: 38px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8ee;
         }
-        .category-hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 16px;
-            font-weight: 800;
-        }
-        .category-hero p {
-            font-size: 1.15rem;
-            max-width: 680px;
+
+        .category-hero-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            opacity: 0.9;
-            line-height: 1.6;
         }
-        .category-hero .breadcrumb {
-            margin-bottom: 24px;
-            font-size: 0.9rem;
-            opacity: 0.8;
+
+        .category-hero h1 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+            font-weight: 800;
+            line-height: 1.2;
         }
-        .category-hero .breadcrumb a {
-            color: #ff6b35;
+
+        .category-hero p {
+            font-size: 1rem;
+            max-width: 820px;
+            margin: 0;
+            color: #626274;
+            line-height: 1.65;
+        }
+
+        /* Finance Category Sub Navigation */
+        .category-subnav {
+            background: #fff;
+            border-bottom: 1px solid #e8e8ee;
+        }
+
+        .category-subnav-inner {
+            max-width: 1200px;
+            min-height: 52px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            overflow: hidden;
+        }
+
+        .category-current {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .category-current a {
+            color: #555;
             text-decoration: none;
         }
-        .category-hero .breadcrumb a:hover { text-decoration: underline; }
 
+        .category-current span {
+            color: #aaa;
+        }
+
+        .category-current strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .category-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-links::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .category-links a:hover,
+        .category-links a.active {
+            color: #ff6b35;
+        }
+
+        @media (max-width: 768px) {
+            .category-subnav-inner {
+                min-height: 48px;
+                padding: 0 16px;
+                gap: 16px;
+            }
+
+            .category-links {
+                gap: 16px;
+            }
+
+            .category-hero {
+                padding: 28px 16px;
+            }
+
+            .category-hero h1 {
+                font-size: 1.65rem;
+            }
+        }
         /* Article Grid */
         .category-grid {
             max-width: 1200px;
@@ -204,8 +288,6 @@
 
         /* Mobile adjustments */
         @media (max-width: 600px) {
-            .category-hero { padding: 60px 16px 40px; }
-            .category-hero h1 { font-size: 2rem; }
         }
     </style>
     <!-- JSON-LD -->
@@ -418,13 +500,33 @@
         </nav>
     </header>
 
+    <!-- Category Sub Navigation -->
+    <nav class="category-subnav" aria-label="Finance categories">
+        <div class="category-subnav-inner">
+            <div class="category-current">
+                <a href="index.html">Finance</a>
+                <span>&rsaquo;</span>
+                <strong id="breadcrumbCat">Category</strong>
+            </div>
+
+            <div class="category-links">
+                <a href="category.html?cat=personal-finance" data-category="personal-finance">Personal Finance</a>
+                <a href="category.html?cat=investing" data-category="investing">Investing</a>
+                <a href="category.html?cat=markets" data-category="markets">Markets</a>
+                <a href="category.html?cat=banking" data-category="banking">Banking</a>
+                <a href="category.html?cat=fintech" data-category="fintech">Fintech</a>
+                <a href="category.html?cat=economy" data-category="economy">Economy</a>
+                <a href="category.html?cat=money-management" data-category="money-management">Money Management</a>
+            </div>
+        </div>
+    </nav>
+
     <!-- Category Hero -->
     <section class="category-hero">
-        <div class="breadcrumb">
-            <a href="index.html">Finance</a> &rsaquo; <span id="breadcrumbCat">Category</span>
+        <div class="category-hero-inner">
+            <h1 id="catTitle">Category</h1>
+            <p id="catDesc">Category description</p>
         </div>
-        <h1 id="catTitle">Category</h1>
-        <p id="catDesc">Category description</p>
     </section>
 
     <style>
@@ -776,5 +878,8 @@
     </script>
 </body>
 </html>
+
+
+
 
 
