@@ -113,7 +113,12 @@
         .latest-card{gap:.7rem;}
         .latest-card-img{width:80px;min-width:80px;height:60px;}
     }
-    </style>
+    
+/* Hide obsolete Explore Topic control */
+.explore-topic-hidden {
+    display: none !important;
+}
+</style>
 
 <style>
 
@@ -256,6 +261,11 @@
     }
 }
 
+
+/* Hide obsolete Explore Topic control */
+.explore-topic-hidden {
+    display: none !important;
+}
 </style>
 
 <style id="helloinsights-unified-logo">
@@ -299,6 +309,11 @@
         height: 32px !important;
         max-height: 32px !important;
     }
+}
+
+/* Hide obsolete Explore Topic control */
+.explore-topic-hidden {
+    display: none !important;
 }
 </style>
 
@@ -359,7 +374,7 @@
         <section class="hero-section">
             <h1 id="heroTitle">Finance Insights for Smarter Money Decisions</h1>
             <p class="hero-subtitle">Practical insights on personal finance, investing, markets, banking, fintech and the economy.</p>
-            <a href="#latest-section" class="hero-cta">Explore Topics</a>
+            <a href="#latest-section" class="hero-cta explore-topic-hidden">Explore Topics</a>
         </section>
 
         <!-- ===== EDITORIAL INTRODUCTION ===== -->
@@ -806,5 +821,7 @@
     </script>
 </body>
 </html>
+
+
 
 

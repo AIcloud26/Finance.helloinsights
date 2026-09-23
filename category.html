@@ -289,7 +289,38 @@
         /* Mobile adjustments */
         @media (max-width: 600px) {
         }
-    </style>
+    
+/* Category current state - match homepage navigation active style */
+.category-links a.active {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.10);
+    border-radius: 8px;
+    font-weight: 400;
+    padding: 8px 12px;
+}
+
+.category-header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #555;
+    white-space: nowrap;
+}
+
+.category-header-label span:last-child {
+    color: #1a1a2e;
+    font-weight: 400;
+}
+
+.category-header-separator {
+    color: #aaa;
+    font-weight: 400;
+}
+
+</style>
     <!-- JSON-LD -->
     <script type="application/ld+json" id="jsonldBreadcrumb">
     {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Finance","item":"https://finance.helloinsights.online/"},{"@type":"ListItem","position":2,"name":"Category","item":""}]}
@@ -436,6 +467,37 @@
     }
 }
 
+
+/* Category current state - match homepage navigation active style */
+.category-links a.active {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.10);
+    border-radius: 8px;
+    font-weight: 400;
+    padding: 8px 12px;
+}
+
+.category-header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #555;
+    white-space: nowrap;
+}
+
+.category-header-label span:last-child {
+    color: #1a1a2e;
+    font-weight: 400;
+}
+
+.category-header-separator {
+    color: #aaa;
+    font-weight: 400;
+}
+
 </style>
 
 <style id="helloinsights-unified-logo">
@@ -480,6 +542,37 @@
         max-height: 32px !important;
     }
 }
+
+/* Category current state - match homepage navigation active style */
+.category-links a.active {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.10);
+    border-radius: 8px;
+    font-weight: 400;
+    padding: 8px 12px;
+}
+
+.category-header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #555;
+    white-space: nowrap;
+}
+
+.category-header-label span:last-child {
+    color: #1a1a2e;
+    font-weight: 400;
+}
+
+.category-header-separator {
+    color: #aaa;
+    font-weight: 400;
+}
+
 </style>
 
 </head>
@@ -495,21 +588,13 @@
                 </svg>
             </a>
             <div class="nav-links">
-                <span class="site-badge" id="headerBadge">Finance</span>
             </div>
         </nav>
     </header>
 
     <!-- Category Sub Navigation -->
     <nav class="category-subnav" aria-label="Finance categories">
-        <div class="category-subnav-inner">
-            <div class="category-current">
-                <a href="index.html">Finance</a>
-                <span>&rsaquo;</span>
-                <strong id="breadcrumbCat">Category</strong>
-            </div>
-
-            <div class="category-links">
+        <div class="category-subnav-inner"><div class="category-links">
                 <a href="category.html?cat=personal-finance" data-category="personal-finance">Personal Finance</a>
                 <a href="category.html?cat=investing" data-category="investing">Investing</a>
                 <a href="category.html?cat=markets" data-category="markets">Markets</a>
@@ -531,7 +616,47 @@
 
     <style>
 
-    </style>
+    
+/* Category current state - match homepage navigation active style */
+.category-links a.active {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.10);
+    border-radius: 8px;
+    font-weight: 400;
+    padding: 8px 12px;
+}
+
+.category-header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #555;
+    white-space: nowrap;
+}
+
+.category-header-label span:last-child {
+    color: #1a1a2e;
+    font-weight: 400;
+}
+
+.category-header-separator {
+    color: #aaa;
+    font-weight: 400;
+}
+
+
+/* Final category navigation active state */
+.category-links a.active {
+    color: #ff6b35 !important;
+    background: rgba(255, 107, 53, 0.10) !important;
+    border-radius: 8px;
+    font-weight: 400 !important;
+    padding: 8px 12px;
+}
+</style>
     <div class="ad-slot" id="ad-category-header" data-ad-slot="category-header"></div>
     <script>
     (function(w,q){
@@ -676,7 +801,11 @@
         // Category hero
         document.getElementById('catTitle').textContent = catConfig.name;
         document.getElementById('catDesc').textContent = catConfig.desc;
-        document.getElementById('breadcrumbCat').textContent = catConfig.name;
+        
+        document.getElementById('headerCategoryName').textContent = catConfig.name;
+        document.querySelectorAll('.category-links a[data-category]').forEach(function(link) {
+            link.classList.toggle('active', link.dataset.category === currentCat);
+        });
 
         // JSON-LD Breadcrumb
         var jsonld = {
@@ -878,6 +1007,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
