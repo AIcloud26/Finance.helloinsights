@@ -703,7 +703,7 @@
 
             var counts = {};
 
-            allArticles.forEach(function(a) {
+            filteredArticles.forEach(function(a) {
                 var raw = a.subcategory || a.topic || a.category || '';
                 var id = String(raw)
                     .trim()
