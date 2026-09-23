@@ -703,7 +703,7 @@
 
             var counts = {};
 
-            filteredArticles.forEach(function(a) {
+            allArticles.forEach(function(a) {
                 var raw = a.subcategory || a.topic || a.category || '';
                 var id = String(raw)
                     .trim()
@@ -776,4 +776,5 @@
     </script>
 </body>
 </html>
+
 
