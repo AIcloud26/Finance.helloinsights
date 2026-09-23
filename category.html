@@ -594,7 +594,7 @@
             .then(function(data) {
                 allArticles = data.articles || [];
                 filteredArticles = allArticles.filter(function(a) {
-                    return a.subcategory === currentCatId;
+                    return String(a.subcategory || '').trim().toLowerCase() === String(currentCatId || '').trim().toLowerCase() || (!a.subcategory && String(a.category || '').trim().toLowerCase() === String(currentCatId || '').trim().toLowerCase());
                 });
 
                 // Sort by date desc
