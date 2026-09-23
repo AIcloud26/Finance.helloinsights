@@ -510,22 +510,38 @@
         document.getElementById('footerAboutText').textContent = CFG.aboutText || '';
     }
 
-    // ===== DATA LOADING =====
+        // ===== DATA LOADING =====
     function loadFinanceIndex() {
-        var jsonFile = CFG.jsonFile || 'finance-index.json';
+        var jsonFile = 'articles-finance.json';
+
         fetch(jsonFile, { cache: 'no-cache' })
             .then(function(r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
             .then(function(data) {
-                allArticles = (data.articles || []).sort(function(a, b) {
-                    return (b.date || '').localeCompare(a.date || '');
-                }).slice(0, 50);
+                var articles = Array.isArray(data)
+                    ? data
+                    : (Array.isArray(data.articles) ? data.articles : []);
+
+                allArticles = articles
+                    .filter(function(a) {
+                        return a && a.id && a.title;
+                    })
+                    .sort(function(a, b) {
+                        return (b.date || '').localeCompare(a.date || '');
+                    });
+
+                console.log('Finance articles loaded:', allArticles.length);
+
+                if (!allArticles.length) {
+                    throw new Error('No finance articles found');
+                }
+
                 renderAll();
             })
             .catch(function(e) {
-                console.error('Failed to load finance index:', e);
+                console.error('Failed to load finance articles:', e);
                 showFallbackMessage();
             });
     }
@@ -667,16 +683,19 @@
 
     function getSubcategoryArticles(subcatId, count) {
         var result = [];
+        var target = String(subcatId || '').trim().toLowerCase();
+
         for (var i = 0; i < allArticles.length && result.length < count; i++) {
             var a = allArticles[i];
-            if (a.subcategory === subcatId && !usedArticleIds[a.id]) {
+            var articleSubcat = String(a.subcategory || '').trim().toLowerCase();
+
+            if (articleSubcat === target) {
                 result.push(a);
-                usedArticleIds[a.id] = true;
             }
         }
+
         return result;
     }
-
     // ===== MOST READ (5, text-only numbered list) =====
     function renderMostRead() {
         var list = document.getElementById('mostReadList');
@@ -809,4 +828,7 @@
     </script>
 </body>
 </html>
+
+
+
 
