@@ -489,10 +489,11 @@
     // ===== NAV: Add 7 subcategory links =====
     function buildArticleUrl(id) {
         var url = 'article.html?id=' + encodeURIComponent(id);
-        var subId = window.SUB_ID || '000';
+        var params = new URLSearchParams(window.location.search);
+        var subId = (params.get('sub_id') || '').trim();
 
-        if (subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
-            url += '&SUB_ID=' + encodeURIComponent(subId);
+        if (subId && subId !== '000' && /^[A-Za-z0-9_-]{1,32}$/.test(subId)) {
+            url += '&sub_id=' + encodeURIComponent(subId);
         }
 
         return url;
@@ -821,7 +822,4 @@
     </script>
 </body>
 </html>
-
-
-
 
