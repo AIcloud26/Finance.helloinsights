@@ -802,7 +802,10 @@
         document.getElementById('catTitle').textContent = catConfig.name;
         document.getElementById('catDesc').textContent = catConfig.desc;
         
-        document.getElementById('headerCategoryName').textContent = catConfig.name;
+        var headerCategoryNameEl = document.getElementById('headerCategoryName');
+        if (headerCategoryNameEl) {
+            headerCategoryNameEl.textContent = catConfig.name;
+        }
         document.querySelectorAll('.category-links a[data-category]').forEach(function(link) {
             link.classList.toggle('active', link.dataset.category === currentCat);
         });
@@ -1007,13 +1010,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
