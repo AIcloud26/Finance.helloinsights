@@ -807,7 +807,7 @@
             headerCategoryNameEl.textContent = catConfig.name;
         }
         document.querySelectorAll('.category-links a[data-category]').forEach(function(link) {
-            link.classList.toggle('active', link.dataset.category === currentCat);
+            link.classList.toggle('active', link.dataset.category === currentCatId);
         });
 
         // JSON-LD Breadcrumb
