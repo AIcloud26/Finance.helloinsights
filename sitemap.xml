@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://finance.helloinsights.online/</loc>
@@ -1329,6 +1329,26 @@
     <lastmod>2026-10-06</lastmod>
   </url>
   <url>
+    <loc>https://finance.helloinsights.online/category/banking/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
+    <loc>https://finance.helloinsights.online/category/economy/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
+    <loc>https://finance.helloinsights.online/category/fintech/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
+    <loc>https://finance.helloinsights.online/category/investing/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
+    <loc>https://finance.helloinsights.online/category/personal-finance/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
     <loc>https://finance.helloinsights.online/economy/global-economic-outlook-what-investors-need-to-know-2/</loc>
     <lastmod>2026-10-06</lastmod>
   </url>
@@ -1612,28 +1632,4 @@
     <loc>https://finance.helloinsights.online/personal-finance/wealth-building-the-role-of-retirement-planning/</loc>
     <lastmod>2026-10-06</lastmod>
   </url>
-  <url>
-    <loc>https://finance.helloinsights.online/banking/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/economy/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/fintech/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/investing/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/markets/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/money-management/</loc>
-  </url>
-  <url>
-    <loc>https://finance.helloinsights.online/personal-finance/</loc>
-  </url>
 </urlset>
-
-
-
